@@ -10,30 +10,29 @@
 
 void initializeCritStat(Player *player){
 
-    player->stat.base.CRIT.Modificater = STANDARD_BASE_CRIT_MODIFIER ; /*300%*/
-    player->stat.base.CRIT.Rate = STANDARD_BASE_CRIT_RATE; /*5%*/
-    player->stat.base.CRIT.accuracy = STANDARD_BASE_ACCURACY; /*20*/
-
+    PLAYER_BASE_STATS.CRIT.Modificater = STANDARD_BASE_CRIT_MODIFIER ; /*300%*/
+    PLAYER_BASE_STATS.CRIT.Rate = STANDARD_BASE_CRIT_RATE;             /*5%*/
+    PLAYER_BASE_STATS.CRIT.accuracy = STANDARD_BASE_ACCURACY;          /*20*/
 }
 
 
 void initializeBaseStat(Player *player, char* name) {
     
-    player->stat.base.name = name;
+    PLAYER_BASE_STATS.name = name;
     
     /*Reminder : STANDARD_BASE_STAT = 10*/
-    player->stat.base.ATTACK = STANDARD_BASE_STAT;
-    player->stat.base.INTELLIGENCE = STANDARD_BASE_STAT;
-    player->stat.base.DEFENSE = STANDARD_BASE_STAT;
+    PLAYER_BASE_STATS.ATTACK = STANDARD_BASE_STAT;
+    PLAYER_BASE_STATS.INTELLIGENCE = STANDARD_BASE_STAT;
+    PLAYER_BASE_STATS.DEFENSE = STANDARD_BASE_STAT;
 
     initializeCritStat(player);
 }
 
 void initializeCurrentStat(Player *player) {
-    player->stat.current.Lvl = 1;
-    player->stat.current.Hp = STANDARD_MAX_HP;/*100*/
-    player->stat.current.Mp = STANDARD_MAX_MP;/*50*/
-    player->stat.current.Exp = 0;
+    PLAYER_CURRT_STATS.Lvl = 1;
+    PLAYER_CURRT_STATS.Hp = STANDARD_MAX_HP;/*100*/
+    PLAYER_CURRT_STATS.Mp = STANDARD_MAX_MP;/*50*/
+    PLAYER_CURRT_STATS.Exp = 0;
 }
 
 void initializeStat(Player *player, char* name) {
@@ -46,22 +45,23 @@ void initializeStandard(Player *player, char* name) {
     initializeStat(player, name);
 }
 
+
 void quickPrintPlayer(Player* player){
     printf("****PLAYER STATS****\n");
-    printf("name : %s\n", player->stat.base.name);
+    printf("name : %s\n", PLAYER_BASE_STATS.name);
 
-    printf("lvl           : %d\n", player->stat.current.Lvl);
-    printf("exp           : %d\n", player->stat.current.Exp);
+    printf("lvl           : %d\n", PLAYER_CURRT_STATS.Lvl);
+    printf("exp           : %d\n", PLAYER_CURRT_STATS.Exp);
     printf("expBar        : %d\n", STANDARD_EXP_TO_NEXT_LVL);
 
-    printf("strenght      : %d\n", player->stat.base.ATTACK);
-    printf("intellig      : %d\n", player->stat.base.INTELLIGENCE);
-    printf("def           : %d\n", player->stat.base.DEFENSE );
+    printf("strenght      : %d\n", PLAYER_BASE_STATS.ATTACK);
+    printf("intellig      : %d\n", PLAYER_BASE_STATS.INTELLIGENCE);
+    printf("def           : %d\n", PLAYER_BASE_STATS.DEFENSE );
 
-    printf("hp            : %d\n", player->stat.current.Hp);
-    printf("mp            : %d\n", player->stat.current.Mp);
+    printf("hp            : %d\n", PLAYER_CURRT_STATS.Hp);
+    printf("mp            : %d\n", PLAYER_CURRT_STATS.Mp);
 
-    printf("CritModifiyer : %d%%\n", player->stat.base.CRIT.Modificater);
-    printf("CritRate      : %d%%\n", player->stat.base.CRIT.Rate);
-    printf("Accuracy      : %d%%\n", player->stat.base.CRIT.accuracy);
+    printf("CritModifiyer : %d%%\n", PLAYER_BASE_STATS.CRIT.Modificater);
+    printf("CritRate      : %d%%\n", PLAYER_BASE_STATS.CRIT.Rate);
+    printf("Accuracy      : %d%%\n", PLAYER_BASE_STATS.CRIT.accuracy);
 }

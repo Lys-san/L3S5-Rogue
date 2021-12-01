@@ -36,7 +36,7 @@
 
 #define IS_SELECTABLE (profileFound || i != PROFILE)
 
-#define SQUARED(a) a*a
+#define SQUARED(a) (a*a)
 
 enum MENU { /*accessible via the main screen*/
 	PLAY,

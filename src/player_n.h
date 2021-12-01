@@ -11,7 +11,9 @@
 #define __PLAYER__
 
     /*Define*/
-
+    #define PLAYER_BASE_STATS  player->stat.base
+    #define PLAYER_CURRT_STATS player->stat.current
+    
     #define MAX_EQUIP     3 /*Number of equipment a player can wield */
     #define MAX_INVENTORY 9 /*Number of non-equipment a player can carry*/
 
@@ -32,21 +34,21 @@
     /*Struct*/
 
     typedef struct {
-        int Modificater;/*Damage modifier when a crit hit*/
-        unsigned int Rate;/*Chances of a crit to proc*/
-        unsigned int accuracy;/*Range of effective damage when a hit lands, exemple: accuracy 20 -> 80%-120% of ATTACK*/
+        int Modificater;       /*Damage modifier when a crit hit*/
+        unsigned int Rate;     /*Chances of a crit to proc*/
+        unsigned int accuracy; /*Range of effective damage when a hit lands, exemple: accuracy 20 -> 80%-120% of ATTACK*/
     } Critical;
 
     typedef struct {
-        unsigned int Cost;/*Cost of the spell*/
+        unsigned int Cost;        /*Cost of the spell*/
         unsigned int currentPower;/*damage inflicted by the spell*/
     } Spell;
 
     typedef struct {
-        unsigned int Lvl;/*Current lvl of the player*/
-        unsigned int Hp;/*Current hp of the player, different from max HP*/
-        unsigned int Mp;/*Current mp of the player, different from max MP*/
-        unsigned int Exp;/*Current exp of the player*/
+        unsigned int Lvl; /*Current lvl of the player*/
+        unsigned int Hp;  /*Current hp of the player, different from max HP*/
+        unsigned int Mp;  /*Current mp of the player, different from max MP*/
+        unsigned int Exp; /*Current exp of the player*/
     } CurrentStat;
 
     typedef struct {

@@ -19,8 +19,8 @@ void createGameWindow() {
 	MLV_create_window_with_default_font(
 		"[insérer titre qu'a d'la gueule]",
 		"projet c L3S5",
-		windowWidth/3,
-		windowHeight/3,
+		windowWidth/2,
+		windowHeight/2,
 		"src/files/Mouser D.otf",
 		30
 	);
@@ -364,20 +364,37 @@ void displayHUD(Player player) {
 		int xAreaEnd   = xCenter;
 		int yAreaEnd   = yCenter + radius;
 
-		printf("%d %d\n", xAreaStart, yAreaStart);
-		printf("%d %d\n", xAreaEnd, yAreaEnd);
+		unsigned int epsilon = 50;
 
-
-		/* Drawing pixel by pixel */
-		for(y = 0; y < ; y++) {
+		/* Drawing pixel by pixel of the inside border*/
+		for(y = yAreaStart; y <= yAreaEnd; y++) {
 			for(x = xAreaStart; x <= xAreaEnd; x++) {
 				/* circle equation formula */
-				printf("%d\n", SQUARED((x - xAreaStart) - xCenter) + SQUARED((y - yAreaStart) - yCenter));
-				if(SQUARED((x - xAreaStart) - xCenter) + SQUARED((y - yAreaStart) - yCenter) == SQUARED(radius)) {
+				if(SQUARED((x - xCenter)) + SQUARED((y - yCenter)) <= SQUARED(radius) + epsilon
+					&& SQUARED((x - xCenter)) + SQUARED((y - yCenter)) >= SQUARED(radius) - epsilon) {
 					MLV_draw_pixel(x, y, LINE_COLOR);
 				}
 			}
 		}
+
+		float increasingRadius;
+
+		/*outside border*/
+		for(y = yAreaStart; y <= yAreaEnd + 100; y++) {
+			for(x = xAreaStart; x <= xAreaEnd; x++) {
+				increasingRadius += 1/100;
+
+				printf("%f %d\n", increasingRadius,  SQUARED((int)increasingRadius));
+				/* circle equation formula */
+				if(SQUARED((x - xCenter)) + SQUARED((y - yCenter)) <= SQUARED(radius) + 100
+					&& SQUARED((x - xCenter)) + SQUARED((y - yCenter)) >= SQUARED(radius) - 100) {
+					MLV_draw_pixel(x, y, LINE_COLOR);
+					printf("DRAW\n");
+				}
+			}
+		}
+
+
 	}
 
 	unsigned int windowWidth, windowHeight;
