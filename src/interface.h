@@ -34,7 +34,8 @@
 #define STAIR_UP_COLOR_BAS           MLV_COLOR_LIGHT_SLATE_BLUE
 #define STAIR_DOWN_COLOR_BAS         MLV_COLOR_MEDIUMORCHID
 
-#define IS_SELECTABLE (profileFound || i != PROFILE)
+#define IS_SELECTABLE      (profileFound || i != PROFILE)
+#define BREAK_NESTED_LOOPS pixelFound = 1; break;
 
 #define SQUARED(a) (a*a)
 

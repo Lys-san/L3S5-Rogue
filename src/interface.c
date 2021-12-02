@@ -230,10 +230,10 @@ int mainScreen(int profileFound, int fadein) {
 
 void snowdrops(unsigned int frames) {
 	typedef struct {
-		int x;                  /*x coordonate*/
-		int y;                  /*y coordonate*/
-		int radius;             /*in px*/
-		Uint8 opacity;          /*[0-255]*/
+		int x;         /*x coordonate*/
+		int y;         /*y coordonate*/
+		int radius;    /*in px*/
+		Uint8 opacity; /*[0-255]*/
 	} Snowdrop;
 
 	/*updates the (x, y) coordonates of a Snowdrop*/
@@ -306,7 +306,7 @@ void snowdrops(unsigned int frames) {
 
 			MLV_draw_filled_rectangle(0, 0, windowWidth, windowHeight, fadeoutColor);
 			MLV_actualise_window();
-			/*display will take more time so we have to reduce the framerate*/
+			/* display will take more time so we don't have to wait 5 more ms */
 		}
 		else
 			MLV_wait_milliseconds( 5 );
@@ -338,7 +338,7 @@ void displayHUD(Player player) {
 		return (points * 100)/maxPoints;
 	}
 
-	/* Converts a bar percentage into a length depending on a bar length */
+	/* Converts a bar percentage into a length depending on a bar length (px) */
 	int convertBarPercentgToLenght(int barPrctg, int barLength) {
 		return (barPrctg * barLength)/100;
 	}
@@ -364,6 +364,10 @@ void displayHUD(Player player) {
 		int xAreaEnd   = xCenter;
 		int yAreaEnd   = yCenter + radius;
 
+		int x1LastPixel, y1LastPixel;
+		int x1FillPixel, y1FillPixel;
+		int nbPixelsInsideBorder = 0;
+
 		unsigned int epsilon = 50;
 
 		/* Drawing pixel by pixel of the inside border*/
@@ -372,29 +376,77 @@ void displayHUD(Player player) {
 				/* circle equation formula */
 				if(SQUARED((x - xCenter)) + SQUARED((y - yCenter)) <= SQUARED(radius) + epsilon
 					&& SQUARED((x - xCenter)) + SQUARED((y - yCenter)) >= SQUARED(radius) - epsilon) {
+					nbPixelsInsideBorder++;
 					MLV_draw_pixel(x, y, LINE_COLOR);
+					x1LastPixel = x;
+					y1LastPixel = y;
 				}
 			}
 		}
 
-		float increasingRadius;
+		float increasingRadius = (float)radius;
+
+		int x2LastPixel, y2LastPixel;
+		int x2FillPixel, y2FillPixel;
+		int nbPixelsOutsideBorder = 0;
 
 		/*outside border*/
 		for(y = yAreaStart; y <= yAreaEnd + 100; y++) {
 			for(x = xAreaStart; x <= xAreaEnd; x++) {
-				increasingRadius += 1/100;
-
-				printf("%f %d\n", increasingRadius,  SQUARED((int)increasingRadius));
+				increasingRadius += 1.0/300;
 				/* circle equation formula */
-				if(SQUARED((x - xCenter)) + SQUARED((y - yCenter)) <= SQUARED(radius) + 100
-					&& SQUARED((x - xCenter)) + SQUARED((y - yCenter)) >= SQUARED(radius) - 100) {
+				if(SQUARED((x - xCenter)) + SQUARED((y - yCenter)) <= SQUARED(increasingRadius) + (2)*epsilon
+					&& SQUARED((x - xCenter)) + SQUARED((y - yCenter)) >= SQUARED(increasingRadius) - (2)*epsilon) {
+					nbPixelsOutsideBorder++;
 					MLV_draw_pixel(x, y, LINE_COLOR);
-					printf("DRAW\n");
+					x2LastPixel = x;
+					y2LastPixel = y;
 				}
 			}
 		}
 
+		MLV_draw_line(x1LastPixel, y1LastPixel, x2LastPixel, y2LastPixel, LINE_COLOR);
 
+		/* fill */
+		int searchedPixel = convertBarPercentgToLenght(fillPrctg, nbPixelsInsideBorder);
+		int pixelIndex = 0;
+		int pixelFound = 0; /* flag to break out of the nested loops */
+
+		for(y = yAreaStart; y <= yAreaEnd && !pixelFound; y++) {
+			for(x = xAreaStart; x <= xAreaEnd; x++) {
+				if(SQUARED((x - xCenter)) + SQUARED((y - yCenter)) <= SQUARED(radius) + epsilon
+					&& SQUARED((x - xCenter)) + SQUARED((y - yCenter)) >= SQUARED(radius) - epsilon) {
+					pixelIndex++;
+					if(searchedPixel == pixelIndex) {
+						x1FillPixel = x;
+						y1FillPixel = y;
+						BREAK_NESTED_LOOPS
+					}
+				}
+			}
+		}
+
+		searchedPixel = convertBarPercentgToLenght(fillPrctg, nbPixelsOutsideBorder);
+		increasingRadius = (float)radius;
+		pixelIndex = 0;
+		pixelFound = 0;
+
+		for(y = yAreaStart; y <= yAreaEnd + 100 && !pixelFound; y++) {
+			for(x = xAreaStart; x <= xAreaEnd; x++) {
+				increasingRadius += 1.0/300;
+				if(SQUARED((x - xCenter)) + SQUARED((y - yCenter)) <= SQUARED(increasingRadius) + (2)*epsilon
+					&& SQUARED((x - xCenter)) + SQUARED((y - yCenter)) >= SQUARED(increasingRadius) - (2)*epsilon) {
+					pixelIndex++;
+					if(searchedPixel == pixelIndex) {
+						x2FillPixel = x;
+						y2FillPixel = y;
+						BREAK_NESTED_LOOPS
+					}
+				}
+			}
+		}
+		MLV_draw_line(x1FillPixel, y1FillPixel, x2FillPixel, y2FillPixel, LINE_COLOR);
+		/* ADD FLOOD FILL HERE */
 	}
 
 	unsigned int windowWidth, windowHeight;
@@ -424,7 +476,7 @@ void displayHUD(Player player) {
 	/* Character status */
 	MLV_draw_filled_circle(xCircle, yCircle, circleRadius, LINE_COLOR);
 	/* Exp bar */
-	drawQuarterCircleBar(xCircle, yCircle, circleRadius + 10, 50, EXP_BAR_COLOR);
+	drawQuarterCircleBar(xCircle, yCircle, circleRadius + 5, 70, EXP_BAR_COLOR);
 	
 	MLV_actualise_window();
 }
