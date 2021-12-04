@@ -1,5 +1,15 @@
 #include "colors.h"
 
+int isSameRGBA(Uint8 color1[4], Uint8 color2[4]) {
+	int i;
+	for(i = 0; i < 3; i++) {
+		if(color1[i] != color2[i])
+			return 0;
+	}
+	return 1;
+}
+
+
 MLV_Color addOpacity(MLV_Color color, Uint8 alpha) {
 	Uint8 rgba[4];
 
@@ -22,4 +32,32 @@ MLV_Color avgOfColors(MLV_Color color1, MLV_Color color2) {
 		AVG(rgbaColor1[2], rgbaColor2[2]),
 		AVG(rgbaColor1[3], rgbaColor2[3])
 		);
+}
+
+
+/* CHECK LATER */
+void boundaryFill(int x, int y, MLV_Color fillColor, MLV_Color borderColor, int windowWidth, int windowHeight) {
+	int pixelRGBA[4];
+	Uint8 borderRGBA[4];
+	Uint8 fillRGBA[4];
+
+	MLV_convert_color_to_rgba(borderColor, &borderRGBA[0], &borderRGBA[1], &borderRGBA[2], &borderRGBA[3]);
+	MLV_convert_color_to_rgba(fillColor, &fillRGBA[0], &fillRGBA[1], &fillRGBA[2], &fillRGBA[3]);
+
+	MLV_get_pixel(x, y, &pixelRGBA[0], &pixelRGBA[1], &pixelRGBA[2], &pixelRGBA[3]);
+
+	/* checking the color of the (x, y) pixel */
+	if( !isSameRGBA((Uint8 *)pixelRGBA, borderRGBA)
+		&& x > 0 && x < windowWidth - 1
+		&& y > 0 && y < windowHeight - 1) {
+
+		MLV_draw_pixel(x, y, fillColor);
+		MLV_actualise_window();
+		MLV_wait_milliseconds( 50 );
+		/* recursive calls */
+		boundaryFill(x + 1, y, fillColor, borderColor, windowWidth, windowHeight);
+		boundaryFill(x, y + 1, fillColor, borderColor, windowWidth, windowHeight);
+		boundaryFill(x - 1, y, fillColor, borderColor, windowWidth, windowHeight);
+		boundaryFill(x, y - 1, fillColor, borderColor, windowWidth, windowHeight);
+	}
 }

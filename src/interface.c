@@ -351,11 +351,14 @@ void displayHUD(Player player) {
 
 		int fillLength = convertBarPercentgToLenght(fillPrctg, length);
 		MLV_draw_line(xStart + fillLength, yStart, xStart + fillLength + height/2, yStart + height, LINE_COLOR);
-		/* ADD FLOOD FILL HERE */
+		/* ADD boundary FILL HERE */
 	}
 
 	/* Draws a quarter circle bar of center (xCenter, yCenter) and radius radius filled at fillPrctg % */
 	void drawQuarterCircleBar(int xCenter, int yCenter, int radius, int fillPrctg, MLV_Color fillColor) {
+		unsigned int windowWidth, windowHeight;
+		MLV_get_window_size(&windowWidth, &windowHeight);
+
 		int x, y;
 
 		/* since we only want the bottom left quarter of the circle, we focus on the following area : */
@@ -384,7 +387,8 @@ void displayHUD(Player player) {
 			}
 		}
 
-		float increasingRadius = (float)radius;
+		float r0 = (float)radius;
+		float commonDifference =  1.0/250;
 
 		int x2LastPixel, y2LastPixel;
 		int x2FillPixel, y2FillPixel;
@@ -392,11 +396,11 @@ void displayHUD(Player player) {
 
 		/*outside border*/
 		for(y = yAreaStart; y <= yAreaEnd + 100; y++) {
-			for(x = xAreaStart; x <= xAreaEnd; x++) {
-				increasingRadius += 1.0/300;
+			for(x = xAreaStart - 10; x <= xAreaEnd; x++) {
+				r0 += commonDifference;
 				/* circle equation formula */
-				if(SQUARED((x - xCenter)) + SQUARED((y - yCenter)) <= SQUARED(increasingRadius) + (2)*epsilon
-					&& SQUARED((x - xCenter)) + SQUARED((y - yCenter)) >= SQUARED(increasingRadius) - (2)*epsilon) {
+				if(SQUARED((x - xCenter)) + SQUARED((y - yCenter)) <= SQUARED(r0) + epsilon
+					&& SQUARED((x - xCenter)) + SQUARED((y - yCenter)) >= SQUARED(r0) - epsilon) {
 					nbPixelsOutsideBorder++;
 					MLV_draw_pixel(x, y, LINE_COLOR);
 					x2LastPixel = x;
@@ -427,15 +431,15 @@ void displayHUD(Player player) {
 		}
 
 		searchedPixel = convertBarPercentgToLenght(fillPrctg, nbPixelsOutsideBorder);
-		increasingRadius = (float)radius;
+		r0 = (float)radius;
 		pixelIndex = 0;
 		pixelFound = 0;
 
 		for(y = yAreaStart; y <= yAreaEnd + 100 && !pixelFound; y++) {
-			for(x = xAreaStart; x <= xAreaEnd; x++) {
-				increasingRadius += 1.0/300;
-				if(SQUARED((x - xCenter)) + SQUARED((y - yCenter)) <= SQUARED(increasingRadius) + (2)*epsilon
-					&& SQUARED((x - xCenter)) + SQUARED((y - yCenter)) >= SQUARED(increasingRadius) - (2)*epsilon) {
+			for(x = xAreaStart - 10; x <= xAreaEnd; x++) {
+				r0 += commonDifference;
+				if(SQUARED((x - xCenter)) + SQUARED((y - yCenter)) <= SQUARED(r0) + epsilon
+					&& SQUARED((x - xCenter)) + SQUARED((y - yCenter)) >= SQUARED(r0) - epsilon) {
 					pixelIndex++;
 					if(searchedPixel == pixelIndex) {
 						x2FillPixel = x;
@@ -446,7 +450,7 @@ void displayHUD(Player player) {
 			}
 		}
 		MLV_draw_line(x1FillPixel, y1FillPixel, x2FillPixel, y2FillPixel, LINE_COLOR);
-		/* ADD FLOOD FILL HERE */
+		/*boundaryFill(x1FillPixel - 1, y1FillPixel, EXP_BAR_COLOR, LINE_COLOR, windowWidth, windowHeight);*/
 	}
 
 	unsigned int windowWidth, windowHeight;
@@ -476,7 +480,7 @@ void displayHUD(Player player) {
 	/* Character status */
 	MLV_draw_filled_circle(xCircle, yCircle, circleRadius, LINE_COLOR);
 	/* Exp bar */
-	drawQuarterCircleBar(xCircle, yCircle, circleRadius + 5, 70, EXP_BAR_COLOR);
+	drawQuarterCircleBar(xCircle, yCircle, circleRadius + 5, 20, EXP_BAR_COLOR);
 	
 	MLV_actualise_window();
 }

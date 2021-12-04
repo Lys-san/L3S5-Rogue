@@ -1,27 +1,67 @@
+/* Auteurs : Nicolas Mazeyrac, Lysandre Macke
+ * Creation : 30/11/2021
+ * Modification : 30/11/2021*/
+
+/*Bibliothèque générale*/
+#include <stdio.h>
+
+/*Bibliothèque interne*/
 #include "player.h"
 
-void initPlayerStats(Player *player) {
-	player->lvl = 1;
-	player->exp = 0;
+void initializeCritStat(Player *player){
 
-	player->strenght = FIRST_LVL_STATS; /*10*/
-	player->intellig = FIRST_LVL_STATS; /*10*/
-	player->defense  = FIRST_LVL_STATS; /*10*/
-
-	player->hp = MAX_HP; /*100*/
-	player->mp = MAX_MP; /*50*/
+    player->stat.base.CRIT.Modificater = STANDARD_BASE_CRIT_MODIFIER ; /*300%*/
+    player->stat.base.CRIT.Rate = STANDARD_BASE_CRIT_RATE;             /*5%*/
+    player->stat.base.CRIT.accuracy = STANDARD_BASE_ACCURACY;          /*20*/
 }
 
 
-void printPlayerStats(Player player) {
-	printf("****PLAYER STATS****\n");
-	printf("lvl      : %d\n", player.lvl);
-	printf("exp      : %d\n", player.exp);
+void initializeBaseStat(Player *player, char* name) {
+    
+    player->stat.base.name = name;
+    
+    /*Reminder : STANDARD_BASE_STAT = 10*/
+    player->stat.base.ATTACK = STANDARD_BASE_STAT;
+    player->stat.base.INTELLIGENCE = STANDARD_BASE_STAT;
+    player->stat.base.DEFENSE = STANDARD_BASE_STAT;
 
-	printf("strenght : %d\n", player.strenght);
-	printf("intellig : %d\n", player.intellig);
-	printf("strenght : %d\n", player.strenght);
+    initializeCritStat(player);
+}
 
-	printf("hp       : %d\n", player.hp);
-	printf("mp       : %d\n", player.mp);
+void initializeCurrentStat(Player *player) {
+    player->stat.current.Lvl = 1;
+    player->stat.current.Hp = STANDARD_MAX_HP;/*100*/
+    player->stat.current.Mp = STANDARD_MAX_MP;/*50*/
+    player->stat.current.Exp = 0;
+}
+
+void initializeStat(Player *player, char* name) {
+    initializeBaseStat(player, name);
+    initializeCurrentStat(player);
+}
+
+
+void initializeStandard(Player *player, char* name) {
+    initializeStat(player, name);
+}
+
+
+void quickPrintPlayer(Player player){
+    printf("****PLAYER STATS****\n");
+    printf("name          : %s\n", player.stat.base.name);
+
+    printf("lvl           : %d\n", player.stat.current.Lvl);
+    printf("exp           : %d\n", player.stat.current.Exp);
+    printf("expBar        : %d\n", 350 + 50*(player.stat.current.Lvl));
+
+    printf("strenght      : %d\n", player.stat.base.ATTACK);
+    printf("intellig      : %d\n", player.stat.base.INTELLIGENCE);
+    printf("def           : %d\n", player.stat.base.DEFENSE );
+
+    printf("hp            : %d\n", player.stat.current.Hp);
+    printf("mp            : %d\n", player.stat.current.Mp);
+
+    printf("CritModifiyer : %d%%\n", player.stat.base.CRIT.Modificater);
+    printf("CritRate      : %d%%\n", player.stat.base.CRIT.Rate);
+    printf("Accuracy      : %d%%\n", player.stat.base.CRIT.accuracy);
 }
