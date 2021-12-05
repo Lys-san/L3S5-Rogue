@@ -1,10 +1,10 @@
-/* Auteurs : Nicolas Mazeyrac, Lysandre Macke
+/* Autors : Nicolas Mazeyrac, Lysandre Macke
  * Creation : 27/11/2021
- * Modification : 30/11/2021*/
+ * Last modified : 05/12/2021*/
 
-/*Bibliothèque générale*/
-
-/*Bibliothèque interne*/
+/* General libraries */
+#include <stdlib.h>
+/* Internal libraries */
 #include "enemy.h"
 #include "treasure.h"
 
@@ -54,14 +54,28 @@
 		};
 	} Cell;
 
+	/* A stage is an array of cells */
+	typedef struct {
+		Cell cells[43][63];
+	} Stage;
+
 
 	/* Functions */
+	
+	/* Initialize a given cell with the following informations */
+	void initCell(Cell *cell, Point coords, CellType type);
 
 	/* Returns the distance between two points, based on the L1 norm fomula (aka Manhattan distance) */
-	int calcDistanceWithL1Norm(Point a, Point b);
+	int distanceWithL1Norm(Point a, Point b);
 
-	/* Returns 1 if a given cell is eligible compared to a given reference cell */
-	int isEligible(Cell cell, Cell referenceCell);
+	/* Returns 1 if a given cell is eligible and 0 otherwise */
+	int isEligible(Cell cell, Stage stage);
+
+	/* Returns a random cell from a given list. The returned cell is removed from the list. */
+	Cell drawRandomCellFromList(Cell cellList[], int *ListSize);
+
+	/* Returns a randomly generated stage */
+	Stage generateStage();
 
 	/* Returns the opposite direction of a given direction */
 	Direction oppositeDir(Direction dir);
