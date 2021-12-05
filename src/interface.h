@@ -20,7 +20,7 @@
 #define MAIN_SCREEN_BACKGROUND_COLOR MLV_COLOR_GHOSTWHITE
 #define POPUP_COLOR                  MLV_COLOR_MISTYROSE4
 
-#define LINE_COLOR                   MLV_COLOR_BROWN4
+#define LINE_COLOR                   MLV_COLOR_BLACK
 #define HP_BAR_COLOR                 MLV_COLOR_DEEP_PINK
 #define MP_BAR_COLOR                 MLV_COLOR_LIGHT_CYAN
 #define EXP_BAR_COLOR                MLV_COLOR_VIOLET_RED

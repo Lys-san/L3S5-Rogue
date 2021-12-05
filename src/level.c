@@ -1,5 +1,17 @@
 #include "level.h"
 
+int calcDistanceWithL1Norm(Point a, Point b) {
+	return ABS((a.x - b.x)) + ABS((a.y - b.y));
+}
+
+
+int isEligible(Cell cell, Cell referenceCell) {
+	return cell.type == WALL
+	&& calcDistanceWithL1Norm(cell.coords, referenceCell.coords) < 
+	/*return 1;*/
+}
+
+
 Direction oppositeDir(Direction dir) {
 	return (dir + 2) % 4;
 }

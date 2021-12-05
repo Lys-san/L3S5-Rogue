@@ -35,7 +35,7 @@ int main(int argc, char * argv[]) {
 	/* fin du test */
 
 
-	snowdrops( 500 );
+	/*snowdrops( 500 );*/
 	
 	int xMouse, yMouse;
 	while( !quit ) {

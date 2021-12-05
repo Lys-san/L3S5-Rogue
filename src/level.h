@@ -11,35 +11,41 @@
 #ifndef __LEVEL__
 #define __LEVEL__
 
- 	/*Define*/
+ 	/* Define */
 
 	#define LEVEL_WIDTH  63
 	#define LEVEL_HEIGHT 43
 
+	#define ABS(a) a > 0 ? (a) : (-a) /* absolute value*/
 
- 	/*Struct*/
+
+ 	/* Struct */
 
 	typedef enum {
-		W,            /*DIRECTIONS:*/
-		N,            /*     N     */
-		E,            /*   W + E   */
-		S,            /*     S     */
+		W,            /* DIRECTIONS: */
+		N,            /*      N      */
+		E,            /*    W + E    */
+		S,            /*      S      */
 	} Direction;
 
 	/* Type of a cell in a level */
 	typedef enum {
-		WALL_OR_OBSTACLE,
-		EMPTY,
+		WALL,
+		ROOM,
 		ENEMY,
 		TREASURE,
 		STAIR_UP,
 		STAIR_DOWN
 	} CellType;
 
-	/*Functions*/
+	typedef struct {
+		int x;
+		int y;
+	} Point;
 
 	/* Structure of a cell in a level */
 	typedef struct {
+		Point coords;
 		CellType type;
 		/* Can be either a monster either a trasure */
 		union {
@@ -47,6 +53,15 @@
 			Treasure treasure;
 		};
 	} Cell;
+
+
+	/* Functions */
+
+	/* Returns the distance between two points, based on the L1 norm fomula (aka Manhattan distance) */
+	int calcDistanceWithL1Norm(Point a, Point b);
+
+	/* Returns 1 if a given cell is eligible compared to a given reference cell */
+	int isEligible(Cell cell, Cell referenceCell);
 
 	/* Returns the opposite direction of a given direction */
 	Direction oppositeDir(Direction dir);

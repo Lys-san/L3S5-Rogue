@@ -9,15 +9,15 @@ void createGameWindow() {
 	/*MLV_create_full_screen_window_with_default_font(
 		"[insérer titre qu'a d'la gueule]",
 		"projet c L3S5",
-		windowWidth/2,
-		windowHeight/2,
+		windowWidth,
+		windowHeight,
 		"src/files/Mouser D.otf",
 		30
 	);*/
 
 	/*pour les tests c'est mieux d'avoir une petite fenêtre*/
 	MLV_create_window_with_default_font(
-		"[insérer titre qu'a d'la gueule]",
+		"TEST",
 		"projet c L3S5",
 		windowWidth/2,
 		windowHeight/2,
@@ -32,7 +32,7 @@ void blurBackground(MLV_Color color) {
 	unsigned int windowWidth, windowHeight;
 	MLV_get_window_size(&windowWidth, &windowHeight);
 
-	MLV_draw_filled_rectangle(0, 0, windowWidth, windowHeight,addOpacity(color, 100));
+	MLV_draw_filled_rectangle(0, 0, windowWidth, windowHeight,addOpacity(color, 150));
 }
 
 
@@ -316,9 +316,9 @@ void snowdrops(unsigned int frames) {
 
 void displayCellBasic(Cell cell) { /*TODO*/
 	switch(cell.type) {
-		case WALL_OR_OBSTACLE : 
+		case WALL : 
 			break;
-		case EMPTY : 
+		case ROOM : 
 			break;
 		case ENEMY : 
 			break;
@@ -351,7 +351,7 @@ void displayHUD(Player player) {
 
 		int fillLength = convertBarPercentgToLenght(fillPrctg, length);
 		MLV_draw_line(xStart + fillLength, yStart, xStart + fillLength + height/2, yStart + height, LINE_COLOR);
-		/* ADD boundary FILL HERE */
+		boundaryFill(xStart + fillLength - 1, yStart + 1, fillColor, LINE_COLOR);
 	}
 
 	/* Draws a quarter circle bar of center (xCenter, yCenter) and radius radius filled at fillPrctg % */
@@ -371,7 +371,7 @@ void displayHUD(Player player) {
 		int x1FillPixel, y1FillPixel;
 		int nbPixelsInsideBorder = 0;
 
-		unsigned int epsilon = 50;
+		unsigned int epsilon = windowWidth/20;
 
 		/* Drawing pixel by pixel of the inside border*/
 		for(y = yAreaStart; y <= yAreaEnd; y++) {
@@ -388,7 +388,7 @@ void displayHUD(Player player) {
 		}
 
 		float r0 = (float)radius;
-		float commonDifference =  1.0/250;
+		float commonDifference =  1.0/(windowHeight / 2);
 
 		int x2LastPixel, y2LastPixel;
 		int x2FillPixel, y2FillPixel;
@@ -396,11 +396,11 @@ void displayHUD(Player player) {
 
 		/*outside border*/
 		for(y = yAreaStart; y <= yAreaEnd + 100; y++) {
-			for(x = xAreaStart - 10; x <= xAreaEnd; x++) {
+			for(x = xAreaStart - xAreaStart/2; x <= xAreaEnd; x++) {
 				r0 += commonDifference;
 				/* circle equation formula */
-				if(SQUARED((x - xCenter)) + SQUARED((y - yCenter)) <= SQUARED(r0) + epsilon
-					&& SQUARED((x - xCenter)) + SQUARED((y - yCenter)) >= SQUARED(r0) - epsilon) {
+				if(SQUARED((x - xCenter)) + SQUARED((y - yCenter)) <= SQUARED(r0) + (1.1)*epsilon
+					&& SQUARED((x - xCenter)) + SQUARED((y - yCenter)) >= SQUARED(r0) - (1.1)*epsilon) {
 					nbPixelsOutsideBorder++;
 					MLV_draw_pixel(x, y, LINE_COLOR);
 					x2LastPixel = x;
@@ -412,45 +412,57 @@ void displayHUD(Player player) {
 		MLV_draw_line(x1LastPixel, y1LastPixel, x2LastPixel, y2LastPixel, LINE_COLOR);
 
 		/* fill */
-		int searchedPixel = convertBarPercentgToLenght(fillPrctg, nbPixelsInsideBorder);
-		int pixelIndex = 0;
-		int pixelFound = 0; /* flag to break out of the nested loops */
+		if(fillPrctg > 5 && fillPrctg < 100) {
+			int searchedPixel = convertBarPercentgToLenght(fillPrctg, nbPixelsInsideBorder);
+			int pixelIndex = 0;
+			int pixelFound = 0; /* flag to break out of the nested loops */
 
-		for(y = yAreaStart; y <= yAreaEnd && !pixelFound; y++) {
-			for(x = xAreaStart; x <= xAreaEnd; x++) {
-				if(SQUARED((x - xCenter)) + SQUARED((y - yCenter)) <= SQUARED(radius) + epsilon
-					&& SQUARED((x - xCenter)) + SQUARED((y - yCenter)) >= SQUARED(radius) - epsilon) {
-					pixelIndex++;
-					if(searchedPixel == pixelIndex) {
-						x1FillPixel = x;
-						y1FillPixel = y;
-						BREAK_NESTED_LOOPS
+			for(y = yAreaStart; y <= yAreaEnd && !pixelFound; y++) {
+				for(x = xAreaStart; x <= xAreaEnd; x++) {
+					if(SQUARED((x - xCenter)) + SQUARED((y - yCenter)) <= SQUARED(radius) + epsilon
+						&& SQUARED((x - xCenter)) + SQUARED((y - yCenter)) >= SQUARED(radius) - epsilon) {
+						if(searchedPixel == pixelIndex) {
+							x1FillPixel = x;
+							y1FillPixel = y;
+							printf("y : %d\n", y);
+							BREAK_NESTED_LOOPS
+						}
+						pixelIndex++;
+
 					}
 				}
 			}
-		}
+			printf("%d %d\n", x1FillPixel - 1, y1FillPixel + 1);
 
-		searchedPixel = convertBarPercentgToLenght(fillPrctg, nbPixelsOutsideBorder);
-		r0 = (float)radius;
-		pixelIndex = 0;
-		pixelFound = 0;
+			searchedPixel = convertBarPercentgToLenght(fillPrctg, nbPixelsOutsideBorder);
+			r0 = (float)radius;
+			pixelIndex = 0;
+			pixelFound = 0;
 
-		for(y = yAreaStart; y <= yAreaEnd + 100 && !pixelFound; y++) {
-			for(x = xAreaStart - 10; x <= xAreaEnd; x++) {
-				r0 += commonDifference;
-				if(SQUARED((x - xCenter)) + SQUARED((y - yCenter)) <= SQUARED(r0) + epsilon
-					&& SQUARED((x - xCenter)) + SQUARED((y - yCenter)) >= SQUARED(r0) - epsilon) {
-					pixelIndex++;
-					if(searchedPixel == pixelIndex) {
-						x2FillPixel = x;
-						y2FillPixel = y;
-						BREAK_NESTED_LOOPS
+			for(y = yAreaStart; y <= yAreaEnd + 100 && !pixelFound; y++) {
+				for(x = xAreaStart - 10; x <= xAreaEnd; x++) {
+					r0 += commonDifference;
+					if(SQUARED((x - xCenter)) + SQUARED((y - yCenter)) <= SQUARED(r0) + (1.1)*epsilon
+						&& SQUARED((x - xCenter)) + SQUARED((y - yCenter)) >= SQUARED(r0) - (1.1)*epsilon) {
+						if(searchedPixel == pixelIndex) {
+							x2FillPixel = x;
+							y2FillPixel = y;
+							BREAK_NESTED_LOOPS
+						}
+						pixelIndex++;
+
 					}
 				}
 			}
-		}
 		MLV_draw_line(x1FillPixel, y1FillPixel, x2FillPixel, y2FillPixel, LINE_COLOR);
-		/*boundaryFill(x1FillPixel - 1, y1FillPixel, EXP_BAR_COLOR, LINE_COLOR, windowWidth, windowHeight);*/
+		if(fillPrctg >= 15)
+			boundaryFill(x1FillPixel - 1, y1FillPixel + 1, fillColor, LINE_COLOR);
+		else
+			boundaryFill(x2FillPixel + 1, y2FillPixel - 2, fillColor, LINE_COLOR);
+		}
+		else if(fillPrctg == 100){
+			boundaryFill(x1LastPixel - 1, y1LastPixel + 1, fillColor, LINE_COLOR);
+		}
 	}
 
 	unsigned int windowWidth, windowHeight;
@@ -474,13 +486,20 @@ void displayHUD(Player player) {
 	int yMPBar        = yHPBar + HPBarHeight + separation;
 
 	/* HP Bar */
-	drawBar(xHPBar, yHPBar, HPBarLength, HPBarHeight, 50, HP_BAR_COLOR);
+	int HPBarPrctg = convertPointsToBarPercentg(player.stat.current.hp, standardMaxHP(player));
+	printf("HP : %d\n", HPBarPrctg);
+	drawBar(xHPBar, yHPBar, HPBarLength, HPBarHeight, HPBarPrctg, HP_BAR_COLOR);
 	/* MP Bar */
-	drawBar(xMPBar, yMPBar, MPBarLength, MPBarHeight, 80, MP_BAR_COLOR);
+	int MPBarPrctg = convertPointsToBarPercentg(player.stat.current.mp, standardMaxMP(player));
+	printf("MP : %d\n", MPBarPrctg);
+	drawBar(xMPBar, yMPBar, MPBarLength, MPBarHeight, MPBarPrctg, MP_BAR_COLOR);
 	/* Character status */
-	MLV_draw_filled_circle(xCircle, yCircle, circleRadius, LINE_COLOR);
+	MLV_draw_filled_circle(xCircle, yCircle, circleRadius, MLV_COLOR_GHOSTWHITE);
+	MLV_draw_circle(xCircle, yCircle, circleRadius, LINE_COLOR);
 	/* Exp bar */
-	drawQuarterCircleBar(xCircle, yCircle, circleRadius + 5, 20, EXP_BAR_COLOR);
+	int expBarPrctg = convertPointsToBarPercentg(player.stat.current.exp, standardExpToNextlevel(player));
+	printf("Exp : %d\n", expBarPrctg);
+	drawQuarterCircleBar(xCircle, yCircle, circleRadius + 5, expBarPrctg, EXP_BAR_COLOR);
 	
 	MLV_actualise_window();
 }
