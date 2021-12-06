@@ -1,3 +1,9 @@
 #include "enemy.h"
 
-/*TODO cf enemy.h*/
+Enemy generateEnemy(unsigned int stage) {
+	/* TODO */
+}
+
+int enemyIsDead(Enemy enemy) {
+	/* TODO */
+}

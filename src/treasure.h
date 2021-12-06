@@ -10,7 +10,7 @@
 #define __TREASURE__
 
     /*Define*/
-
+    #define MAX_RARITY            5
     #define MAX_LOOT_PER_TREASURE 5
 
 
