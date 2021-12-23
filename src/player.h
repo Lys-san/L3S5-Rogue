@@ -80,16 +80,16 @@
     /* Returns the total exp needed to go to next level */
     int standardExpToNextlevel(Player player);
 
-    /* ... */
+    /* Initialize standard base critical stat */
     void initializeCritStat(Player *player);
 
-    /* ... */
+    /* Initialize all standard base stat */
     void initializeBaseStat(Player *player, char* name);
 
-    /* ... */
+    /* Initialize all standard current stat  */
     void initializeCurrentStat(Player *player);
 
-    /* ... */
+    /* Initialize all standard stat  */
     void initializeStat(Player *player, char* name);
 
     /*Initialize a Player character with standard stats*/

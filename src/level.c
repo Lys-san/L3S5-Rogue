@@ -1,12 +1,12 @@
 #include "level.h"
 
-Cell initCell(unsigned int stageLevel, Point coords, CellType type, enum contains obj) {
+Cell initCell(unsigned int stageLevel, Point coords, CellType type, enum contains obj, unsigned int manhattan) {
 	Cell cell;
 	cell.coords = coords;
 	cell.type = type;
 	switch(obj) {
 		case CONTAINS_ENEMY :
-			cell.enemy = generateEnemy(stageLevel);
+			cell.enemy = generateEnemy(stageLevel, manhattan);
 		case CONTAINS_TREASURE :
 			cell.treasure = generateTreasure(stageLevel, rand() % MAX_RARITY);
 		default :
@@ -63,7 +63,7 @@ int isEligible(Cell cell, Stage stage) {
 }
 
 
-int isInArray(Cell cell, Cell cellList[], int listSize) {
+int isInArray(Cell cell, Cell cellList[], unsigned int listSize) {
 	int i;
 	for(i = 0; i < listSize; i++) {
 		if(cellList[i].coords.x == cell.coords.x
@@ -74,7 +74,7 @@ int isInArray(Cell cell, Cell cellList[], int listSize) {
 }
 
 
-Cell drawRandomCellFromList(Cell cellList[], int *listSize) {
+Cell drawRandomCellFromList(Cell cellList[], unsigned int *listSize) {
 	/* Do not forget to initialize the random function with a proper seed in main */
 	int randInt = rand() % (*listSize);
 	int i;
@@ -96,7 +96,7 @@ Stage initStageWithWallCells() {
 	int i, j;
 	for(j = 0; j < LEVEL_HEIGHT; j++) {
 		for(i = 0; i < LEVEL_WIDTH; i++)
-			stage.cells[i][j] = initCell(0, (Point){i, j}, WALL, CONTAINS_NOTHING);
+			stage.cells[i][j] = initCell(0, (Point){i, j}, WALL, CONTAINS_NOTHING, 0);
 	}
 	return stage;
 }
@@ -120,7 +120,7 @@ Stage generateStage(unsigned int stageLevel) {
 	stage = initStageWithWallCells();
 
 	/* initializing the stair-up */
-	stage.cells[stageCenter.y][stageCenter.x] = initCell(stageLevel, stageCenter, STAIR_UP, CONTAINS_NOTHING);
+	stage.cells[stageCenter.y][stageCenter.x] = initCell(stageLevel, stageCenter, STAIR_UP, CONTAINS_NOTHING, 0);
 
 	/* initializing the adjacent cells list */
 	for(j = stageCenter.y - 1; j <= stageCenter.y + 1; j += 2) {

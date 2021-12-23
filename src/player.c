@@ -24,9 +24,9 @@ int standardExpToNextlevel(Player player) {
 
 
 void initializeCritStat(Player *player) {
-    player->stat.base.CRIT.modificater = STANDARD_BASE_CRIT_MODIFIER ; /*300%*/
-    player->stat.base.CRIT.rate = STANDARD_BASE_CRIT_RATE;             /*5%*/
-    player->stat.base.CRIT.accuracy = STANDARD_BASE_ACCURACY;          /*20*/
+    player->stat.base.CRIT.modificater = STANDARD_BASE_CRIT_MODIFIER ; /* 300% */
+    player->stat.base.CRIT.rate = STANDARD_BASE_CRIT_RATE;             /* 5% */
+    player->stat.base.CRIT.accuracy = STANDARD_BASE_ACCURACY;          /*  +/-20%  */
 }
 
 

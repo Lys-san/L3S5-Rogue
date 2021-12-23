@@ -68,7 +68,7 @@
 	/* Functions */
 	
 	/* Returns a cell initialized with the following informations */
-	Cell initCell(unsigned int stageLevel, Point coords, CellType type, enum contains obj);
+	Cell initCell(unsigned int stageLevel, Point coords, CellType type, enum contains obj, unsigned int manhattan);
 
 	/* Returns the distance between two points, based on the L1 norm fomula (aka Manhattan distance) */
 	int distanceWithL1Norm(Point a, Point b);
