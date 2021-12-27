@@ -3,6 +3,7 @@
  * Modification : 30/11/2021*/
 
 /* General libraries */
+#include <stdlib.h>
 
 /* Internal libraries */
 #include "player.h"
@@ -31,6 +32,6 @@
     /* Returns 1 if the given enemy is dead and 0 otherwise. */
     int enemyIsDead(Enemy enemy);
 
-    /*Debug*/
+    /* Debug */
     void quickPrintEnemy(Enemy enemy);
 #endif
