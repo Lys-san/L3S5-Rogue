@@ -17,7 +17,7 @@
 	#define LEVEL_HEIGHT 43
 
 	#define SCREEN_WIDTH  13
-	#define SCREEN_HEIGHT 9
+	#define SCREEN_HEIGHT  9
 
 	#define ABS(a) a > 0 ? (a) : (-a) /* absolute value*/
 
