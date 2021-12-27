@@ -185,3 +185,22 @@ void dirToShiftValues(Direction dir, int *xShift, int *yShift) {
 		*yShift = 0;
 	}
 }
+
+int isAdjacent(Point a, Point b){
+    if( a.x == b.x-1 || a.x == b.x || a.x == b.x+1 ){/*x are adjacent*/
+        if(a.y == b.y-1 || a.y == b.y || a.y == b.y+1 ){/*y are adjacent*/
+            return 1;
+        }
+    }
+    return 0;
+}
+
+int isInScreen(Point a, Point b){
+	/*the screen is 13/9*/
+    if( a.x >= b.x-SCREEN_WIDTH && a.x <= b.x+SCREEN_WIDTH ){/*x are in the same screen*/
+        if(a.y >= b.y-SCREEN_HEIGHT && a.x <= b.x+SCREEN_HEIGHT ){/*y are in the same screen*/
+            return 1;
+        }
+    }
+    return 0;
+}

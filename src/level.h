@@ -16,6 +16,9 @@
 	#define LEVEL_WIDTH  63
 	#define LEVEL_HEIGHT 43
 
+	#define SCREEN_WIDTH  13
+	#define SCREEN_HEIGHT 9
+
 	#define ABS(a) a > 0 ? (a) : (-a) /* absolute value*/
 
 
@@ -94,4 +97,11 @@
 
 	/* Stores the (x, y) shift values (-1, 0 or 1) in the given variables */
 	void dirToShiftValues(Direction dir, int *xShift, int *yShift);
+
+	/* Return 1 if the points are adjacent to each other and 0 if they aren't */
+    int isAdjacent(Point a, Point b);
+
+	/* Return 1 if the points are in the same screen and 0 if they aren't */
+    int isInScreen(Point a, Point b);
+
 #endif
