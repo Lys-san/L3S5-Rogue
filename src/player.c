@@ -59,6 +59,13 @@ void initializeStandard(Player *player, char* name) {
     initializeStat(player, name);
 }
 
+int playerIsDead(Player player){
+    if(player.stat.current.hp <= 0){
+        return 1;
+    }
+    return 0;
+}
+
 
 void quickPrintPlayer(Player player){
     printf("****PLAYER STATS****\n");

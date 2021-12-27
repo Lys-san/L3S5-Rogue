@@ -16,7 +16,7 @@
 
     /*Base stat at lvl one for a Standard player*/
     #define STANDARD_BASE_STAT          10
-    #define STANDARD_BASE_CRIT_MODIFIER 300 /*percentage*/
+    #define STANDARD_BASE_CRIT_MODIFIER 3   /*percentage*/
     #define STANDARD_BASE_CRIT_RATE     5   /*percentage*/
     #define STANDARD_BASE_ACCURACY      20  /*percentage*/
 
@@ -92,10 +92,13 @@
     /* Initialize all standard stat  */
     void initializeStat(Player *player, char* name);
 
-    /*Initialize a Player character with standard stats*/
+    /* Initialize a Player character with standard stats */
     void initializeStandard(Player *player, char *name);
 
-    /*Debug*/
+    /* Returns 1 if the player is dead and 0 otherwise. */
+    int playerIsDead(Player player);
+
+    /* Debug */
     void quickPrintPlayer(Player player);
 
 #endif
