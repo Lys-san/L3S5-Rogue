@@ -5,11 +5,11 @@
 #include "turn.h"
 
 
-int enemyTurn(Enemy monster, Player* player, Point* coordEnemy, Point coordPlayer/*, Stage level*/){
+int enemyTurn(Enemy monster, Player* player, Point* coordEnemy, Point coordPlayer, Stage level){
     
     /* If the hero is adjacent */
     if(isAdjacent(*coordEnemy, coordPlayer)){
-        enemyAttak(monster, player);/* perform an attack */
+        enemyAttack(monster, player);/* perform an attack */
         if(playerIsDead(*player)){
             return 1;
         }
@@ -17,7 +17,7 @@ int enemyTurn(Enemy monster, Player* player, Point* coordEnemy, Point coordPlaye
 
     /* If the hero is in the same screen */
     if(isInScreen(*coordEnemy, coordPlayer)){
-        enemyMove(/*level,*/ coordEnemy, coordPlayer);/*Move to the player*/
+        enemyMove(level, coordEnemy, coordPlayer);/*Move to the player*/
     }
     return 0;
 }

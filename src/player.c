@@ -54,9 +54,15 @@ void initializeStat(Player *player, char* name) {
     initializeCurrentStat(player);
 }
 
+void addBasicSpell(Spell spell){
+    spell.cost = 20; /* The spell cost 20 MP */
+    spell.power = 2; /* Spell cast = 2*Int */
+}
+
 
 void initializeStandard(Player *player, char* name) {
     initializeStat(player, name);
+    addBasicSpell(player->spell);
 }
 
 int playerIsDead(Player player){

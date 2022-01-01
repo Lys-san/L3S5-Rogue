@@ -19,7 +19,7 @@
     typedef struct {
         char* name;/*Name of the monster*/
         unsigned int attack;/* Used to calculate the power of a melee attack */
-        unsigned int hp;/*Max hp*/
+        unsigned int hp;/*hp*/
         Critical crit;/* Information about critical attack */
     } Enemy;
 

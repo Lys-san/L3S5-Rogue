@@ -27,6 +27,11 @@ unsigned int attackPhysical(unsigned int attack, Critical crit){
     return (unsigned int)(((attack * accuracy)/100)*critical);/*dmg for the physical attack*/
 }
 
+unsigned int attackMagical(unsigned int intelligence, Spell spell){
+    return spell.power * intelligence;
+}
+
+
 unsigned int calculateAccuracy(Critical crit){
     unsigned int bonus;
     unsigned int chance;
@@ -48,12 +53,6 @@ unsigned int calculateAccuracy(Critical crit){
     return accuracy;
 }
 
-void enemyAttak(Enemy monster, Player* player){
-    unsigned int damage;
-    damage = attackPhysical(monster.attack, monster.crit);
-    player->stat.current.hp -= damage;
-}
-
 /* Move */
 
 Point Move(Point coordInit, Direction dir){
@@ -66,6 +65,15 @@ Point Move(Point coordInit, Direction dir){
     newCoord.y = coordInit.y + y;
     return newCoord;
 }
+
+/* Enemy */
+
+void enemyAttack(Enemy monster, Player* player){
+    unsigned int damage;
+    damage = attackPhysical(monster.attack, monster.crit);
+    player->stat.current.hp -= damage;
+}
+
 
 void enemyMove(/*Stage level,*/ Point* coordEnemy, Point coordPlayer){
     
@@ -94,8 +102,76 @@ void enemyMove(/*Stage level,*/ Point* coordEnemy, Point coordPlayer){
         }
     }
 
-    /*if( ( level.cells[newCoord.y][newCoord.x].type == ROOM ) && ( coordEnemy != coordPlayer ) ){*/
+    if( ( level.cells[newCoord.y][newCoord.x].type == ROOM ) && ( coordEnemy.x != coordPlayer.x &&  coordEnemy.y != coordPlayer.y ) ){
         coordEnemy->x = newCoord.x;
         coordEnemy->y = newCoord.y;
-    /*}*/
+    }
+}
+
+
+/* Player */
+
+void playerPhysicalAttack(Player player, Enemy* monster){
+    
+    unsigned int damage;
+
+    /* do the damage */
+    damage = attackPhysical(player.stat.base.ATTACK, player.stat.base.CRIT);
+    monster->hp -= damage;
+
+}
+
+int playerMagicalAttack(Player* player, Enemy* monster){
+    
+    unsigned int damage;
+
+    /* Check the mp */
+    if(player->spell.cost > player->stat.current.mp){
+        return 0;
+    }
+    player->stat.current.mp -= player->spell.cost;
+
+    /* do the damage */
+    damage = attackMagical(player->stat.base.INTELLIGENCE, player->spell);
+    monster->hp -= damage;
+    return 1;
+}
+
+int playerMove(Stage level, Point* coordPlayer, Direction dir){
+    
+    Point newCoord;
+    CellType type;
+
+    /* Calculate the new coord */
+    newCoord = Move(*coordPlayer,dir);
+    type = level.cells[newCoord.y][newCoord.x].type;
+
+    /* Special Action based on the next tile*/
+    switch(type){
+
+        case WALL:
+            return 1;/* The player doesn't move */
+        break;
+
+        case ENEMY:
+            return 2;/* The player will perform a physical attack */
+        break;
+
+        case TREASURE:
+            return 3;/* The player will open a Treasure */
+        break;
+
+        case STAIR_DOWN:
+            coordPlayer->x = newCoord.x;
+            coordPlayer->y = newCoord.y;
+            return 4;/* The player will descend to the next level */
+        break;
+
+        default:/*Doesn't do anything*/;
+    }
+
+    /*the player moved*/
+    coordPlayer->x = newCoord.x;
+    coordPlayer->y = newCoord.y;
+    return 0;
 }
