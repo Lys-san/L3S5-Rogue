@@ -26,13 +26,6 @@
 		CONTAINS_TREASURE
 	};
 
-	typedef enum {
-		W,            /* DIRECTIONS: */
-		N,            /*      N      */
-		E,            /*    W + E    */
-		S,            /*      S      */
-	} Direction;
-
 	/* Type of a cell in a level */
 	typedef enum {
 		WALL,
@@ -89,9 +82,4 @@
 	/* Returns a randomly generated stage based on a certain level */
 	Stage generateStage(unsigned int stageLevel);
 
-	/* Returns the opposite direction of a given direction */
-	Direction oppositeDir(Direction dir);
-
-	/* Stores the (x, y) shift values (-1, 0 or 1) in the given variables */
-	void dirToShiftValues(Direction dir, int *xShift, int *yShift);
 #endif

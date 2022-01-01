@@ -63,7 +63,7 @@ int isEligible(Cell cell, Stage stage) {
 }
 
 
-int isInArray(Cell cell, Cell cellList[], int listSize) {
+int isInArray(Cell cell, Cell cellList[], unsigned int listSize) {
 	int i;
 	for(i = 0; i < listSize; i++) {
 		if(cellList[i].coords.x == cell.coords.x
@@ -74,7 +74,7 @@ int isInArray(Cell cell, Cell cellList[], int listSize) {
 }
 
 
-Cell drawRandomCellFromList(Cell cellList[], int *listSize) {
+Cell drawRandomCellFromList(Cell cellList[], unsigned int *listSize) {
 	/* Do not forget to initialize the random function with a proper seed in main */
 	int randInt = rand() % (*listSize);
 	int i;
@@ -152,7 +152,7 @@ Stage generateStage(unsigned int stageLevel) {
 	/* converting ROOM cells who are surrounded by 3 WALL cells to WALL cells */
 	for(j = 0; j < LEVEL_HEIGHT; j++) {
 		for(i = 0; i < LEVEL_WIDTH; i++) {
-			if(stage.cells[i][j].type = ROOM) {
+			if(stage.cells[i][j].type == ROOM) {
 				nbOfSurroundingWallCells = 0;
 				/* checking the surrounding cells */
 				for(jj = stage.cells[i][j].coords.y - 1; jj <= stage.cells[i][j].coords.y + 1; jj += 2) {
@@ -167,21 +167,4 @@ Stage generateStage(unsigned int stageLevel) {
 		}
 	}
 	return stage;
-}
-
-
-Direction oppositeDir(Direction dir) {
-	return (dir + 2) % 4;
-}
-
-
-void dirToShiftValues(Direction dir, int *xShift, int *yShift) {
-	if(dir % 2) { /* if dir is 1 (N) or 3 (S)*/
-		*xShift = 0;
-		*yShift = dir - 2;
-	}
-	else {        /* if dir is 0 (W) or 2 (E)*/
-		*xShift = dir - 1;
-		*yShift = 0;
-	}
 }
