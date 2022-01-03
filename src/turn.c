@@ -1,7 +1,3 @@
-/* Auteurs : Nicolas Mazeyrac, Lysandre Macke
- * Creation : 26/12/2021
- * Modification : 27/12/2021*/
-
 #include "turn.h"
 
 

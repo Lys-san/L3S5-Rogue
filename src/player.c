@@ -1,7 +1,3 @@
-/* Auteurs : Nicolas Mazeyrac, Lysandre Macke
- * Creation : 30/11/2021
- * Modification : 30/11/2021*/
-
 /*Bibliothèque générale*/
 #include <stdio.h>
 
@@ -75,6 +71,7 @@ int gainLvl(Player *player){
 
     nextLvlExp = standardExpToNextlevel(*player);
     
+    /*If the player hasn't have enough exp*/
     if( player->stat.current.exp < nextLvlExp){
         return 0;
     }

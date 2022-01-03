@@ -9,9 +9,11 @@ Enemy generateEnemy(unsigned int stage, unsigned int distance) {
     monster.name = "Monster";
 
     stat = 10*stage + distance;
-    monster.attack = stat;
-    monster.hp = stat;
-    monster.exp = stat/2;
+    
+    monster.attack = stat;/*Stat*/
+    monster.hp = stat;/*Stat*/
+
+    monster.exp = stat/2;/*the number of exp given after death*/
 
     monster.crit.modificater = 3 ;   /* 300% */
     monster.crit.rate = 5;           /* 5% */

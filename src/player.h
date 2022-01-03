@@ -1,6 +1,6 @@
 /* Auteurs : Nicolas Mazeyrac, Lysandre Macke
  * Creation : 30/11/2021
- * Modification : 30/11/2021*/
+ * Modification : 03/01/2022*/
 
 /*Bibliothèque générale*/
 
@@ -98,8 +98,10 @@
     /* Debug */
     void quickPrintPlayer(Player player);
 
+    /*Gain exp to the player*/
     void gainExp(Player *player, unsigned int exp);
 
+    /*Gain a lvl if the current exp is higher than the exp needed to pass the next lvl*/
     int gainLvl(Player *player);
 
 #endif

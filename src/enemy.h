@@ -1,6 +1,6 @@
 /* Autors : Nicolas Mazeyrac, Lysandre Macke
  * Creation : 27/11/2021
- * Modification : 30/11/2021*/
+ * Modification : 03/01/2022*/
 
 /* General libraries */
 #include <stdlib.h>
