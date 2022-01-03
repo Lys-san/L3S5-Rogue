@@ -4,6 +4,7 @@
 
 /* General libraries */
 #include <stdlib.h>
+#include <stdio.h>
 /* Internal libraries */
 #include "enemy.h"
 #include "treasure.h"
@@ -14,13 +15,15 @@
 
  	/* Define */
 
-	#define LEVEL_WIDTH  63
-	#define LEVEL_HEIGHT 43
+	/*#define LEVEL_WIDTH  63
+	#define LEVEL_HEIGHT 43*/
+	#define LEVEL_WIDTH  10
+	#define LEVEL_HEIGHT 6
 
 	#define SCREEN_WIDTH  13
 	#define SCREEN_HEIGHT  9
 
-	#define ABS(a) a > 0 ? (a) : (-a) /* absolute value*/
+	#define ABS(a) ((a) > 0 ? (a) : -(a)) /* absolute value*/
 
 
  	/* Struct */
@@ -58,14 +61,14 @@
 
 	/* A stage is an array of cells */
 	typedef struct {
-		Cell cells[LEVEL_HEIGHT][LEVEL_WIDTH]; /* array of [cols][lines] (when called use this way : .cells[y][x]) */
+		Cell cells[LEVEL_HEIGHT][LEVEL_WIDTH]; /* array of [lines][cells] (when called use this way : .cells[y][x]) */
 	} Stage;
 
 
 	/* Functions */
 	
 	/* Returns a cell initialized with the following informations */
-	Cell initCell(unsigned int stageLevel, Point coords, CellType type, enum contains obj, unsigned int manhattan);
+	Cell initCell(unsigned int stageLevel, Point coords, CellType type, enum contains obj, unsigned int dist);
 
 	/* Returns the distance between two points, based on the L1 norm fomula (aka Manhattan distance) */
 	int distanceWithL1Norm(Point a, Point b);
@@ -76,6 +79,9 @@
 	/* Returns 1 if a given cell is found in a given array and 0 otherwise.
 	 * In this function a cell is equal to another if they have the same coords (x, y). */
 	int isInArray(Cell cell, Cell cellList[], unsigned int listSize);
+
+	/* Return 1 if the specified cell is at the edge of the stage. */
+	int isAtTheEdge(Cell cell);
 
 	/* Returns a random cell from a given list. The returned cell is removed from the list. */
 	Cell drawRandomCellFromList(Cell cellList[], unsigned int *listSize);
@@ -97,5 +103,8 @@
 
 	/* Return 1 if the points are in the same screen and 0 if they aren't */
     int isInScreen(Point a, Point b);
+
+    /* Shell display of the specified stage (to use for debug) */
+    void quickPrintStage(Stage stage);
 
 #endif

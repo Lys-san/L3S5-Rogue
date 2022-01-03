@@ -3,11 +3,19 @@
 #undef main /*( 'o_o)*/
 
 int main(int argc, char * argv[]) {
+	/* random seed */
+	srand(time(NULL));
+
 	Player player;
 	char playerName[] = "Ruby"; /* random init for testing */
 
 	initializeStandard(&player, playerName);
-	quickPrintPlayer(player);
+	/*quickPrintPlayer(player);*/
+
+	Stage stage = generateStage(1);
+	quickPrintStage(stage);
+
+
 
 	createGameWindow();
 
@@ -35,7 +43,7 @@ int main(int argc, char * argv[]) {
 	/* fin du test */
 
 
-	/*snowdrops( 500 );*/
+	/* snowdrops( 500 ); */
 	
 	int xMouse, yMouse;
 	while( !quit ) {
