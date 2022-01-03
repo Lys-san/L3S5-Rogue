@@ -102,10 +102,10 @@ void enemyMove(/*Stage level,*/ Point* coordEnemy, Point coordPlayer){
         }
     }
 
-    if( ( level.cells[newCoord.y][newCoord.x].type == ROOM ) && ( coordEnemy.x != coordPlayer.x &&  coordEnemy.y != coordPlayer.y ) ){
+    /*if( ( level.cells[newCoord.y][newCoord.x].type == ROOM ) && ( coordEnemy.x != coordPlayer.x &&  coordEnemy.y != coordPlayer.y ) ){*/
         coordEnemy->x = newCoord.x;
         coordEnemy->y = newCoord.y;
-    }
+    /*}*/
 }
 
 
@@ -137,38 +137,38 @@ int playerMagicalAttack(Player* player, Enemy* monster){
     return 1;
 }
 
-int playerMove(Stage level, Point* coordPlayer, Direction dir){
+int playerMove(/*Stage level,*/ Point* coordPlayer, Direction dir){
     
     Point newCoord;
-    CellType type;
+    /*CellType type;*/
 
     /* Calculate the new coord */
     newCoord = Move(*coordPlayer,dir);
-    type = level.cells[newCoord.y][newCoord.x].type;
+    /*type = level.cells[newCoord.y][newCoord.x].type;*/
 
     /* Special Action based on the next tile*/
-    switch(type){
+    /*switch(type){
 
         case WALL:
-            return 1;/* The player doesn't move */
+            return 1;*//* The player doesn't move *//*
         break;
 
         case ENEMY:
-            return 2;/* The player will perform a physical attack */
+            return 2;*//* The player will perform a physical attack *//*
         break;
 
         case TREASURE:
-            return 3;/* The player will open a Treasure */
+            return 3;*//* The player will open a Treasure *//*
         break;
 
         case STAIR_DOWN:
             coordPlayer->x = newCoord.x;
             coordPlayer->y = newCoord.y;
-            return 4;/* The player will descend to the next level */
+            return 4;*//* The player will descend to the next level *//*
         break;
 
-        default:/*Doesn't do anything*/;
-    }
+        default:*//*Doesn't do anything*//*;
+    }*/
 
     /*the player moved*/
     coordPlayer->x = newCoord.x;
