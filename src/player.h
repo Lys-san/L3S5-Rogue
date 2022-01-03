@@ -95,10 +95,11 @@
     /* Initialize a Player character with standard stats */
     void initializeStandard(Player *player, char *name);
 
-    /* Returns 1 if the player is dead and 0 otherwise. */
-    int playerIsDead(Player player);
-
     /* Debug */
     void quickPrintPlayer(Player player);
+
+    void gainExp(Player *player, unsigned int exp);
+
+    int gainLvl(Player *player);
 
 #endif

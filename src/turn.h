@@ -16,4 +16,6 @@
     /* Perform the turn of the monster, attack first then move */
     int enemyTurn(Enemy monster, Player* player, Point* coordEnemy, Point coordPlayer/*, Stage level*/);
 
+    int isDead(unsigned int hp);
+
 #endif

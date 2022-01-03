@@ -54,24 +54,35 @@ void initializeStat(Player *player, char* name) {
     initializeCurrentStat(player);
 }
 
-void addBasicSpell(Spell spell){
-    spell.cost = 20; /* The spell cost 20 MP */
-    spell.power = 2; /* Spell cast = 2*Int */
+void addBasicSpell(Spell *spell){
+    spell->cost = 20; /* The spell cost 20 MP */
+    spell->power = 2; /* Spell cast = 2*Int */
 }
 
 
 void initializeStandard(Player *player, char* name) {
     initializeStat(player, name);
-    addBasicSpell(player->spell);
+    addBasicSpell(&player->spell);
 }
 
-int playerIsDead(Player player){
-    if(player.stat.current.hp <= 0){
-        return 1;
+void gainExp(Player *player, unsigned int exp){
+    player->stat.current.exp += exp;
+}
+
+int gainLvl(Player *player){
+    
+    int nextLvlExp;
+
+    nextLvlExp = standardExpToNextlevel(*player);
+    
+    if( player->stat.current.exp < nextLvlExp){
+        return 0;
     }
-    return 0;
-}
 
+    player->stat.current.exp -= nextLvlExp;
+    player->stat.current.lvl += 1;
+    return 1;
+}
 
 void quickPrintPlayer(Player player){
     printf("****PLAYER STATS****\n");

@@ -5,6 +5,7 @@
 /*Bibliothèque générale*/
 #include <time.h>
 #include <stdlib.h>
+#include <stdio.h>
 
 /*Bibliothèque interne*/
 #include "level.h"
