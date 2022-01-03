@@ -1,10 +1,11 @@
 /* Auteurs : Nicolas Mazeyrac, Lysandre Macke
  * Creation : 26/12/2021
- * Modification : 26/12/2021*/
+ * Modification : 03/01/2022*/
 
 /*Bibliothèque générale*/
 #include <time.h>
 #include <stdlib.h>
+#include <stdio.h>
 
 /*Bibliothèque interne*/
 #include "level.h"

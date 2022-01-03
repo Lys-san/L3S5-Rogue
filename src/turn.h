@@ -1,6 +1,6 @@
 /* Auteurs : Nicolas Mazeyrac, Lysandre Macke
  * Creation : 26/12/2021
- * Modification : 27/12/2021*/
+ * Modification : 03/01/2022*/
 
 /*Bibliothèque générale*/
 #include <stdio.h>
@@ -15,5 +15,8 @@
 
     /* Perform the turn of the monster, attack first then move */
     int enemyTurn(Enemy monster, Player* player, Point* coordEnemy, Point coordPlayer/*, Stage level*/);
+
+    /*Check if the hp is negative*/
+    int isDead(unsigned int hp);
 
 #endif

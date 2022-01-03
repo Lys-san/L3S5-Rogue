@@ -1,6 +1,6 @@
 /* Auteurs : Nicolas Mazeyrac, Lysandre Macke
  * Creation : 30/11/2021
- * Modification : 30/11/2021*/
+ * Modification : 03/01/2022*/
 
 /*Bibliothèque générale*/
 
@@ -95,10 +95,13 @@
     /* Initialize a Player character with standard stats */
     void initializeStandard(Player *player, char *name);
 
-    /* Returns 1 if the player is dead and 0 otherwise. */
-    int playerIsDead(Player player);
-
     /* Debug */
     void quickPrintPlayer(Player player);
+
+    /*Gain exp to the player*/
+    void gainExp(Player *player, unsigned int exp);
+
+    /*Gain a lvl if the current exp is higher than the exp needed to pass the next lvl*/
+    int gainLvl(Player *player);
 
 #endif
