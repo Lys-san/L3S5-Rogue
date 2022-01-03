@@ -12,7 +12,7 @@ Enemy generateEnemy(unsigned int stage, unsigned int manhattan) {
     monster.attack = stat;
     monster.hp = stat;
 
-    monster.crit.modificater = 3 ; /* 300% */
+    monster.crit.modificater = 3 ;   /* 300% */
     monster.crit.rate = 5;           /* 5% */
     monster.crit.accuracy = 20 ;    /* +/-20% */
 
