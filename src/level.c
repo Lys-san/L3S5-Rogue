@@ -146,7 +146,6 @@ Stage generateStage(unsigned int stageLevel) {
 			currentCell = drawRandomCellFromList(cellsToExpand, &nbOfCells);
 		}
 
-		/*currentCell.type = ROOM;*/
 		stage.cells[currentCell.coords.y][currentCell.coords.x].type = ROOM;
 
 		/* searching for new eligible cells around the current cell if the current cell isn't at the edge */
@@ -271,7 +270,7 @@ void quickPrintStage(Stage stage) {
 					printf("#");
 					break;
 				case ROOM:
-					printf(" ");
+					printf(".");
 					break;
 				case ENEMY:
 					printf("!");
