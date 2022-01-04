@@ -22,6 +22,9 @@
 	#define SCREEN_WIDTH  13
 	#define SCREEN_HEIGHT  9
 
+	#define TEST_LEVEL_WIDTH  9
+	#define TEST_LEVEL_HEIGHT 5
+
 	#define ABS(a) ((a) > 0 ? (a) : -(a)) /* absolute value*/
 
 
@@ -106,5 +109,8 @@
 
     /* Shell display of the specified stage (to use for debug) */
     void quickPrintStage(Stage stage);
+
+    /*Generate a set stage to debug*/
+    Stage generateStageTest( void );
 
 #endif

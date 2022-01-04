@@ -290,3 +290,38 @@ void quickPrintStage(Stage stage) {
 		printf("\n");
 	}
 }
+
+/*
+
+#########
+#^     v#
+#P  T  !#
+#       #
+#########
+
+*/
+
+Stage generateStageTest( void ){
+	
+	Stage stage;
+	int i, j;
+
+	/* The empty spaces */
+	for(i = 1; i < TEST_LEVEL_HEIGHT; i++) {
+		for(j = 1; j < TEST_LEVEL_WIDTH-1; j++  ){
+			stage.cells[i][j] = initCell(0, (Point){j, i}, ROOM, CONTAINS_NOTHING, 0);
+		}
+	}
+
+	/*stairs*/
+	stage.cells[1][1] = initCell(0, (Point){1, 1}, STAIR_UP, CONTAINS_NOTHING, 0);
+	stage.cells[1][TEST_LEVEL_WIDTH-2] = initCell(0, (Point){1, TEST_LEVEL_WIDTH-2}, STAIR_DOWN, CONTAINS_NOTHING, 0);
+
+	/*treasure*/
+	stage.cells[2][4] = initCell(0, (Point){2, 4}, STAIR_UP, CONTAINS_NOTHING, 0);
+
+	/* Enemy */
+	stage.cells[2][TEST_LEVEL_WIDTH-2] = initCell(0, (Point){2, TEST_LEVEL_WIDTH-2}, ENEMY, CONTAINS_NOTHING, 0);
+
+	return stage;
+}
