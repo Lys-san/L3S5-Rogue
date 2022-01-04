@@ -12,7 +12,9 @@ OBJECTS = \
 	src/level.o \
 	src/enemy.o \
 	src/treasure.o \
-	src/player.o
+	src/player.o \
+	src/action.o \
+	src/turn.o
 
 FILES =                  \
 	redistributables/data  \
