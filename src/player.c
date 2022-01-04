@@ -133,7 +133,7 @@ void applyWeaponStat(Player *player, Equipment weapon){
 }
 
 void applyWandStat(Player *player, Equipment wand){
-    player->stat.base.INT += wand.quality + wand.rarity;
+    player->stat.base.INTELLIGENCE += wand.quality + wand.rarity;
 }
 
 void applyArmorStat(Player *player, Equipment armor){

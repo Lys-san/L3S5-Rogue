@@ -33,7 +33,7 @@
     } EquipType;
 
     typedef struct {
-        unsigned int rarity; /* ??????????????????????????? */
+        unsigned int rarity; /*      */
         unsigned int quality; /* Value added to the base stat */
         EquipType type; /* Type of equipment */
     } Equipment;

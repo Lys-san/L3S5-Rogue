@@ -1,7 +1,5 @@
 #include "gameControl.h"
 
-#undef main /*( 'o_o)*/
-
 int main(int argc, char * argv[]) {
 	/* random seed */
 	srand(time(NULL));
