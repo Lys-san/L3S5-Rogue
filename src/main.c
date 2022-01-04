@@ -12,8 +12,8 @@ int main(int argc, char * argv[]) {
 	initializeStandard(&player, playerName);
 	/*quickPrintPlayer(player);*/
 
-	initStage(&stage, &player);
-
+	initStage(&stage, &player, 1);
+	quickPrintStage(stage);
 
 	createGameWindow();
 
@@ -37,10 +37,10 @@ int main(int argc, char * argv[]) {
 				play = 1;
 				while(play) {
 					/* game */
-
+					
 					MLV_clear_window(MLV_COLOR_WHITE); /*pour les tests*/
 					displayStage(stage, player, BASIC);
-					/*displayHUD(player);*/
+					displayHUD(player);
 					MLV_wait_mouse(&xMouse, &yMouse);
 					play = 0;
 					quit = 1;

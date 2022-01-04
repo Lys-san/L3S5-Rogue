@@ -271,7 +271,7 @@ void quickPrintStage(Stage stage) {
 					printf("#");
 					break;
 				case ROOM:
-					printf(" ");
+					printf(".");
 					break;
 				case ENEMY:
 					printf("!");

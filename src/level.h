@@ -58,7 +58,6 @@
 		Cell cells[LEVEL_HEIGHT][LEVEL_WIDTH]; /* array of [lines][cells] (when called use this way : .cells[y][x]) */
 	} Stage;
 
-
 	/* Functions */
 	
 	/* Returns a cell initialized with the following informations */
