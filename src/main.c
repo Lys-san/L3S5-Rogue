@@ -1,4 +1,4 @@
-#include "interface.h"
+#include "gameControl.h"
 
 #undef main /*( 'o_o)*/
 
@@ -32,18 +32,35 @@ int main(int argc, char * argv[]) {
 	while( !quit ) {
 		switch(mainScreen(1, fadein)) {
 			case PLAY : 
-				fadein = 0; 
 				playButtonSound_2();
+				enum PLAYER_ACTION action = NO_ACTION;
+				int actionDone = 0;
+				fadein = 0; 
 				play = 1;
 				while(play) {
 					/* game */
-					
+
+					/* display */
 					MLV_clear_window(MLV_COLOR_WHITE); /*pour les tests*/
 					displayStage(stage, player, BASIC);
 					displayHUD(player);
-					MLV_wait_mouse(&xMouse, &yMouse);
-					play = 0;
-					quit = 1;
+
+					/* events */
+					action = getPlayerAction();
+					while(action == NO_ACTION) {
+						action = getPlayerAction();
+						MLV_wait_milliseconds( 50 );
+					}
+					actionDone = doAction(action, &stage, &player);
+
+					/* exit game */
+					if(actionDone == -1) {
+						if(yesNoPopup("Exit game ?")) {
+							play = 0;
+							quit = 1;
+							break;
+						}
+					}
 				}
 				break;
 			case PROFILE : 

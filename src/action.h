@@ -39,6 +39,6 @@
     int playerMagicalAttack(Player* player, Enemy* monster);
 
     /* Move the player to the next tile if he can, perform a special action if the tile isn't empty */
-    int playerMove(/*Stage level,*/Point* coordPlayer, Direction dir);
+    int playerMove(Stage level, Player *player, Direction dir);
 
 #endif

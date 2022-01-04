@@ -355,20 +355,19 @@ void displayCellSprite(Cell cell) {
 
 
 Point topLeftCellOnScreen(Point playerCoords) {
-    /*Point topLeftCell;
-    topLeftCell.x = playerCoords.x - SCREEN_WIDTH/2;
-    topLeftCell.y = playerCoords.y - SCREEN_HEIGHT/2;
-    return topLeftCell;*/
     return (Point){playerCoords.x - SCREEN_WIDTH/2, playerCoords.y - SCREEN_HEIGHT/2};
 }
+
 
 void displayPlayerBasic() {
     MLV_draw_filled_circle(WINDOW_WIDTH/2, WINDOW_HEIGHT/2, CELL_SIZE/3, PLAYER_COLOR_BAS);
 }
 
+
 void displayPlayerSprite() {
     /* TODO */
 }
+
 
 void displayStage(Stage stage, Player player, enum mode mode) {
     Point tlc = topLeftCellOnScreen(player.coords);

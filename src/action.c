@@ -133,13 +133,13 @@ int playerMagicalAttack(Player* player, Enemy* monster){
     return 1;
 }
 
-int playerMove(/*Stage level,*/ Point* coordPlayer, Direction dir){
+int playerMove(Stage level, Player* player, Direction dir){
     
     Point newCoord;
     /*CellType type;*/
 
     /* Calculate the new coord */
-    newCoord = Move(*coordPlayer,dir);
+    newCoord = Move(player->coords, dir);
     /*type = level.cells[newCoord.y][newCoord.x].type;*/
 
     /* Special Action based on the next tile*/
@@ -167,7 +167,7 @@ int playerMove(/*Stage level,*/ Point* coordPlayer, Direction dir){
     }*/
 
     /*the player moved*/
-    coordPlayer->x = newCoord.x;
-    coordPlayer->y = newCoord.y;
+    player->coords.x = newCoord.x;
+    player->coords.y = newCoord.y;
     return 0;
 }

@@ -9,7 +9,6 @@
 /* Internal libraries */
 #include "enemy.h" /*includes player.h*/
 #include "treasure.h"
-#include "gameControl.h"
 
 #ifndef __LEVEL__
 #define __LEVEL__
@@ -26,6 +25,14 @@
 
 
  	/* Struct */
+     /* Direction (West, North, East, South) */
+    typedef enum {
+        W,            /* DIRECTIONS: */
+        N,            /*      N      */
+        E,            /*    W + E    */
+        S,            /*      S      */
+    } Direction;
+    
 	enum contains { /* to use with Cell functions */
 		CONTAINS_NOTHING,
 		CONTAINS_ENEMY,
