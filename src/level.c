@@ -17,13 +17,11 @@ Cell initCell(unsigned int stageLevel, Point coords, CellType type, enum contain
 
 
 int distanceWithL1Norm(Point a, Point b) {
-	printf("   (abs(%d - %d) + abs(%d - %d))\n", b.x, a.x, b.y, a.y);
 	return ABS((b.x - a.x)) + ABS((b.y - a.y));
 }
 
 
 int isEligible(Cell cell, Stage stage) {
-	printf("Checking if %d %d is eligible.\n", cell.coords.x, cell.coords.y);
 	if(cell.type != WALL)
 		return 0;
 
@@ -46,17 +44,13 @@ int isEligible(Cell cell, Stage stage) {
 	/* checking the cells around the reference cell*/
 	for(i = yStart; i < cell.coords.y + 2; i++) {
 		for(j = xStart; j < cell.coords.x + 2; j++) {
-			printf("%d %d TYPE : %d\n", stage.cells[i][j].coords.x, stage.cells[i][j].coords.y, stage.cells[i][j].type);
 			if(stage.cells[i][j].type == ROOM) {
-				printf("ROOM found at dist : %d \n", distanceWithL1Norm(cell.coords, (Point){j, i}));
 
 				if(distanceWithL1Norm(cell.coords, (Point){j, i}) == 1) {
-					printf("DIST 1\n");
 					if(++nbRoomCellsAtDist1 > 1)
 						return 0;
 				}
 				if(distanceWithL1Norm(cell.coords, (Point){j, i}) == 2) {
-					printf("DIST 2\n");
 					if(++nbRoomCellsAtDist2 > 2)
 						return 0;
 				}
@@ -112,13 +106,11 @@ Stage initStageWithWallCells() {
 			stage.cells[i][j] = initCell(0, (Point){j, i}, WALL, CONTAINS_NOTHING, 0);
 		}
 	}
-	printf("end of init stage with wall cells function\n");
 	return stage;
 }
 
 
 Stage generateStage(unsigned int stageLevel) {
-	printf("starting generating the stage\n");
 	int i, j;
 	int ii, jj; /* we can't call them i' and j' (*sad maths student noises*) */
 	unsigned int k = 0;
@@ -133,70 +125,49 @@ Stage generateStage(unsigned int stageLevel) {
 
 	Cell currentCell;
 
-	int rooms = 0;
-
-	printf(">>>initializing the stage with wall cells\n");
 	stage = initStageWithWallCells();
 
 	/* initializing the center as a room cell */
-	printf(">>>initializing the stair-up as a room cell\n");
 	stage.cells[stageCenter.y][stageCenter.x] = initCell(stageLevel, stageCenter, ROOM, CONTAINS_NOTHING, 0);
-	printf("%d %d TYPE : %d\n", stage.cells[stageCenter.y][stageCenter.x].coords.x, stage.cells[stageCenter.y][stageCenter.x].coords.y, stage.cells[stageCenter.y][stageCenter.x].type);
 
 	/* initializing the adjacent cells list */
-	printf(">>>initializing the adjacent cells list :\n");
-	for(i = stageCenter.y - 1; i <= stageCenter.y + 1; i += 2) {
+	for(i = stageCenter.y - 1; i <= stageCenter.y + 1; i += 2)
 		cellsToExpand[k++] = stage.cells[i][stageCenter.x];
-		printf("%d - cell : %d %d\n", k, cellsToExpand[k-1].coords.x, cellsToExpand[k-1].coords.y);
-	}
 
-	for(j = stageCenter.x - 1; j <= stageCenter.x + 1; j += 2) {
+	for(j = stageCenter.x - 1; j <= stageCenter.x + 1; j += 2)
 		cellsToExpand[k++] = stage.cells[stageCenter.y][j];
-		printf("%d - cell : %d %d\n", k, cellsToExpand[k-1].coords.x, cellsToExpand[k-1].coords.y);
-	}
 
 	/* generating ROOM cells */
-	printf(">>>generating ROOM cells\n");
 	do {
-		do {
-			for(i = 0; i < nbOfCells; i++) {
-				printf("(%d, %d) ", cellsToExpand[i].coords.x, cellsToExpand[i].coords.y);
-			}
+		currentCell = drawRandomCellFromList(cellsToExpand, &nbOfCells);
+		
+		/* Loop until an eligible cell is found */
+		while(!isEligible(currentCell, stage) && nbOfCells > 0) {
 			currentCell = drawRandomCellFromList(cellsToExpand, &nbOfCells);
-			printf("\n>>>CELL : %d %d  ", currentCell.coords.x, currentCell.coords.y);
-			printf("eligible ? \n");
-			printf(isEligible(currentCell, stage) ? "yes\n" : "no\n");
 		}
-		while(!isEligible(currentCell, stage) && nbOfCells > 0);
-		printf(">>>Converting %d %d to ROOM type.\n", currentCell.coords.x, currentCell.coords.y);
-		currentCell.type = ROOM;
+
+		/*currentCell.type = ROOM;*/
 		stage.cells[currentCell.coords.y][currentCell.coords.x].type = ROOM;
-		rooms++;
-		printf("Converted %d %d to ROOM type.\n", stage.cells[currentCell.coords.y][currentCell.coords.x].coords.x, stage.cells[currentCell.coords.y][currentCell.coords.x].coords.y);
 
 		/* searching for new eligible cells around the current cell if the current cell isn't at the edge */
 		if(!isAtTheEdge(stage.cells[currentCell.coords.y][currentCell.coords.x])) {
 			for(i = currentCell.coords.y - 1; i <= currentCell.coords.y + 1; i += 2) {
 				if(isEligible(stage.cells[i][currentCell.coords.x], stage) && !isInArray(stage.cells[i][currentCell.coords.x], cellsToExpand, nbOfCells)) {
-					printf("adding %d %d to cellsToExpand.\n", stage.cells[i][currentCell.coords.x].coords.x, stage.cells[i][currentCell.coords.x].coords.y);
 					cellsToExpand[nbOfCells] = stage.cells[i][currentCell.coords.x];
 					nbOfCells++;
 				}
 			}
 			for(j = currentCell.coords.x - 1; j <= currentCell.coords.x + 1; j += 2) {
 				if(isEligible(stage.cells[currentCell.coords.y][j], stage) && !isInArray(stage.cells[currentCell.coords.y][j], cellsToExpand, nbOfCells)) {
-					printf("adding %d %d to cellsToExpand.\n", stage.cells[currentCell.coords.y][j].coords.x, stage.cells[currentCell.coords.y][j].coords.y);
 					cellsToExpand[nbOfCells] = stage.cells[currentCell.coords.y][j];
 					nbOfCells++;
 				}
 			}
 		}
-		printf("FINISHED WORKING ON %d %d.\n", currentCell.coords.x, currentCell.coords.y);
 	}
 	while(nbOfCells > 0);
 
 	/* converting ROOM cells who are surrounded by 3 WALL cells to WALL cells */
-	printf(">>>converting ROOM cells who are surrounded by 3 WALL cells to WALL cells\n");
 	for(i = 0; i < LEVEL_HEIGHT; i++) {
 		for(j = 0; j < LEVEL_WIDTH; j++) {
 			if(stage.cells[i][j].type == ROOM) {
@@ -213,7 +184,6 @@ Stage generateStage(unsigned int stageLevel) {
 
 				if(nbOfSurroundingWallCells == 3) {
 					stage.cells[i][j].type = WALL;
-					rooms--;
 				}
 			}
 		}
@@ -221,7 +191,6 @@ Stage generateStage(unsigned int stageLevel) {
 	/* initializinf the stair-up */
 	stage.cells[stageCenter.y][stageCenter.x] = initCell(stageLevel, stageCenter, STAIR_UP, CONTAINS_NOTHING, 0);
 
-	printf("Stage generated. %d room cells created.\n", rooms+1);
 	return stage;
 }
 
@@ -270,7 +239,7 @@ void quickPrintStage(Stage stage) {
 					printf("#");
 					break;
 				case ROOM:
-					printf(".");
+					printf(" ");
 					break;
 				case ENEMY:
 					printf("!");

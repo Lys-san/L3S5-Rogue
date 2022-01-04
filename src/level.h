@@ -15,10 +15,8 @@
 
  	/* Define */
 
-	/*#define LEVEL_WIDTH  63
-	#define LEVEL_HEIGHT 43*/
-	#define LEVEL_WIDTH  10
-	#define LEVEL_HEIGHT 6
+	#define LEVEL_WIDTH  63
+	#define LEVEL_HEIGHT 43
 
 	#define SCREEN_WIDTH  13
 	#define SCREEN_HEIGHT  9
@@ -89,7 +87,7 @@
 	/* Returns a stage which cells will be initialized with WALL type */
 	Stage initStageWithWallCells();
 
-	/* Returns a randomly generated stage based on a certain level */
+	/* Returns a randomly generated stage based on a certain level.*/
 	Stage generateStage(unsigned int stageLevel);
 
 	/* Returns the opposite direction of a given direction */

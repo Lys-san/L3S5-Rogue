@@ -17,7 +17,7 @@ int main(int argc, char * argv[]) {
 
 
 
-	createGameWindow();
+	/*createGameWindow();*/
 
 	int quit = 0;
 	int play = 1;
@@ -45,19 +45,19 @@ int main(int argc, char * argv[]) {
 
 	/* snowdrops( 500 ); */
 	
-	int xMouse, yMouse;
+	/*int xMouse, yMouse;
 	while( !quit ) {
 		switch(mainScreen(1, fadein)) {
 			case PLAY : 
 				fadein = 0; 
 				playButtonSound_2();
 				play = 1;
-				while(play) {
+				while(play) {*/
 					/* game */
 
-					MLV_clear_window(MLV_COLOR_WHITE); /*pour les tests*/
+					/*MLV_clear_window(MLV_COLOR_WHITE); *//*pour les tests*/
 
-					displayHUD(player);
+					/*displayHUD(player);
 					MLV_wait_mouse(&xMouse, &yMouse);
 					play = 0;
 					quit = 1;
@@ -82,6 +82,6 @@ int main(int argc, char * argv[]) {
 		}
 
 	}
-	exitGame();
+	exitGame();*/
 	return 0;
 }
