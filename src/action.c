@@ -7,8 +7,6 @@ unsigned int attackPhysical(unsigned int attack, Critical crit){
     unsigned int critical;
     unsigned int chance;
 
-    srand( time( NULL ) );
-
     accuracy = calculateAccuracy(crit);
 
     chance = rand() % 101;/*Chance for a crit*/
@@ -67,11 +65,13 @@ Point Move(Point coordInit, Direction dir){
 void enemyAttack(Enemy monster, Player* player){
     unsigned int damage;
     damage = attackPhysical(monster.attack, monster.crit);
+    printf("I attack");
     player->stat.current.hp -= damage;
+    quickPrintPlayer(*player);
 }
 
 
-void enemyMove(/*Stage level,*/ Point* coordEnemy, Point coordPlayer){
+void enemyMove(Stage* level, Point *coordEnemy, Point coordPlayer){
     
     int lateralDistance;
     int verticalDistance;
@@ -80,28 +80,39 @@ void enemyMove(/*Stage level,*/ Point* coordEnemy, Point coordPlayer){
     lateralDistance = coordPlayer.x - coordEnemy->x;
     verticalDistance = coordPlayer.y - coordEnemy->y;
 
-    if(abs(verticalDistance) >= abs(lateralDistance)){
+    if(ABS(verticalDistance) >= ABS(lateralDistance)){
         if(verticalDistance < 0){
+            printf("Try to move up \n");
             newCoord = Move(*coordEnemy, N);/* Move up */
         }
         else{
+            printf("Try to move down \n");
             newCoord = Move(*coordEnemy, S);/* Move down */
         }
     }
     else{
         /*left and right*/
         if(lateralDistance < 0){
+            printf("Try to move left \n");
             newCoord = Move(*coordEnemy, W);/* Move left */
         }
         else{
+            printf("Try to move right \n");
             newCoord = Move(*coordEnemy, E);/* Move right */
         }
     }
+    printf("new coord x = %d, y = %d \n", newCoord.x, newCoord.y);
 
-    /*if( ( level.cells[newCoord.y][newCoord.x].type == ROOM ) && ( coordEnemy.x != coordPlayer.x &&  coordEnemy.y != coordPlayer.y ) ){*/
+    if( ( level->cells[newCoord.y][newCoord.x].type == ROOM ) && ( coordEnemy->x != coordPlayer.x ||  coordEnemy->y != coordPlayer.y ) ){
+        printf("I moved \n");
+        level->cells[coordEnemy->y][coordEnemy->x].type = ROOM;
+        level->cells[newCoord.y][newCoord.x].type = ENEMY;
         coordEnemy->x = newCoord.x;
         coordEnemy->y = newCoord.y;
-    /*}*/
+    }
+    else{
+        printf("There isn't space \n");
+    }
 }
 
 
@@ -133,41 +144,52 @@ int playerMagicalAttack(Player* player, Enemy* monster){
     return 1;
 }
 
-int playerMove(/*Stage level,*/ Point* coordPlayer, Direction dir){
+int playerMove(Stage level, Player *player, Direction dir){
     
     Point newCoord;
-    /*CellType type;*/
+    CellType type;
 
     /* Calculate the new coord */
-    newCoord = Move(*coordPlayer,dir);
-    /*type = level.cells[newCoord.y][newCoord.x].type;*/
+    newCoord = Move(player->coords,dir);
+    type = level.cells[newCoord.y][newCoord.x].type;
 
     /* Special Action based on the next tile*/
-    /*switch(type){
+    switch(type){
 
         case WALL:
-            return 1;*//* The player doesn't move *//*
+            printf("Stopped \n");
+            return 0;/* The player doesn't move */
         break;
 
         case ENEMY:
-            return 2;*//* The player will perform a physical attack *//*
+            printf("Attack \n");
+            return 1;/* The player will perform a physical attack */
         break;
 
         case TREASURE:
-            return 3;*//* The player will open a Treasure *//*
+            printf("Open treasure \n");
+            return 1;/* The player will open a Treasure */
         break;
 
         case STAIR_DOWN:
-            coordPlayer->x = newCoord.x;
-            coordPlayer->y = newCoord.y;
-            return 4;*//* The player will descend to the next level *//*
+            printf("Go downstair \n");
+            player->coords.x = newCoord.x;
+            player->coords.y = newCoord.y;
+            return 1;/* The player will descend to the next level */
         break;
 
-        default:*//*Doesn't do anything*//*;
-    }*/
+        case STAIR_UP:
+            printf("Go upstair \n");
+            player->coords.x = newCoord.x;
+            player->coords.y = newCoord.y;
+            return 1;/* The player will descend to the next level */
+        break;
+
+        default:/*Doesn't do anything, no special action*/;
+    }
 
     /*the player moved*/
-    coordPlayer->x = newCoord.x;
-    coordPlayer->y = newCoord.y;
-    return 0;
+    player->coords.x = newCoord.x;
+    player->coords.y = newCoord.y;
+    return 1;
 }

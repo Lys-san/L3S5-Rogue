@@ -10,6 +10,7 @@
 /*Bibliothèque interne*/
 #include "level.h"
 #include "player.h"
+#include "treasure.h"
 
 #ifndef __ACTION__
 #define __ACTION__
@@ -30,7 +31,7 @@
     void enemyAttack(Enemy monster, Player* player);
 
     /* Move the ennemy to the player if he can */
-    void enemyMove(/*Stage level,*/ Point* coordEnemy, Point coordPlayer);
+    void enemyMove(Stage *level, Point* coordEnemy, Point coordPlayer);
 
     /* Do a physical attack from the player to the monster */
     void playerPhysicalAttack(Player player, Enemy* monster);
@@ -39,6 +40,9 @@
     int playerMagicalAttack(Player* player, Enemy* monster);
 
     /* Move the player to the next tile if he can, perform a special action if the tile isn't empty */
-    int playerMove(/*Stage level,*/Point* coordPlayer, Direction dir);
+    int playerMove(Stage level, Player *player, Direction dir);
+
+    /*Open a treasure chest*/
+    void openTreasure(Player* player, unsigned int stage);
 
 #endif

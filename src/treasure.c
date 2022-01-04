@@ -60,8 +60,6 @@ Treasure generateTreasure(unsigned int stage, unsigned int playerlevel) {
 	int rarity, quality, type;
 	Treasure chest;
 
-	srand( time( NULL ) );
-
 	/*Fills the two items of the treasure chest*/
 	for( i = 0 ; i < 2 ; i++ ){
 

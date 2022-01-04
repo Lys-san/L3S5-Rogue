@@ -42,7 +42,7 @@
 
     typedef struct {
         unsigned int cost;            /* Cost of the spell */
-        unsigned int power;    /* damage inflicted by the spell */
+        unsigned int power;           /* damage inflicted by the spell */
     } Spell;
 
     typedef struct {

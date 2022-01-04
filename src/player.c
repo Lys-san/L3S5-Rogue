@@ -81,6 +81,65 @@ int gainLvl(Player *player){
     return 1;
 }
 
+void useMagicPotion(Player *player){
+    int maxMagic;
+    maxMagic = standardMaxMP(*player);
+    player->stat.current.mp += (10*maxMagic)/100;
+    if(player->stat.current.mp > maxMagic){
+        player->stat.current.mp = maxMagic;
+    }
+}
+
+void useHealingPotion(Player *player){
+    int maxHealth;
+    maxHealth = standardMaxHP(*player);
+    player->stat.current.hp += (10*maxHealth)/100;
+    if(player->stat.current.hp > maxHealth){
+        player->stat.current.hp = maxHealth;
+    }
+}
+
+void turnRegenPotion(Player *player){
+    int maxHealth, maxMagic;
+    maxHealth = standardMaxHP(*player);
+    maxMagic = standardMaxMP(*player);
+    player->stat.current.hp += 20;
+    player->stat.current.mp += 10;
+    if(player->stat.current.hp > maxHealth){
+        player->stat.current.hp = maxHealth;
+    }
+    if(player->stat.current.mp > maxMagic){
+        player->stat.current.mp = maxMagic;
+    }
+}
+
+void gainPrecision(Player *player){
+    player->stat.base.CRIT.rate = 15;
+}
+void losePrecision(Player *player){
+    player->stat.base.CRIT.rate = STANDARD_BASE_CRIT_RATE;
+}
+
+void gainLearning(Player *player){
+
+}
+
+void loseLearning(Player *player){
+
+}
+
+void applyWeaponStat(Player *player, Equipment weapon){
+    player->stat.base.ATTACK += weapon.quality + weapon.rarity;
+}
+
+void applyWandStat(Player *player, Equipment wand){
+    player->stat.base.INT += wand.quality + wand.rarity;
+}
+
+void applyArmorStat(Player *player, Equipment armor){
+    player->stat.base.DEFENSE += armor.quality + armor.rarity;
+}
+
 void quickPrintPlayer(Player player){
     printf("****PLAYER STATS****\n");
     printf("name          : %s\n", player.stat.base.name);

@@ -14,7 +14,7 @@
 #define __TURN__
 
     /* Perform the turn of the monster, attack first then move */
-    int enemyTurn(Enemy monster, Player* player, Point* coordEnemy, Point coordPlayer/*, Stage level*/);
+    int enemyTurn(Enemy monster, Player* player, Point* coordEnemy, Stage* level);
 
     /*Check if the hp is negative*/
     int isDead(unsigned int hp);
