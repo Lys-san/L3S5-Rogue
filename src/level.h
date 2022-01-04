@@ -5,8 +5,9 @@
 /* General libraries */
 #include <stdlib.h>
 #include <stdio.h>
+
 /* Internal libraries */
-#include "enemy.h"
+#include "enemy.h" /*includes player.h*/
 #include "treasure.h"
 #include "gameControl.h"
 
@@ -40,11 +41,6 @@
 		STAIR_UP,
 		STAIR_DOWN
 	} CellType;
-
-	typedef struct {
-		int x;
-		int y;
-	} Point;
 
 	/* Structure of a cell in a level */
 	typedef struct {
@@ -89,6 +85,12 @@
 
 	/* Returns a randomly generated stage based on a certain level.*/
 	Stage generateStage(unsigned int stageLevel);
+
+	/* Initializes the player's coordonates next to the stair-up. */
+	void initPlayerOnStage(Player *player, Stage stage);
+
+	/* Initializes the stage with the player in the middle. */
+	void initStage(Stage *stage, Player *player, unsigned int stageLevel);
 
 	/* Returns the opposite direction of a given direction */
 	Direction oppositeDir(Direction dir);

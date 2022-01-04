@@ -29,7 +29,11 @@
     #define STANDARD_EXP_TO_NEXT_LVL 350 + 50*(player->stat.current.Lvl)*/
 
     /*Struct*/
-
+    typedef struct {
+        int x;
+        int y;
+    } Point;
+    
     typedef struct {
         int modificater;             /* Damage modifier when a crit hit */
         unsigned int rate;           /* Chances of a crit to proc */
@@ -62,6 +66,7 @@
     } Stat;
 
     typedef struct {
+        Point coords;                 /* Coords of the player in the stage */
         Stat stat;                    /* Stats of the player */
         Spell spell;                  /* description of the spell that can be cast */
         Loot equip[MAX_EQUIP];        /* Equipment item that changes Player current stat */

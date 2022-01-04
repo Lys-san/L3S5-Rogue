@@ -16,14 +16,24 @@ void createGameWindow() {
 	);*/
 
 	/*pour les tests c'est mieux d'avoir une petite fenêtre*/
-	MLV_create_window_with_default_font(
+	/*MLV_create_window_with_default_font(
 		"TEST",
 		"projet c L3S5",
 		windowWidth/2,
 		windowHeight/2,
 		"src/files/Mouser D.otf",
 		30
+	);*/
+
+		MLV_create_window_with_default_font(
+		"TEST",
+		"projet c L3S5",
+		WINDOW_WIDTH,
+		WINDOW_HEIGHT,
+		"src/files/Mouser D.otf",
+		30
 	);
+
 	MLV_init_audio();
 }
 
@@ -314,21 +324,72 @@ void snowdrops(unsigned int frames) {
 }
 
 
-void displayCellBasic(Cell cell) { /*TODO*/
+void displayCellBasic(Cell cell) {
+	int x = cell.coords.x * CELL_SIZE;
+	int y = cell.coords.y * CELL_SIZE;
+	/* checking the cell type */
 	switch(cell.type) {
 		case WALL : 
+			MLV_draw_filled_rectangle(x, y, CELL_SIZE, CELL_SIZE, WALL_COLOR_BAS);
 			break;
 		case ROOM : 
+			MLV_draw_filled_rectangle(x, y, CELL_SIZE, CELL_SIZE, EMPTY_COLOR_BAS);
 			break;
 		case ENEMY : 
 			break;
 		case TREASURE : 
 			break;
-		case STAIR_UP : 
+		case STAIR_UP :
+			MLV_draw_filled_rectangle(x, y, CELL_SIZE, CELL_SIZE, STAIR_UP_COLOR_BAS);
 			break;
-		case STAIR_DOWN : 
+		case STAIR_DOWN :
+			MLV_draw_filled_rectangle(x, y, CELL_SIZE, CELL_SIZE, STAIR_DOWN_COLOR_BAS);
 			break;
 	}
+}
+
+
+void displayCellSprite(Cell cell) {
+	/* TODO */
+}
+
+
+Point topLeftCellOnScreen(Point playerCoords) {
+	/*Point topLeftCell;
+	topLeftCell.x = playerCoords.x - SCREEN_WIDTH/2;
+	topLeftCell.y = playerCoords.y - SCREEN_HEIGHT/2;
+	return topLeftCell;*/
+	return (Point){playerCoords.x - SCREEN_WIDTH/2, playerCoords.y - SCREEN_HEIGHT/2};
+}
+
+void displayPlayerBasic() {
+	MLV_draw_filled_circle(WINDOW_WIDTH/2, WINDOW_HEIGHT/2, CELL_SIZE/2 - 10, PLAYER_COLOR_BAS);
+}
+
+void displayPlayerSprite() {
+	/* TODO */
+}
+
+void displayStage(Stage stage, Player player, enum mode mode) {
+	Point tlc = topLeftCellOnScreen(player.coords);
+	printf("corner : %d %d\n", tlc.x, tlc.y);
+	int i, j;
+	for(i = tlc.x; i < LEVEL_WIDTH; i++) {
+		for(j = tlc.y; j < LEVEL_HEIGHT; j++) {
+			if(mode == WITH_SPRITES)
+				displayCellSprite(stage.cells[i][j]);
+			else /* BASIC */
+				displayCellBasic(stage.cells[i][j]);
+		}
+	}
+
+	/* displaying the player : */
+	if(mode == WITH_SPRITES)
+		displayPlayerSprite();
+	else
+		displayPlayerBasic();
+
+	MLV_actualise_window();
 }
 
 

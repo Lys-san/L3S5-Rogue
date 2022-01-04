@@ -195,6 +195,38 @@ Stage generateStage(unsigned int stageLevel) {
 }
 
 
+void initPlayerOnStage(Player *player, Stage stage) {
+	Point stageCenter;
+	stageCenter.x = LEVEL_WIDTH/2;
+	stageCenter.y = LEVEL_HEIGHT/2;
+	
+	Cell adjacent[4];
+	unsigned int k = 0;
+
+	int i, j;
+
+	/* getting the cells next to the stair-up */
+	for(i = stageCenter.y - 1; i <= stageCenter.y + 1; i += 2)
+		adjacent[k++] = stage.cells[i][stageCenter.x];
+
+	for(j = stageCenter.x - 1; j <= stageCenter.x + 1; j += 2)
+		adjacent[k++] = stage.cells[stageCenter.y][j];
+
+	/* choosing a cell for the player to be in */
+	Cell startingCell = drawRandomCellFromList(adjacent, &k);
+	while( startingCell.type != ROOM)
+		startingCell = drawRandomCellFromList(adjacent, &k);
+
+	/* updating the player's coordonates */
+	player->coords = startingCell.coords;
+}
+
+void initStage(Stage *stage, Player *player, unsigned int stageLevel) {
+	(*stage) = generateStage(stageLevel);
+	initPlayerOnStage(player, *stage);
+}
+
+
 Direction oppositeDir(Direction dir) {
 	return (dir + 2) % 4;
 }

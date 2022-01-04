@@ -8,14 +8,16 @@
 #include "level.h"
 #include "player.h"
 
-#define WINDOW_WIDTH    600
-#define WINDOW_HEIGHT   600
+#define WINDOW_WIDTH    (CELL_SIZE * SCREEN_WIDTH)
+#define WINDOW_HEIGHT   (CELL_SIZE * SCREEN_HEIGHT)
 
 #define MAX_BUTTON_SIZE 3
 
 #define HP_BAR_WIDTH    200
 #define MP_BAR_WIDTH    200
 #define EXP_BAR_WIDTH   180
+
+#define CELL_SIZE       100
 
 #define MAIN_SCREEN_BACKGROUND_COLOR MLV_COLOR_GHOSTWHITE
 #define POPUP_COLOR                  MLV_COLOR_MISTYROSE4
@@ -27,7 +29,7 @@
 
 /* Colors for basic display of cells */
 #define PLAYER_COLOR_BAS             MLV_COLOR_DEEP_PINK
-#define WALL_OR_COLOR_COLOR_BAS      MLV_COLOR_SNOW4
+#define WALL_COLOR_BAS              MLV_COLOR_SNOW4
 #define EMPTY_COLOR_BAS              MLV_COLOR_SNOW
 #define ENEMY_COLOR_BAS              MLV_COLOR_VIOLET_RED
 #define TREASURE_COLOR_BAS           MLV_COLOR_LIGHTGOLDENROD
@@ -45,6 +47,8 @@ enum MENU { /*accessible via the main screen*/
 	SETTINGS,
 	EXIT
 };
+
+enum mode { BASIC, WITH_SPRITES }; /* display mode */
 
 /* Creates the game window */
 void createGameWindow();
@@ -82,6 +86,23 @@ void snowdrops(unsigned int frames);
 
 /* Basic display of a given cell using the libMLV drawing functions */
 void displayCellBasic(Cell cell);
+
+/* Display of a given cell with the corresponding sprite (image) */
+void displayCellSprite(Cell cell);
+
+/* Returns the top left cell to be displayed on screen knowing that the player is in
+ * middle of the screen. */
+Point topLeftCellOnScreen(Point playerCoords);
+
+/* Basic display of the player in the middle of the screen using the libMLV
+ * drawing functions. */
+void displayPlayerBasic();
+
+/* Display of the player in the middle of the screen with the corresponding sprite. */
+void displayPlayerSprite();
+
+/* Displays the given stage according to the specified mode (0 = basic, 1 = sprite) */
+void displayStage(Stage stage, Player player, enum mode mode);
 
 /* Display of the Head Up Display on the left top of the screen */
 void displayHUD(Player player);
