@@ -3,6 +3,7 @@
  * Modification : 03/01/2022*/
 
 /*Bibliothèque générale*/
+#include <stdlib.h>
 
 /*Bibliothèque interne*/
 #include "treasure.h"
@@ -47,7 +48,7 @@
 
     typedef struct {
         unsigned int lvl;             /* Current lvl of the player */
-        unsigned int hp;              /* Current hp of the player, different from max HP */
+        int hp;                       /* Current hp of the player, different from max HP */
         unsigned int mp;              /* Current mp of the player, different from max MP */
         unsigned int exp;             /* Current exp of the player */
     } CurrentStat;

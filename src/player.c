@@ -25,7 +25,6 @@ void initializeCritStat(Player *player) {
     player->stat.base.CRIT.accuracy = STANDARD_BASE_ACCURACY;          /*  +/-20%  */
 }
 
-
 void initializeBaseStat(Player *player, char* name) {
     
     player->stat.base.name = name;
