@@ -26,7 +26,7 @@ int main(int argc, char * argv[]) {
 		exit(1);
 	}
 
-	snowdrops( 500 );
+	/*snowdrops( 500 );*/
 	
 	while( !quit ) {
 		switch(mainScreen(1, fadein)) {
@@ -42,7 +42,7 @@ int main(int argc, char * argv[]) {
 
 					/* display */
 					MLV_clear_window(MLV_COLOR_DARK_GRAY); /*pour les tests*/
-					displayStage(stage, player, BASIC);
+					displayStage(stage, player, WITH_SPRITES);
 					displayHUD(player);
 
 					/* events */

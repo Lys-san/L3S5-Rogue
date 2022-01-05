@@ -356,7 +356,40 @@ void displayCellBasic(Cell cell) {
 
 
 void displayCellSprite(Cell cell) {
-    /* TODO */
+    int x = (cell.coords.x) * CELL_SIZE;
+    int y = (cell.coords.y) * CELL_SIZE;
+    int imgWidth, imgHeight;
+    float ratio;
+
+    /* checking the cell type */
+    switch(cell.type) {
+        case WALL : 
+            displayCellBasic(cell);
+            break;
+        case ROOM : 
+            displayCellBasic(cell);
+            break;
+        case ENEMY : 
+            displayCellBasic(cell);
+            break;
+        case TREASURE : 
+            displayCellBasic(cell);
+            break;
+        case STAIR_UP :
+            MLV_Image *stairup = MLV_load_image("src/files/stairup.png");
+            MLV_get_image_size(stairup, &imgWidth, &imgHeight);
+            ratio = imgWidth > CELL_SIZE ? CELL_SIZE/(float)imgWidth : (float)imgWidth/CELL_SIZE;
+            MLV_resize_image_with_proportions(stairup, imgWidth*ratio, imgHeight*ratio);
+            MLV_draw_image(stairup, x, y + CELL_SIZE - imgHeight*ratio);
+            break;
+        case STAIR_DOWN :
+            MLV_Image *stairdown = MLV_load_image("src/files/stairup.png");
+            MLV_get_image_size(stairdown, &imgWidth, &imgHeight);
+            ratio = imgWidth > CELL_SIZE ? CELL_SIZE/(float)imgWidth : (float)imgWidth/CELL_SIZE;
+            MLV_resize_image_with_proportions(stairdown, imgWidth*ratio, imgHeight*ratio);
+            MLV_draw_image(stairdown, x, y); /* just drawing the stair a bit lower */
+            break;
+    }
 }
 
 
@@ -371,7 +404,7 @@ void displayPlayerBasic() {
 
 
 void displayPlayerSprite() {
-    /* TODO */
+    displayPlayerBasic();
 }
 
 
