@@ -13,6 +13,8 @@
 
     /*Define*/
 
+    #define LEVEL_WIDTH  63
+    #define LEVEL_HEIGHT 43
 
     /*Struct*/
 
@@ -23,6 +25,12 @@
         unsigned int hp;/*hp*/
         Critical crit;/* Information about critical attack */
     } Enemy;
+
+    typedef struct NextEnemy{
+        Enemy enemy;
+        Point coords;
+        struct NextEnemy* nextEnemy;
+    }ListEnemy;
 
 
     /*Functions*/

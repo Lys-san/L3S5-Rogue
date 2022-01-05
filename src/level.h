@@ -104,7 +104,7 @@
 	/* Returns the opposite direction of a given direction */
 	Direction oppositeDir(Direction dir);
 
-	/* Stores the (x, y) shift values (-1, 0 or 1) in the given variables */
+	/* printAllEnemies(ListEnemy allEnemies)Stores the (x, y) shift values (-1, 0 or 1) in the given variables */
 	void dirToShiftValues(Direction dir, int *xShift, int *yShift);
 
 	/* Return 1 if the points are adjacent to each other and 0 if they aren't */
@@ -119,4 +119,17 @@
     /*Generate a set stage to debug*/
     Stage generateStageTest( void );
 
+    ListEnemy* addEnemy(ListEnemy* allEnemies,int level , int x, int y, Point  stairUpCoords);
+
+    ListEnemy* locatesAllEnemies(Stage stage, int level);
+
+    ListEnemy* searchEnemy(ListEnemy* allEnemies, Point coordEnemy);
+
+    ListEnemy* removeEnemy(ListEnemy* allEnemies, Point coordEnemy);
+
+    void printAllEnemies(ListEnemy *allEnemies);
+
+    Point newPoint(int x, int y);
+
+    int isTheSame(Point a, Point b);
 #endif
