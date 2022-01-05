@@ -183,13 +183,14 @@ int playerMove(Stage level, Player* player, Direction dir){
             printf("Go upstair \n");
             player->coords.x = newCoord.x;
             player->coords.y = newCoord.y;
-            return 1;/* The player will descend to the next level */
+            return 1;/* The player will ascend to the previous level */
         break;
 
         default:/*Doesn't do anything, no special action*/;
     }
 
     /*the player moved*/
+    printf("Moves \n");
     player->coords.x = newCoord.x;
     player->coords.y = newCoord.y;
     return 0;

@@ -317,7 +317,7 @@ Stage generateStageTest( void ){
 	stage.cells[1][TEST_LEVEL_WIDTH-2] = initCell(0, (Point){1, TEST_LEVEL_WIDTH-2}, STAIR_DOWN, CONTAINS_NOTHING, 0);
 
 	/*treasure*/
-	stage.cells[2][4] = initCell(0, (Point){2, 4}, STAIR_UP, CONTAINS_NOTHING, 0);
+	stage.cells[2][4] = initCell(0, (Point){2, 4}, TREASURE, CONTAINS_NOTHING, 0);
 
 	/* Enemy */
 	stage.cells[2][TEST_LEVEL_WIDTH-2] = initCell(0, (Point){2, TEST_LEVEL_WIDTH-2}, ENEMY, CONTAINS_NOTHING, 0);

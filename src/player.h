@@ -69,7 +69,7 @@
         Point coords;                 /* Coords of the player in the stage */
         Stat stat;                    /* Stats of the player */
         Spell spell;                  /* description of the spell that can be cast */
-        Loot equip[MAX_EQUIP];        /* Equipment item that changes Player current stat */
+        Loot equip[MAX_EQUIP];        /* Equipment item that changes Player current stat 0=ARMOR, 1=WEAPON, 2=WAND*/
         Loot inventory[MAX_INVENTORY];/* Inventory of non-equipment item */
     } Player;
 
@@ -108,5 +108,29 @@
 
     /*Gain a lvl if the current exp is higher than the exp needed to pass the next lvl*/
     int gainLvl(Player *player);
+
+    void useMagicPotion(Player *player);
+
+    void useHealingPotion(Player *player);
+
+    void turnRegenPotion(Player *player);
+
+    void gainPrecision(Player *player);
+
+    void losePrecision(Player *player);
+
+    void gainLearning(Player *player);
+
+    void loseLearning(Player *player);
+
+    void updateWeaponStat(Player *player, Equipment weapon);
+
+    void updateWandStat(Player *player, Equipment wand);
+
+    void updateArmorStat(Player *player, Equipment armor);
+
+    int checkEquip(Player *player, Equipment equip, int position);
+
+    int newEquipment(Player *player, Equipment equip);
 
 #endif

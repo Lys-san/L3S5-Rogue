@@ -4,7 +4,7 @@
 #include <time.h>
 
 
-Consummables generateConsummable(void){
+Consummables generateRandomConsummable(void){
 	int randomnumber;
 
 	randomnumber = rand() % 5;
@@ -21,20 +21,27 @@ Consummables generateConsummable(void){
 	return EMPTY;
 }
 
-Equipment generateEquipment(unsigned int quality, unsigned int rarity){
+Equipment generateEquipment(EquipType type, unsigned int quality, unsigned int rarity){
+	
+	Equipment equipment;
+	
+	equipment.quality = quality;
+	equipment.rarity = rarity;
+	equipment.type = type;
+
+	return equipment;
+}
+
+Equipment generateRandomEquipment(unsigned int quality, unsigned int rarity){
 	
 	Equipment equipment;
 	int randomnumber;
 
-	equipment.quality = quality;
-	equipment.rarity = rarity;
-
 	randomnumber = rand() % 3;
-
 	switch(randomnumber){
-		case 0:equipment.type = ARMOR;break;
-		case 1:equipment.type = WEAPON;break;
-		case 2:equipment.type = WAND;break;
+		case 0:equipment = generateEquipment(ARMOR, quality, rarity);break;
+		case 1:equipment = generateEquipment(WEAPON, quality, rarity);break;
+		case 2:equipment = generateEquipment(WAND, quality, rarity);break;
 		default :printf("ERROR: randomnumber = %d \n", randomnumber);
 	}
 
@@ -46,10 +53,10 @@ Loot generateLoot(unsigned int quality, unsigned int rarity, LootType type) {
 
 	loot.type = type;
 	if(loot.type == CONSUMMABLE){
-		loot.consummable = generateConsummable();
+		loot.consummable = generateRandomConsummable();
 	}
 	else{
-		loot.equipment = generateEquipment(quality, rarity);
+		loot.equipment = generateRandomEquipment(quality, rarity);
 	}
 	return loot;
 }

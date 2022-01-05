@@ -68,4 +68,8 @@
     /*Debug*/
     void quickPrintTreasure(Treasure chest);
 
+    void quickPrintEquipment(Equipment equip);
+
+    Equipment generateEquipment(EquipType type, unsigned int quality, unsigned int rarity);
+
 #endif

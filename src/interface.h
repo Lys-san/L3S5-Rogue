@@ -29,7 +29,7 @@
 
 /* Colors for basic display of cells */
 #define PLAYER_COLOR_BAS             MLV_COLOR_DEEP_PINK
-#define WALL_COLOR_BAS              MLV_COLOR_SNOW4
+#define WALL_COLOR_BAS               MLV_COLOR_SNOW4
 #define EMPTY_COLOR_BAS              MLV_COLOR_SNOW
 #define ENEMY_COLOR_BAS              MLV_COLOR_VIOLET_RED
 #define TREASURE_COLOR_BAS           MLV_COLOR_LIGHTGOLDENROD

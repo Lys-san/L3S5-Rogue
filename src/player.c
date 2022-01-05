@@ -55,10 +55,17 @@ void addBasicSpell(Spell *spell){
     spell->power = 2; /* Spell cast = 2*Int */
 }
 
+void addBasicEquipment(Player *player){
+    player->equip[(int)ARMOR].equipment = generateEquipment(ARMOR, 0, 0);
+    player->equip[(int)WEAPON].equipment = generateEquipment(WEAPON, 0, 0);
+    player->equip[(int)WAND].equipment = generateEquipment(WAND, 0, 0);
+}
+
 
 void initializeStandard(Player *player, char* name) {
     initializeStat(player, name);
     addBasicSpell(&player->spell);
+    addBasicEquipment(player);
 }
 
 void gainExp(Player *player, unsigned int exp){
@@ -114,10 +121,14 @@ void turnRegenPotion(Player *player){
 }
 
 void gainPrecision(Player *player){
-    player->stat.base.CRIT.rate = 15;
+    player->stat.base.CRIT.rate += 10;
 }
+
 void losePrecision(Player *player){
-    player->stat.base.CRIT.rate = STANDARD_BASE_CRIT_RATE;
+    player->stat.base.CRIT.rate -= 10;
+    if(player->stat.base.CRIT.rate < 0){
+        player->stat.base.CRIT.rate = 0;
+    }
 }
 
 void gainLearning(Player *player){
@@ -128,16 +139,62 @@ void loseLearning(Player *player){
 
 }
 
-void applyWeaponStat(Player *player, Equipment weapon){
+void updateArmorStat(Player *player, Equipment armor){
+
+    Equipment oldArmor;
+
+    oldArmor = player->equip[(int)ARMOR].equipment;
+    player->stat.base.DEFENSE -= oldArmor.quality + oldArmor.rarity;
+
+    player->equip[(int)ARMOR].equipment = armor;
+    player->stat.base.DEFENSE += armor.quality + armor.rarity;
+}
+
+void updateWeaponStat(Player *player, Equipment weapon){
+    Equipment oldWeapon;
+
+    oldWeapon = player->equip[(int)WEAPON].equipment;
+    player->stat.base.ATTACK -= oldWeapon.quality + oldWeapon.rarity;
+
+    player->equip[(int)WEAPON].equipment = weapon;
     player->stat.base.ATTACK += weapon.quality + weapon.rarity;
 }
 
-void applyWandStat(Player *player, Equipment wand){
+void updateWandStat(Player *player, Equipment wand){
+    Equipment oldWand;
+
+    oldWand = player->equip[(int)WAND].equipment;
+    player->stat.base.INTELLIGENCE -= oldWand.quality + oldWand.rarity;
+
+    player->equip[(int)WAND].equipment = wand;
     player->stat.base.INTELLIGENCE += wand.quality + wand.rarity;
 }
 
-void applyArmorStat(Player *player, Equipment armor){
-    player->stat.base.DEFENSE += armor.quality + armor.rarity;
+int checkEquip(Player *player, Equipment equip, int position){
+    
+    int currentStatBoost, equipStatBoost;
+
+    currentStatBoost = player->equip[position].equipment.quality + player->equip[position].equipment.rarity;
+    equipStatBoost = equip.quality + equip.rarity;
+
+    if ( equipStatBoost > currentStatBoost ){
+        return 1;
+    }
+    return 0;
+}
+
+int newEquipment(Player *player, Equipment equip){
+    if(!checkEquip(player, equip, (int)equip.type)){
+        return 1;
+    }
+
+    switch(equip.type){
+        case ARMOR: updateArmorStat(player, equip) ;break;
+        case WEAPON : updateWeaponStat(player, equip) ;break;
+        case WAND: updateWandStat(player, equip)  ;break;
+        default: printf("ERROR \n");
+    }
+    return 0;
 }
 
 void quickPrintPlayer(Player player){
