@@ -157,7 +157,7 @@ int yesNoPopup(char *text) {
 }
 
 
-int displayMainScreen(int xMouse, int yMouse, int profileFound, int buttonSize[]) {
+int displayMainScreen(int xMouse, int yMouse, int profileFound, int buttonSize[], MLV_Image *illus) {
     MLV_clear_window(MAIN_SCREEN_BACKGROUND_COLOR);
 
     MLV_Color color = MLV_COLOR_MISTYROSE3;
@@ -173,6 +173,9 @@ int displayMainScreen(int xMouse, int yMouse, int profileFound, int buttonSize[]
     int buttonWidth   = windowWidth/4;
     int returnValue   = -1;
     int i;
+
+    MLV_draw_image(illus, 0, 0);
+
 
     for(i = 0; i < nbOfButtons; i++) {
         if(yMouse >= yStart - buttonHeight/2 + i*(buttonHeight + margin)
@@ -208,6 +211,12 @@ int mainScreen(int profileFound, int fadein) {
     unsigned int windowWidth, windowHeight;
     MLV_get_window_size(&windowWidth, &windowHeight);
 
+    MLV_Image *illus = MLV_load_image("src/files/illustration_1.png");
+    int imgWidth, imgHeight;
+    MLV_get_image_size(illus, &imgWidth, &imgHeight);
+    float ratio = imgHeight > windowHeight ? windowHeight/(float)imgHeight : (float)imgHeight/windowHeight;
+    MLV_resize_image_with_proportions(illus, imgWidth*ratio, imgHeight*ratio);
+
     int xMouse, yMouse;
     int action = -1;
     int buttonSize[4] = {0, 0, 0, 0}; /*0 = default size, 100 = max size*/
@@ -217,7 +226,7 @@ int mainScreen(int profileFound, int fadein) {
 
     while(1) {
         MLV_get_mouse_position(&xMouse, &yMouse);
-        action = displayMainScreen(xMouse, yMouse, profileFound, buttonSize);
+        action = displayMainScreen(xMouse, yMouse, profileFound, buttonSize, illus);
 
         /*fade-in*/
         if(i < fadeinTime && fadein) {
@@ -278,9 +287,6 @@ void snowdrops(unsigned int frames) {
     int fadeoutTime = 50;
 
     MLV_Color fadeoutColor = MLV_COLOR_GHOSTWHITE;
-    Uint8 fadeoutRGBA[4];
-    MLV_convert_color_to_rgba(fadeoutColor, &fadeoutRGBA[0], &fadeoutRGBA[1], &fadeoutRGBA[2], &fadeoutRGBA[3]);
-    fadeoutRGBA[3] = 255; /*at first, we need the color to be transparent*/
     MLV_Color backgroundColor = MLV_COLOR_POWDERBLUE;
     Uint8 backgroundRGBA[4];
     MLV_convert_color_to_rgba(backgroundColor, &backgroundRGBA[0], &backgroundRGBA[1], &backgroundRGBA[2], &backgroundRGBA[3]);
@@ -350,7 +356,40 @@ void displayCellBasic(Cell cell) {
 
 
 void displayCellSprite(Cell cell) {
-    /* TODO */
+    int x = (cell.coords.x) * CELL_SIZE;
+    int y = (cell.coords.y) * CELL_SIZE;
+    int imgWidth, imgHeight;
+    float ratio;
+
+    /* checking the cell type */
+    switch(cell.type) {
+        case WALL : 
+            displayCellBasic(cell);
+            break;
+        case ROOM : 
+            displayCellBasic(cell);
+            break;
+        case ENEMY : 
+            displayCellBasic(cell);
+            break;
+        case TREASURE : 
+            displayCellBasic(cell);
+            break;
+        case STAIR_UP :
+            MLV_Image *stairup = MLV_load_image("src/files/stairup.png");
+            MLV_get_image_size(stairup, &imgWidth, &imgHeight);
+            ratio = imgWidth > CELL_SIZE ? CELL_SIZE/(float)imgWidth : (float)imgWidth/CELL_SIZE;
+            MLV_resize_image_with_proportions(stairup, imgWidth*ratio, imgHeight*ratio);
+            MLV_draw_image(stairup, x, y + CELL_SIZE - imgHeight*ratio);
+            break;
+        case STAIR_DOWN :
+            MLV_Image *stairdown = MLV_load_image("src/files/stairup.png");
+            MLV_get_image_size(stairdown, &imgWidth, &imgHeight);
+            ratio = imgWidth > CELL_SIZE ? CELL_SIZE/(float)imgWidth : (float)imgWidth/CELL_SIZE;
+            MLV_resize_image_with_proportions(stairdown, imgWidth*ratio, imgHeight*ratio);
+            MLV_draw_image(stairdown, x, y); /* just drawing the stair a bit lower */
+            break;
+    }
 }
 
 
@@ -365,7 +404,7 @@ void displayPlayerBasic() {
 
 
 void displayPlayerSprite() {
-    /* TODO */
+    displayPlayerBasic();
 }
 
 

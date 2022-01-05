@@ -73,7 +73,7 @@ int yesNoPopup(char *text);
 /* Displays the main menu of the game and returns the corresponding number of
  * the button at the coordonates of the mouse.
  * Requires the (xMouse, yMouse) coordonates of the mouse, which are integers */
-int displayMainScreen(int xMouse, int yMouse, int profileFound, int buttonSize[]);
+int displayMainScreen(int xMouse, int yMouse, int profileFound, int buttonSize[], MLV_Image *illus);
 
 /* Display of the main menu until the user chooses an option.
  * Requires an integer (0 or 1) telling if a memory file is found or not,
