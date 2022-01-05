@@ -26,11 +26,19 @@ enum PLAYER_ACTION getPlayerAction() {
     					return QUIT;
     				case MLV_KEYBOARD_z :
     					return UP;
+    				case MLV_KEYBOARD_UP :
+    					return UP;
     				case MLV_KEYBOARD_q :
+    					return LEFT;
+    				case MLV_KEYBOARD_LEFT :
     					return LEFT;
     				case MLV_KEYBOARD_s :
     					return DOWN;
+    				case MLV_KEYBOARD_DOWN :
+    					return DOWN;
     				case MLV_KEYBOARD_d :
+    					return RIGHT;
+    				case MLV_KEYBOARD_RIGHT :
     					return RIGHT;
     				case MLV_KEYBOARD_i :
     					return INVENTORY;
