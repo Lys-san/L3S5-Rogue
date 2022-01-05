@@ -7,7 +7,9 @@ int enemyTurn(Enemy monster, Player* player, Point* coordEnemy, Stage *level){
     if(isAdjacent(*coordEnemy, player->coords)){
         printf("the player is adjacent \n");
         enemyAttack(monster, player);/* perform an attack */
-        if(isDead(player->stat.current.hp)){
+        printf("the player is at %d \n", player->stat.current.hp);
+        if(player->stat.current.hp < 0){
+            printf("The player is dead \n");
             return 1;
         }
     }
@@ -25,12 +27,17 @@ int enemyTurn(Enemy monster, Player* player, Point* coordEnemy, Stage *level){
     }
     return 0;
 }
-
-int isDead(unsigned int hp){
-    if(hp <= 0){
-        return 0;
+int allEnemyTurn(Stage *level, Player* player, ListEnemy* allEnemies){
+    ListEnemy* tmp;
+    tmp = allEnemies;
+    while(tmp != NULL){
+        if(enemyTurn(tmp->enemy, player, &tmp->coords, level)){
+            printf("Game Over \n");
+            return 1;
+        }
+        tmp = tmp->nextEnemy;
     }
-    return 1;
+    return 0;
 }
 
 /*

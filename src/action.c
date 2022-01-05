@@ -65,9 +65,8 @@ Point Move(Point coordInit, Direction dir){
 void enemyAttack(Enemy monster, Player* player){
     unsigned int damage;
     damage = attackPhysical(monster.attack, monster.crit);
-    printf("I attack");
+    printf("I attack for %d damage \n", damage);
     player->stat.current.hp -= damage;
-    quickPrintPlayer(*player);
 }
 
 
@@ -103,7 +102,7 @@ void enemyMove(Stage* level, Point *coordEnemy, Point coordPlayer){
     }
     printf("new coord x = %d, y = %d \n", newCoord.x, newCoord.y);
 
-    if( ( level->cells[newCoord.y][newCoord.x].type == ROOM ) && ( coordEnemy->x != coordPlayer.x ||  coordEnemy->y != coordPlayer.y ) ){
+    if( ( level->cells[newCoord.y][newCoord.x].type == ROOM ) && ( !isTheSame(newCoord, coordPlayer) ) ){
         printf("I moved \n");
         level->cells[coordEnemy->y][coordEnemy->x].type = ROOM;
         level->cells[newCoord.y][newCoord.x].type = ENEMY;
