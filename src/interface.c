@@ -360,6 +360,8 @@ void displayCellSprite(Cell cell) {
     int y = (cell.coords.y) * CELL_SIZE;
     int imgWidth, imgHeight;
     float ratio;
+    MLV_Image *stairup;
+    MLV_Image *stairdown;
 
     /* checking the cell type */
     switch(cell.type) {
@@ -376,14 +378,14 @@ void displayCellSprite(Cell cell) {
             displayCellBasic(cell);
             break;
         case STAIR_UP :
-            MLV_Image *stairup = MLV_load_image("src/files/stairup.png");
+            stairup = MLV_load_image("src/files/stairup.png");
             MLV_get_image_size(stairup, &imgWidth, &imgHeight);
             ratio = imgWidth > CELL_SIZE ? CELL_SIZE/(float)imgWidth : (float)imgWidth/CELL_SIZE;
             MLV_resize_image_with_proportions(stairup, imgWidth*ratio, imgHeight*ratio);
             MLV_draw_image(stairup, x, y + CELL_SIZE - imgHeight*ratio);
             break;
         case STAIR_DOWN :
-            MLV_Image *stairdown = MLV_load_image("src/files/stairup.png");
+            stairdown = MLV_load_image("src/files/stairup.png");
             MLV_get_image_size(stairdown, &imgWidth, &imgHeight);
             ratio = imgWidth > CELL_SIZE ? CELL_SIZE/(float)imgWidth : (float)imgWidth/CELL_SIZE;
             MLV_resize_image_with_proportions(stairdown, imgWidth*ratio, imgHeight*ratio);
