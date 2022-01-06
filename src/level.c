@@ -187,10 +187,57 @@ Stage generateStage(unsigned int stageLevel) {
 			}
 		}
 	}
-	/* initializinf the stair-up */
+	/* initializing the stair-up */
 	stage.cells[stageCenter.y][stageCenter.x] = initCell(stageLevel, stageCenter, STAIR_UP, CONTAINS_NOTHING, 0);
 
 	return stage;
+}
+
+
+int isDeadEnd(Cell cell, Stage stage) {
+	int surroundingWalls = 0;
+	int i, j;
+
+	/* checking surrounding cells */
+	for(i = cell.coords.x - 1; i <= cell.coords.x + 1; i += 2) {
+		if(stage.cells[cell.coords.y][i].type == WALL && cell.type == ROOM)
+			surroundingWalls++;
+	}
+		
+	for(j = cell.coords.y - 1; j <= cell.coords.y + 1; j += 2)
+		if(stage.cells[j][cell.coords.x].type == WALL && cell.type == ROOM)
+			surroundingWalls++;
+
+	/* is a dead end if and only if it has 3 surrounding walls */
+	if(surroundingWalls == 3)
+		return 1;
+
+	/* else, is not */
+	return 0;
+}
+
+
+void initMonsterAndTreasuresOnStage(Stage *stage, int stageLevel) {
+	int i, j;
+	int distToOrigin;
+
+	Point stageCenter;
+	stageCenter.x = LEVEL_WIDTH/2;
+	stageCenter.y = LEVEL_HEIGHT/2;
+
+	for(i = 0; i < LEVEL_HEIGHT; i++) {
+		for(j = 0; j < LEVEL_WIDTH; j++) {
+			if(isDeadEnd(stage->cells[i][j], *stage)) {
+				distToOrigin = distanceWithL1Norm(stageCenter, (Point){j, i});
+				stage->cells[i][j] = initCell(stageLevel, (Point){j, i}, TREASURE, CONTAINS_TREASURE, distToOrigin);
+			}
+		}
+	}
+}
+
+
+void initMonstersOnStage(Stage *stage) {
+	/* TODO */
 }
 
 
@@ -222,6 +269,7 @@ void initPlayerOnStage(Player *player, Stage stage) {
 
 void initStage(Stage *stage, Player *player, unsigned int stageLevel) {
 	(*stage) = generateStage(stageLevel);
+	initMonsterAndTreasuresOnStage(stage, stageLevel);
 	initPlayerOnStage(player, *stage);
 }
 

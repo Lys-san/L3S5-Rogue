@@ -96,10 +96,19 @@
 	/* Returns a randomly generated stage based on a certain level.*/
 	Stage generateStage(unsigned int stageLevel);
 
+	/* Returns 1 if the given cell is a dead end and 0 otherwose. */
+	int isDeadEnd(Cell cell, Stage stage);
+
+	/* Places guarding Monster and Treasures on the specified stage. */
+	void initMonsterAndTreasuresOnStage(Stage *stage, int stageLevel);
+
+	/* Randomly places Monsters on the specified stage. */
+	void initMonstersOnStage(Stage *stage);
+
 	/* Initializes the player's coordonates next to the stair-up. */
 	void initPlayerOnStage(Player *player, Stage stage);
 
-	/* Initializes the stage with the player in the middle. */
+	/* Initializes the stage with all objects. */
 	void initStage(Stage *stage, Player *player, unsigned int stageLevel);
 
 	/* Returns the opposite direction of a given direction */

@@ -157,7 +157,7 @@ int playerMove(Stage level, Player* player, Direction dir){
     switch(type){
 
         case WALL:
-            printf("Stopped \n");
+            /*printf("Stopped \n");*/
             return 0;/* The player doesn't move */
         break;
 
@@ -189,7 +189,7 @@ int playerMove(Stage level, Player* player, Direction dir){
     }
 
     /*the player moved*/
-    printf("Moves \n");
+    /*printf("Moves \n");*/
     player->coords.x = newCoord.x;
     player->coords.y = newCoord.y;
     return 0;

@@ -422,7 +422,7 @@ void displayPlayerBasic() {
 
 
 void displayPlayerSprite() {
-    displayPlayerBasic();
+    displayPlayerBasic(); /* TODO */
 }
 
 
@@ -434,6 +434,14 @@ void displayStage(Stage stage, Player player, enum mode mode) {
         for(j = tlc.y; j < tlc.y + SCREEN_HEIGHT; j++) {
             /* tmp indexes for display to be centered on the player */
             tmp = stage.cells[j][i];
+
+            /* test starts here */
+            if(i == tlc.x + SCREEN_WIDTH/2 && j == tlc.y + SCREEN_HEIGHT/2) {
+                printf(isDeadEnd(tmp, stage) ? "DeadEnd\n" : "");
+            }
+
+            /* test ends here. Remove after.*/
+
             tmp.coords.x = i - tlc.x;
             tmp.coords.y = j - tlc.y;
             /* out of map */

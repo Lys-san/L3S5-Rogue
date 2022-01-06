@@ -14,7 +14,9 @@ OBJECTS = \
 	src/player.o \
 	src/gameControl.o \
 	src/action.o \
-	src/turn.o
+	src/turn.o \
+	src/loot.o \
+	src/list.o
 
 FILES =                  \
 	redistributables/data  \
