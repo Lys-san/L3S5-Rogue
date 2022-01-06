@@ -1,109 +1,104 @@
 #include "list.h"
 
+ListStage* newListStage(Stage stage){
+    
+    ListStage* newList;
 
-ListEnemy* searchEnemy(ListEnemy* allEnemies, Point coordEnemy){
-	
-	ListEnemy *newEnemy;
-	
-	newEnemy = allEnemies;/*Create a copy of the liste*/
-
-	while(newEnemy != NULL){/* search while the list isn't empty*/
-		if(isTheSame(newEnemy->coords, coordEnemy)){
-            return newEnemy;
-        }
-        newEnemy = newEnemy->nextEnemy ;
-	}
-	return NULL;
+    newList = malloc(sizeof *newList);
+    if(NULL != newList){
+        newList->length = 0;
+        newList->firstLevel = NULL;
+        newList->lastLevel = NULL;
+    }
+    return newList;
 }
 
-ListEnemy* addEnemy(ListEnemy* allEnemies,int level , int x, int y, Point  stairUpCoords){
-    
-    ListEnemy *newEnemy;
-
-    /* Create  a new element */
-    newEnemy = malloc(sizeof(ListEnemy));
-    newEnemy->coords = newPoint(x, y);
-    newEnemy->enemy = generateEnemy(level, distanceWithL1Norm(stairUpCoords, newEnemy->coords));
-
-    newEnemy->nextEnemy = allEnemies;/*Adds at the top of the list*/
-
-    return newEnemy;
-}
-
-ListEnemy* removeEnemy(ListEnemy* allEnemies, Point coordEnemy){
-    
-    ListEnemy *newEnemy;
-    newEnemy = allEnemies;
-
-    if(newEnemy != NULL){
-    	if(isTheSame(newEnemy->coords, coordEnemy)){
-    		newEnemy = allEnemies->nextEnemy;
-    		free(allEnemies);
-    		return newEnemy;
-    	}
-    	else{
-    		allEnemies->nextEnemy = removeEnemy(allEnemies->nextEnemy, coordEnemy);
-    	}
+Stage searchStage(ListStage* dungeon, unsigned int level){
+    NodeStage* tmp;
+    tmp = dungeon->lastLevel;
+    while(tmp != NULL){
+        if()
     }
     return NULL;
 }
 
-ListEnemy* locatesAllEnemies(Stage stage, int level){
+ListStage* addStage(ListStage *dungeon, Stage stage){
     
-    int i,j;
-    ListEnemy* allEnemies;
-    Point  stairUpCoords;
+    NodeStage *newStage;
     
-    allEnemies = NULL;
-
-    stairUpCoords = newPoint(LEVEL_WIDTH/2, LEVEL_HEIGHT/2);
-
-    for(i = 0; i < LEVEL_HEIGHT; i++) {
-        for(j = 0; j < LEVEL_WIDTH; j++) {
-            if(stage.cells[i][j].type == ENEMY){
-                allEnemies = addEnemy(allEnemies, level, j, i, stairUpCoords);
-            }
+    /* Create  a new element */
+    newStage = malloc(sizeof *newStage);
+    if(NULL != newStage){
+        newStage->stage = stage;
+        newStage->nextLevel = NULL;
+        if(NULL == dungeon->lastLevel){
+            newStage->previousLevel = NULL;
+            dungeon->firstLevel = newStage;
+            dungeon->lastLevel = newStage;
         }
+        else{
+            dungeon->lastLevel->nextLevel = newStage;
+            newStage->previousLevel = dungeon->lastLevel;
+            dungeon->lastLevel = newStage;
+        }
+        dungeon->length += 1;
     }
-    return allEnemies;
+    return dungeon;
 }
 
-void printAllEnemies(ListEnemy *allEnemies){
-	ListEnemy *tmp;
-	tmp = allEnemies;
-	while(tmp != NULL){
-		printf("coord : \n x = %d \n y = %d \n", tmp->coords.x, tmp->coords.y);
-		quickPrintEnemy(tmp->enemy);
-		tmp = tmp->nextEnemy;
-	}
-}
-
-ListTreasure* addTreasure(ListTreasure* allTreasures, int level , int x, int y, Player *player){
-	ListTreasure *newTreasure;
+ListCoord* addCoord(ListCoord* listCoords,int level , int x, int y){
+    
+    ListCoord *newCoord;
 
     /* Create  a new element */
-    newTreasure = malloc(sizeof(ListTreasure));
-    newTreasure->coords = newPoint(x, y);
-    newTreasure->treasure = generateTreasure(level, player->stat.current.lvl) ;
+    newCoord = malloc(sizeof(ListCoord));
+    newCoord->coords = newPoint(x, y);
 
-    newTreasure->nextTreasure = allTreasures;/*Adds at the top of the list*/
+    newCoord->nextCoord = listCoords;/*Adds at the top of the list because the order doesn't really matter*/
 
-    return newTreasure;
+    return newCoord;
 }
 
-ListTreasure* locatesAllTreasures(Stage stage, int level, Player *player){
+ListCoord* removeCoord(ListCoord* listCoords, Point coord){
+    
+    ListCoord *newCoord;
+    newCoord = listCoords;
+
+    if(newCoord != NULL){
+        if(isTheSame(newCoord->coords, coord)){
+            newCoord = listCoords->nextCoord;
+            free(listCoords);
+            return newCoord;
+        }
+        else{
+            listCoords->nextCoord = removeCoord(listCoords->nextCoord, coord);
+        }
+    }
+    return NULL;
+}
+
+ListCoord* generateAllCoords(Stage stage, int level){
     
     int i,j;
-    ListTreasure* allTreasures;
+    ListCoord* listCoords;
     
-    allTreasures = NULL;
+    listCoords = NULL;
 
     for(i = 0; i < LEVEL_HEIGHT; i++) {
         for(j = 0; j < LEVEL_WIDTH; j++) {
             if(stage.cells[i][j].type == ENEMY){
-                allTreasures = addTreasure(allTreasures, level, j, i, player);
+                listCoords = addCoord(listCoords, level, j, i);
             }
         }
     }
-    return allTreasures;
+    return listCoords;
+}
+
+void printAllCoords(ListCoord *listCoords){
+    ListCoord *tmp;
+    tmp = listCoords;
+    while(tmp != NULL){
+        printf("coord : \n x = %d \n y = %d \n", tmp->coords.x, tmp->coords.y);
+        tmp = tmp->nextCoord;
+    }
 }

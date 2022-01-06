@@ -23,7 +23,7 @@
         char* name;/*Name of the monster*/
         unsigned int exp;/*Exp given after its death*/
         unsigned int attack;/* Used to calculate the power of a melee attack */
-        unsigned int hp;/*hp*/
+        int hp;/*hp*/
         Critical crit;/* Information about critical attack */
     } Enemy;
 
@@ -32,6 +32,7 @@
 
     /* Returns an enemy which attributes will be determined by the current stage and his distance from the stairs */
     Enemy generateEnemy(unsigned int stage, unsigned int distance);
+
 
     /* Debug */
     void quickPrintEnemy(Enemy enemy);
