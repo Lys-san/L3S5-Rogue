@@ -99,11 +99,11 @@
 	/* Returns 1 if the given cell is a dead end and 0 otherwose. */
 	int isDeadEnd(Cell cell, Stage stage);
 
-	/* Places guarding Monster and Treasures on the specified stage. */
-	void initMonsterAndTreasuresOnStage(Stage *stage, int stageLevel);
+	/* Places guarding enemy and Treasures on the specified stage. */
+	void initEnemiesAndTreasuresOnStage(Stage *stage, int stageLevel);
 
-	/* Randomly places Monsters on the specified stage. */
-	void initMonstersOnStage(Stage *stage);
+	/* Randomly places Enemies on the specified stage. */
+	void initEnemiesOnStage(Stage *stage);
 
 	/* Initializes the player's coordonates next to the stair-up. */
 	void initPlayerOnStage(Player *player, Stage stage);

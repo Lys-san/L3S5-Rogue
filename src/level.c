@@ -217,8 +217,9 @@ int isDeadEnd(Cell cell, Stage stage) {
 }
 
 
-void initMonsterAndTreasuresOnStage(Stage *stage, int stageLevel) {
+void initEnemiesAndTreasuresOnStage(Stage *stage, int stageLevel) {
 	int i, j;
+	int ii, jj;
 	int distToOrigin;
 
 	Point stageCenter;
@@ -228,15 +229,28 @@ void initMonsterAndTreasuresOnStage(Stage *stage, int stageLevel) {
 	for(i = 0; i < LEVEL_HEIGHT; i++) {
 		for(j = 0; j < LEVEL_WIDTH; j++) {
 			if(isDeadEnd(stage->cells[i][j], *stage)) {
+				/* generating treasure cell */
 				distToOrigin = distanceWithL1Norm(stageCenter, (Point){j, i});
 				stage->cells[i][j] = initCell(stageLevel, (Point){j, i}, TREASURE, CONTAINS_TREASURE, distToOrigin);
+				
+				/* generating guardian enemy */
+				for(ii = i - 1; ii < i + 2; ii++) {
+					for(jj = j - 1; jj < j + 2; jj++) {
+						/* looking for the coordonates next to the treasure */
+						if(stage->cells[ii][jj].type == ROOM && distanceWithL1Norm((Point){jj, ii}, (Point){j, i}) == 1) {
+							distToOrigin = distanceWithL1Norm(stageCenter, (Point){jj, ii});
+							stage->cells[ii][jj] = initCell(stageLevel, (Point){jj, ii}, ENEMY, CONTAINS_ENEMY, distToOrigin);
+							break;
+						}
+					}
+				}
 			}
 		}
 	}
 }
 
 
-void initMonstersOnStage(Stage *stage) {
+void initEnemiesOnStage(Stage *stage) {
 	/* TODO */
 }
 
@@ -269,7 +283,7 @@ void initPlayerOnStage(Player *player, Stage stage) {
 
 void initStage(Stage *stage, Player *player, unsigned int stageLevel) {
 	(*stage) = generateStage(stageLevel);
-	initMonsterAndTreasuresOnStage(stage, stageLevel);
+	initEnemiesAndTreasuresOnStage(stage, stageLevel);
 	initPlayerOnStage(player, *stage);
 }
 
@@ -291,7 +305,7 @@ void dirToShiftValues(Direction dir, int *xShift, int *yShift) {
 }
 
 int isAdjacent(Point a, Point b){
-    if( a.x == b.x-1 || a.x == b.x || a.x == b.x+1 ){/*x are adjacent*/
+    if( a.x == b.x-1 || a.x == b.x || a.x == b.x+1 ){   /*x are adjacent*/
         if(a.y == b.y-1 || a.y == b.y || a.y == b.y+1 ){/*y are adjacent*/
             return 1;
         }

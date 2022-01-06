@@ -3,20 +3,26 @@
 #undef main /*( 'o_o)*/
 
 int main(int argc, char * argv[]) {
+	printf(">>>Program starts.\n");
 	/* random seed */
 	srand(time(NULL));
 	Stage stage;
 	Player player;
 	char playerName[] = "Ruby"; /* random init for testing */
 
+	printf(">>>Initializing player stats.\n");
 	initializeStandard(&player, playerName);
+	printf("Player stats initialized.\n");
 	/*player.coords = (Point){2, 2};*/
 	/*quickPrintPlayer(player);*/
 
+	printf(">>>Initializing stage.\n");
 	initStage(&stage, &player, 1);
+	printf("Stage initialized.\n");
 	/*stage = generateStageTest();*/
 	quickPrintStage(stage);
 
+	printf(">>>Creating game window.\n");
 	createGameWindow();
 
 	int quit = 0;
@@ -86,5 +92,6 @@ int main(int argc, char * argv[]) {
 
 	}
 	exitGame();
+	printf("Program ends.\n");
 	return 0;
 }
