@@ -438,6 +438,7 @@ void displayStage(Stage stage, Player player, enum mode mode) {
             /* test starts here */
             if(i == tlc.x + SCREEN_WIDTH/2 && j == tlc.y + SCREEN_HEIGHT/2) {
                 printf(isDeadEnd(tmp, stage) ? "DeadEnd\n" : "");
+                printf("%d %d\n", tlc.x + SCREEN_WIDTH/2, tlc.y + SCREEN_HEIGHT/2);
             }
 
             /* test ends here. Remove after.*/
@@ -446,7 +447,7 @@ void displayStage(Stage stage, Player player, enum mode mode) {
             tmp.coords.y = j - tlc.y;
             /* out of map */
             if(i < 0 || j < 0 || 
-               i + SCREEN_WIDTH > LEVEL_WIDTH || j + SCREEN_HEIGHT > LEVEL_HEIGHT) {
+               i > LEVEL_WIDTH || j > LEVEL_HEIGHT) {
                 tmp.type = OOM;
             }
 
