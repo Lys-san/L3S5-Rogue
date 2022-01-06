@@ -19,13 +19,19 @@
 
 #define CELL_SIZE       100
 
+/* Main interface colors */
 #define MAIN_SCREEN_BACKGROUND_COLOR MLV_COLOR_GHOSTWHITE
 #define POPUP_COLOR                  MLV_COLOR_MISTYROSE4
 
+/* Colors for HUD */
 #define LINE_COLOR                   MLV_COLOR_BLACK
 #define HP_BAR_COLOR                 MLV_COLOR_DEEP_PINK
 #define MP_BAR_COLOR                 MLV_COLOR_LIGHT_CYAN
 #define EXP_BAR_COLOR                MLV_COLOR_VIOLET_RED
+
+/* Colors for in-game buttons */
+#define PHYS_ATK_BUTTON_COLOR        MLV_COLOR_DEEP_PINK
+#define MAGC_ATK_BUTTON_COLOR        MLV_COLOR_LIGHT_CYAN
 
 /* Colors for basic display of cells */
 #define PLAYER_COLOR_BAS             MLV_COLOR_DEEP_PINK
@@ -37,6 +43,7 @@
 #define STAIR_DOWN_COLOR_BAS         MLV_COLOR_MEDIUMORCHID
 #define OUT_OF_MAP_COLOR_BAS         MLV_COLOR_GRAY1
 
+/* expressions */
 #define IS_SELECTABLE      (profileFound || i != PROFILE)
 #define BREAK_NESTED_LOOPS pixelFound = 1; break;
 
@@ -103,8 +110,11 @@ void displayPlayerBasic();
 /* Display of the player in the middle of the screen with the corresponding sprite. */
 void displayPlayerSprite();
 
-/* Displays the given stage according to the specified mode (0 = basic, 1 = sprite) */
+/* Displays the given stage according to the specified mode. */
 void displayStage(Stage stage, Player player, enum mode mode);
+
+/* Displays physical and magical attack buttons on the screen. */
+void displayAtkButtons();
 
 /* Display of the Head Up Display on the left top of the screen */
 void displayHUD(Player player);

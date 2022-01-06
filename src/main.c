@@ -53,6 +53,7 @@ int main(int argc, char * argv[]) {
 					MLV_clear_window(MLV_COLOR_WHITE); /*pour les tests*/
 					displayStage(stage, player, WITH_SPRITES);
 					displayHUD(player);
+					displayAtkButtons();
 
 					/* events */
 					action = getPlayerAction();

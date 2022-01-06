@@ -468,6 +468,40 @@ void displayStage(Stage stage, Player player, enum mode mode) {
 }
 
 
+void displayAtkButtons() {
+    unsigned int windowWidth, windowHeight;
+    MLV_get_window_size(&windowWidth, &windowHeight);
+
+    int bttnSize = windowWidth/11;
+    int margin   = bttnSize/5;
+
+    Point physicalBttnCoords, magicalBttnCoords;
+    physicalBttnCoords.x = windowWidth - (margin + bttnSize);
+    physicalBttnCoords.y = windowHeight - (margin + bttnSize);
+    magicalBttnCoords.x  = windowWidth - 2*(margin - bttnSize);
+
+    /* Physical attack button */
+    MLV_draw_filled_rectangle(
+        physicalBttnCoords.x,
+        physicalBttnCoords.y,
+        bttnSize,
+        bttnSize,
+        PHYS_ATK_BUTTON_COLOR
+        );
+
+    /* Magical attack button */
+    MLV_draw_filled_rectangle(
+        physicalBttnCoords.x,
+        physicalBttnCoords.y,
+        bttnSize,
+        bttnSize,
+        PHYS_ATK_BUTTON_COLOR
+        );
+
+    MLV_actualise_window();
+}
+
+
 void displayHUD(Player player) {
     /* Converts a number of points (hp/mp/exp) into a bar percentage */
     int convertPointsToBarPercentg(int points, int maxPoints) {
