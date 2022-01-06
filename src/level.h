@@ -77,6 +77,9 @@
 	/* Returns the distance between two points, based on the L1 norm fomula (aka Manhattan distance) */
 	int distanceWithL1Norm(Point a, Point b);
 
+	/* Returns the coords (Point) of the center of the stage. */
+	Point getStageCenter();
+
 	/* Returns 1 if a given cell is eligible and 0 otherwise */
 	int isEligible(Cell cell, Stage stage);
 
@@ -104,6 +107,9 @@
 
 	/* Randomly places Enemies on the specified stage. */
 	void initEnemiesOnStage(Stage *stage);
+
+	/* Randomly places a stair-down on the stage, far from the origin point (stair-up).*/
+	void initStairDownOnStage(Stage *stage);
 
 	/* Initializes the player's coordonates next to the stair-up. */
 	void initPlayerOnStage(Player *player, Stage stage);

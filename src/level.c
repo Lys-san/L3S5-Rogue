@@ -21,6 +21,14 @@ int distanceWithL1Norm(Point a, Point b) {
 }
 
 
+Point getStageCenter() {
+	Point stageCenter;
+	stageCenter.x = LEVEL_WIDTH/2;
+	stageCenter.y = LEVEL_HEIGHT/2;
+	return stageCenter;
+}
+
+
 int isEligible(Cell cell, Stage stage) {
 	if(cell.type != WALL)
 		return 0;
@@ -119,9 +127,7 @@ Stage generateStage(unsigned int stageLevel) {
 	Cell cellsToExpand[LEVEL_HEIGHT*LEVEL_WIDTH]; /* adjust array size later */
 	Stage stage;
 
-	Point stageCenter;
-	stageCenter.x = LEVEL_WIDTH/2;
-	stageCenter.y = LEVEL_HEIGHT/2;
+	Point stageCenter = getStageCenter();
 
 	Cell currentCell;
 
@@ -222,9 +228,7 @@ void initEnemiesAndTreasuresOnStage(Stage *stage, int stageLevel) {
 	int ii, jj;
 	int distToOrigin;
 
-	Point stageCenter;
-	stageCenter.x = LEVEL_WIDTH/2;
-	stageCenter.y = LEVEL_HEIGHT/2;
+	Point stageCenter = getStageCenter();
 
 	for(i = 0; i < LEVEL_HEIGHT; i++) {
 		for(j = 0; j < LEVEL_WIDTH; j++) {
@@ -252,6 +256,44 @@ void initEnemiesAndTreasuresOnStage(Stage *stage, int stageLevel) {
 
 void initEnemiesOnStage(Stage *stage) {
 	/* TODO */
+}
+
+
+void initStairDownOnStage(Stage *stage) {
+	int maxDistance   = 25;
+	Point stageCenter = getStageCenter();
+	int i, j; /* to avoid infinite loop */
+	int distance;
+	int stairsInitialized = 0;
+
+	/* loops until the stair-down isn't initialized. */
+	while(!stairsInitialized) {
+		for(i = 0; i < LEVEL_WIDTH && !stairsInitialized; i++) {
+			for(j = 0; j < LEVEL_HEIGHT && !stairsInitialized; j++) {
+				distance = distanceWithL1Norm((Point){i, j}, stageCenter);
+				if(distance >= maxDistance) {
+					if(stage->cells[j][i].type == ROOM) {
+						if(rand()%100 == 1) {
+							stage->cells[j][i] = initCell(0, (Point){i, j}, STAIR_DOWN, CONTAINS_NOTHING, distance);
+							stairsInitialized = 1;
+						}
+					}
+				}
+			}
+		}
+		i++;
+		if(i > 50) {
+			fprintf(
+				stderr,
+				"Error : something strange happened while generating the stair down. "
+				"This either means the person who programmed this is stupid, either you "
+				"are an incredibly unlucky person.\n"
+				"Please restart the program."
+				);
+
+			exit(0);
+		}
+	}
 }
 
 
@@ -284,6 +326,7 @@ void initPlayerOnStage(Player *player, Stage stage) {
 void initStage(Stage *stage, Player *player, unsigned int stageLevel) {
 	(*stage) = generateStage(stageLevel);
 	initEnemiesAndTreasuresOnStage(stage, stageLevel);
+	initStairDownOnStage(stage);
 	initPlayerOnStage(player, *stage);
 }
 

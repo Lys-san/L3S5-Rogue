@@ -438,7 +438,6 @@ void displayStage(Stage stage, Player player, enum mode mode) {
             /* test starts here */
             if(i == tlc.x + SCREEN_WIDTH/2 && j == tlc.y + SCREEN_HEIGHT/2) {
                 printf(isDeadEnd(tmp, stage) ? "DeadEnd\n" : "");
-                printf("%d %d\n", tlc.x + SCREEN_WIDTH/2, tlc.y + SCREEN_HEIGHT/2);
             }
 
             /* test ends here. Remove after.*/
