@@ -4,6 +4,7 @@
 
 /* General libraries */
 #include <stdlib.h>
+#include <stdio.h>
 
 /* Internal libraries */
 #include "player.h"
@@ -25,12 +26,6 @@
         unsigned int hp;/*hp*/
         Critical crit;/* Information about critical attack */
     } Enemy;
-
-    typedef struct NextEnemy{
-        Enemy enemy;
-        Point coords;
-        struct NextEnemy* nextEnemy;
-    }ListEnemy;
 
 
     /*Functions*/

@@ -119,17 +119,10 @@
     /*Generate a set stage to debug*/
     Stage generateStageTest( void );
 
-    ListEnemy* addEnemy(ListEnemy* allEnemies,int level , int x, int y, Point  stairUpCoords);
-
-    ListEnemy* locatesAllEnemies(Stage stage, int level);
-
-    ListEnemy* searchEnemy(ListEnemy* allEnemies, Point coordEnemy);
-
-    ListEnemy* removeEnemy(ListEnemy* allEnemies, Point coordEnemy);
-
-    void printAllEnemies(ListEnemy *allEnemies);
-
+    /* Generate a New point from the coordonates*/
     Point newPoint(int x, int y);
 
+    /* Check if two points have the same coordinates */
     int isTheSame(Point a, Point b);
+
 #endif

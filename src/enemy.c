@@ -1,5 +1,4 @@
 #include "enemy.h"
-#include <stdio.h>
 
 Enemy generateEnemy(unsigned int stage, unsigned int distance) {
     
