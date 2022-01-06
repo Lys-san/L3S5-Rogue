@@ -342,8 +342,11 @@ void displayCellBasic(Cell cell) {
             MLV_draw_filled_rectangle(x, y, CELL_SIZE, CELL_SIZE, EMPTY_COLOR_BAS);
             break;
         case ENEMY : 
+            MLV_draw_filled_rectangle(x, y, CELL_SIZE, CELL_SIZE, EMPTY_COLOR_BAS);
+            MLV_draw_filled_circle(x + CELL_SIZE/2, y + CELL_SIZE/2, CELL_SIZE/3, ENEMY_COLOR_BAS);
             break;
         case TREASURE : 
+            MLV_draw_filled_rectangle(x, y, CELL_SIZE, CELL_SIZE, TREASURE_COLOR_BAS);
             break;
         case STAIR_UP :
             MLV_draw_filled_rectangle(x, y, CELL_SIZE, CELL_SIZE, STAIR_UP_COLOR_BAS);
@@ -351,47 +354,60 @@ void displayCellBasic(Cell cell) {
         case STAIR_DOWN :
             MLV_draw_filled_rectangle(x, y, CELL_SIZE, CELL_SIZE, STAIR_DOWN_COLOR_BAS);
             break;
+        default :
+            MLV_draw_filled_rectangle(x, y, CELL_SIZE, CELL_SIZE, OUT_OF_MAP_COLOR_BAS);
     }
 }
 
 
-void displayCellSprite(Cell cell) {
+int displayCellSprite(Cell cell) {
     int x = (cell.coords.x) * CELL_SIZE;
     int y = (cell.coords.y) * CELL_SIZE;
     int imgWidth, imgHeight;
     float ratio;
-    MLV_Image *stairup;
-    MLV_Image *stairdown;
+    MLV_Image *sprite;
 
-    /* checking the cell type */
+    /* checking the cell type to load the sprite */
     switch(cell.type) {
         case WALL : 
-            displayCellBasic(cell);
+            displayCellBasic(cell); /* TODO */
+            return 1;
             break;
         case ROOM : 
-            displayCellBasic(cell);
+            displayCellBasic(cell); /* TODO */
+            return 1;
             break;
         case ENEMY : 
-            displayCellBasic(cell);
+            displayCellBasic(cell); /* TODO */
+            return 1;
             break;
         case TREASURE : 
-            displayCellBasic(cell);
+            displayCellBasic(cell); /* TODO */
+            return 1;
             break;
         case STAIR_UP :
-            stairup = MLV_load_image("src/files/stairup.png");
-            MLV_get_image_size(stairup, &imgWidth, &imgHeight);
-            ratio = imgWidth > CELL_SIZE ? CELL_SIZE/(float)imgWidth : (float)imgWidth/CELL_SIZE;
-            MLV_resize_image_with_proportions(stairup, imgWidth*ratio, imgHeight*ratio);
-            MLV_draw_image(stairup, x, y + CELL_SIZE - imgHeight*ratio);
+            sprite = MLV_load_image("src/files/stairup.png");
             break;
         case STAIR_DOWN :
-            stairdown = MLV_load_image("src/files/stairup.png");
-            MLV_get_image_size(stairdown, &imgWidth, &imgHeight);
-            ratio = imgWidth > CELL_SIZE ? CELL_SIZE/(float)imgWidth : (float)imgWidth/CELL_SIZE;
-            MLV_resize_image_with_proportions(stairdown, imgWidth*ratio, imgHeight*ratio);
-            MLV_draw_image(stairdown, x, y); /* just drawing the stair a bit lower */
+            sprite = MLV_load_image("src/files/stairup.png");
             break;
+        default : /* out of map */
+            displayCellBasic(cell);
+            return 0; /* nothing to display */
+
+        
     }
+    /* resizing, adjusting coords and drawing */
+    MLV_get_image_size(sprite, &imgWidth, &imgHeight);
+    ratio = imgWidth > CELL_SIZE ? CELL_SIZE/(float)imgWidth : (float)imgWidth/CELL_SIZE;
+    MLV_resize_image_with_proportions(sprite, imgWidth*ratio, imgHeight*ratio);
+
+    if(cell.type == STAIR_UP) {
+        y = y + CELL_SIZE - imgHeight*ratio;
+    }
+
+    MLV_draw_image(sprite, x, y);
+    return 1;
 }
 
 
@@ -420,6 +436,12 @@ void displayStage(Stage stage, Player player, enum mode mode) {
             tmp = stage.cells[j][i];
             tmp.coords.x = i - tlc.x;
             tmp.coords.y = j - tlc.y;
+            /* out of map */
+            if(i < 0 || j < 0 || 
+               i + SCREEN_WIDTH > LEVEL_WIDTH || j + SCREEN_HEIGHT > LEVEL_HEIGHT) {
+                tmp.type = OOM;
+            }
+
 
             if(mode == WITH_SPRITES)
                 displayCellSprite(tmp);

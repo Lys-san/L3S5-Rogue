@@ -10,9 +10,11 @@ int main(int argc, char * argv[]) {
 	char playerName[] = "Ruby"; /* random init for testing */
 
 	initializeStandard(&player, playerName);
+	/*player.coords = (Point){2, 2};*/
 	/*quickPrintPlayer(player);*/
 
 	initStage(&stage, &player, 1);
+	/*stage = generateStageTest();*/
 	quickPrintStage(stage);
 
 	createGameWindow();
@@ -41,7 +43,8 @@ int main(int argc, char * argv[]) {
 					/* game */
 
 					/* display */
-					MLV_clear_window(MLV_COLOR_DARK_GRAY); /*pour les tests*/
+
+					MLV_clear_window(MLV_COLOR_WHITE); /*pour les tests*/
 					displayStage(stage, player, WITH_SPRITES);
 					displayHUD(player);
 

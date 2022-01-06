@@ -284,6 +284,8 @@ void quickPrintStage(Stage stage) {
 				case STAIR_DOWN:
 					printf("v");
 					break;
+				default:
+					break;
 			}
 		}
 		printf("\n");

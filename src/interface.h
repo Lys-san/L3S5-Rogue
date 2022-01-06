@@ -31,10 +31,11 @@
 #define PLAYER_COLOR_BAS             MLV_COLOR_DEEP_PINK
 #define WALL_COLOR_BAS               MLV_COLOR_SNOW4
 #define EMPTY_COLOR_BAS              MLV_COLOR_SNOW
-#define ENEMY_COLOR_BAS              MLV_COLOR_VIOLET_RED
+#define ENEMY_COLOR_BAS              MLV_COLOR_BLUE_VIOLET
 #define TREASURE_COLOR_BAS           MLV_COLOR_LIGHTGOLDENROD
 #define STAIR_UP_COLOR_BAS           MLV_COLOR_RED
 #define STAIR_DOWN_COLOR_BAS         MLV_COLOR_MEDIUMORCHID
+#define OUT_OF_MAP_COLOR_BAS         MLV_COLOR_GRAY1
 
 #define IS_SELECTABLE      (profileFound || i != PROFILE)
 #define BREAK_NESTED_LOOPS pixelFound = 1; break;
@@ -87,8 +88,9 @@ void snowdrops(unsigned int frames);
 /* Basic display of a given cell using the libMLV drawing functions */
 void displayCellBasic(Cell cell);
 
-/* Display of a given cell with the corresponding sprite (image) */
-void displayCellSprite(Cell cell);
+/* Display of a given cell with the corresponding sprite (image).
+ * Returns 0 if the cell couldn't be displayed. */
+int displayCellSprite(Cell cell);
 
 /* Returns the top left cell to be displayed on screen knowing that the player is in
  * middle of the screen. */

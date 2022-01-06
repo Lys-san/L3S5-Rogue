@@ -49,7 +49,8 @@
 		ENEMY,
 		TREASURE,
 		STAIR_UP,
-		STAIR_DOWN
+		STAIR_DOWN,
+		OOM /* out of map */
 	} CellType;
 
 	/* Structure of a cell in a level */
