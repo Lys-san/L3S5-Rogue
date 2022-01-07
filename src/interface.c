@@ -422,7 +422,7 @@ void displayPlayerBasic() {
 
 
 void displayPlayerSprite() {
-    displayPlayerBasic();
+    displayPlayerBasic(); /* TODO */
 }
 
 
@@ -434,11 +434,19 @@ void displayStage(Stage stage, Player player, enum mode mode) {
         for(j = tlc.y; j < tlc.y + SCREEN_HEIGHT; j++) {
             /* tmp indexes for display to be centered on the player */
             tmp = stage.cells[j][i];
+
+            /* test starts here */
+            if(i == tlc.x + SCREEN_WIDTH/2 && j == tlc.y + SCREEN_HEIGHT/2) {
+                printf(isDeadEnd(tmp, stage) ? "DeadEnd\n" : "");
+            }
+
+            /* test ends here. Remove after.*/
+
             tmp.coords.x = i - tlc.x;
             tmp.coords.y = j - tlc.y;
             /* out of map */
             if(i < 0 || j < 0 || 
-               i + SCREEN_WIDTH > LEVEL_WIDTH || j + SCREEN_HEIGHT > LEVEL_HEIGHT) {
+               i > LEVEL_WIDTH || j > LEVEL_HEIGHT) {
                 tmp.type = OOM;
             }
 
@@ -455,6 +463,40 @@ void displayStage(Stage stage, Player player, enum mode mode) {
         displayPlayerSprite();
     else
         displayPlayerBasic();
+
+    MLV_actualise_window();
+}
+
+
+void displayAtkButtons() {
+    unsigned int windowWidth, windowHeight;
+    MLV_get_window_size(&windowWidth, &windowHeight);
+
+    int bttnSize = windowWidth/11;
+    int margin   = bttnSize/5;
+
+    Point physicalBttnCoords, magicalBttnCoords;
+    physicalBttnCoords.x = windowWidth - (margin + bttnSize);
+    physicalBttnCoords.y = windowHeight - (margin + bttnSize);
+    magicalBttnCoords.x  = windowWidth - 2*(margin - bttnSize);
+
+    /* Physical attack button */
+    MLV_draw_filled_rectangle(
+        physicalBttnCoords.x,
+        physicalBttnCoords.y,
+        bttnSize,
+        bttnSize,
+        PHYS_ATK_BUTTON_COLOR
+        );
+
+    /* Magical attack button */
+    MLV_draw_filled_rectangle(
+        physicalBttnCoords.x,
+        physicalBttnCoords.y,
+        bttnSize,
+        bttnSize,
+        PHYS_ATK_BUTTON_COLOR
+        );
 
     MLV_actualise_window();
 }

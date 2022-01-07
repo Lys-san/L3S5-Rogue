@@ -67,6 +67,7 @@
 	/* A stage is an array of cells */
 	typedef struct {
 		Cell cells[LEVEL_HEIGHT][LEVEL_WIDTH]; /* array of [lines][cells] (when called use this way : .cells[y][x]) */
+		int level;
 	} Stage;
 
 	/* Functions */
@@ -76,6 +77,9 @@
 
 	/* Returns the distance between two points, based on the L1 norm fomula (aka Manhattan distance) */
 	int distanceWithL1Norm(Point a, Point b);
+
+	/* Returns the coords (Point) of the center of the stage. */
+	Point getStageCenter();
 
 	/* Returns 1 if a given cell is eligible and 0 otherwise */
 	int isEligible(Cell cell, Stage stage);
@@ -96,10 +100,22 @@
 	/* Returns a randomly generated stage based on a certain level.*/
 	Stage generateStage(unsigned int stageLevel);
 
+	/* Returns 1 if the given cell is a dead end and 0 otherwose. */
+	int isDeadEnd(Cell cell, Stage stage);
+
+	/* Places guarding enemy and Treasures on the specified stage. */
+	void initEnemiesAndTreasuresOnStage(Stage *stage, int stageLevel);
+
+	/* Randomly places Enemies on the specified stage. */
+	void initEnemiesOnStage(Stage *stage);
+
+	/* Randomly places a stair-down on the stage, far from the origin point (stair-up).*/
+	void initStairDownOnStage(Stage *stage);
+
 	/* Initializes the player's coordonates next to the stair-up. */
 	void initPlayerOnStage(Player *player, Stage stage);
 
-	/* Initializes the stage with the player in the middle. */
+	/* Initializes the stage with all objects. */
 	void initStage(Stage *stage, Player *player, unsigned int stageLevel);
 
 	/* Returns the opposite direction of a given direction */

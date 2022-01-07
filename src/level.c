@@ -6,7 +6,9 @@ Cell initCell(unsigned int stageLevel, Point coords, CellType type, enum contain
 	cell.type = type;
 	switch(obj) {
 		case CONTAINS_ENEMY :
-			cell.enemy = generateEnemy(stageLevel, dist);
+			cell.contains = generateEnemy(stageLevel, dist);
+			printf("initCell level = \n");
+			quickPrintEnemy(cell.enemy);
 		case CONTAINS_TREASURE :
 			cell.treasure = generateTreasure(stageLevel, rand() % MAX_RARITY);
 		default :
@@ -18,6 +20,14 @@ Cell initCell(unsigned int stageLevel, Point coords, CellType type, enum contain
 
 int distanceWithL1Norm(Point a, Point b) {
 	return ABS((b.x - a.x)) + ABS((b.y - a.y));
+}
+
+
+Point getStageCenter() {
+	Point stageCenter;
+	stageCenter.x = LEVEL_WIDTH/2;
+	stageCenter.y = LEVEL_HEIGHT/2;
+	return stageCenter;
 }
 
 
@@ -119,9 +129,7 @@ Stage generateStage(unsigned int stageLevel) {
 	Cell cellsToExpand[LEVEL_HEIGHT*LEVEL_WIDTH]; /* adjust array size later */
 	Stage stage;
 
-	Point stageCenter;
-	stageCenter.x = LEVEL_WIDTH/2;
-	stageCenter.y = LEVEL_HEIGHT/2;
+	Point stageCenter = getStageCenter();
 
 	Cell currentCell;
 
@@ -187,10 +195,108 @@ Stage generateStage(unsigned int stageLevel) {
 			}
 		}
 	}
-	/* initializinf the stair-up */
+	/* initializing the stair-up */
 	stage.cells[stageCenter.y][stageCenter.x] = initCell(stageLevel, stageCenter, STAIR_UP, CONTAINS_NOTHING, 0);
 
 	return stage;
+}
+
+
+int isDeadEnd(Cell cell, Stage stage) {
+	int surroundingWalls = 0;
+	int i, j;
+
+	/* checking surrounding cells */
+	for(i = cell.coords.x - 1; i <= cell.coords.x + 1; i += 2) {
+		if(stage.cells[cell.coords.y][i].type == WALL && cell.type == ROOM)
+			surroundingWalls++;
+	}
+		
+	for(j = cell.coords.y - 1; j <= cell.coords.y + 1; j += 2)
+		if(stage.cells[j][cell.coords.x].type == WALL && cell.type == ROOM)
+			surroundingWalls++;
+
+	/* is a dead end if and only if it has 3 surrounding walls */
+	if(surroundingWalls == 3)
+		return 1;
+
+	/* else, is not */
+	return 0;
+}
+
+
+void initEnemiesAndTreasuresOnStage(Stage *stage, int stageLevel) {
+	int i, j;
+	int ii, jj;
+	int distToOrigin;
+
+	Point stageCenter = getStageCenter();
+
+	for(i = 0; i < LEVEL_HEIGHT; i++) {
+		for(j = 0; j < LEVEL_WIDTH; j++) {
+			if(isDeadEnd(stage->cells[i][j], *stage)) {
+				/* generating treasure cell */
+				distToOrigin = distanceWithL1Norm(stageCenter, (Point){j, i});
+				stage->cells[i][j] = initCell(stageLevel, (Point){j, i}, TREASURE, CONTAINS_TREASURE, distToOrigin);
+				
+				/* generating guardian enemy */
+				for(ii = i - 1; ii < i + 2; ii++) {
+					for(jj = j - 1; jj < j + 2; jj++) {
+						/* looking for the coordonates next to the treasure */
+						if(stage->cells[ii][jj].type == ROOM && distanceWithL1Norm((Point){jj, ii}, (Point){j, i}) == 1) {
+							distToOrigin = distanceWithL1Norm(stageCenter, (Point){jj, ii});
+							stage->cells[ii][jj] = initCell(stageLevel, (Point){jj, ii}, ENEMY, CONTAINS_ENEMY, distToOrigin);
+							/*quickPrintEnemy(stage->cells[jj][ii].enemy);*/
+							break;
+						}
+					}
+				}
+			}
+		}
+	}
+}
+
+
+void initEnemiesOnStage(Stage *stage) {
+	/* TODO */
+}
+
+
+void initStairDownOnStage(Stage *stage) {
+	int maxDistance   = 25;
+	Point stageCenter = getStageCenter();
+	int i, j; /* to avoid infinite loop */
+	int distance;
+	int stairsInitialized = 0;
+
+	/* loops until the stair-down isn't initialized. */
+	while(!stairsInitialized) {
+		for(i = 0; i < LEVEL_WIDTH && !stairsInitialized; i++) {
+			for(j = 0; j < LEVEL_HEIGHT && !stairsInitialized; j++) {
+				distance = distanceWithL1Norm((Point){i, j}, stageCenter);
+				if(distance >= maxDistance) {
+					if(stage->cells[j][i].type == ROOM) {
+						if(rand()%100 == 1) {
+							stage->cells[j][i] = initCell(0, (Point){i, j}, STAIR_DOWN, CONTAINS_NOTHING, distance);
+							stairsInitialized = 1;
+						}
+					}
+				}
+			}
+		}
+		i++;
+		if(i > 50) {
+			fprintf(
+				stderr,
+				"Error : something strange happened while generating the stair down. "
+				"This either means the person who programmed this is stupid, either you "
+				"are an incredibly unlucky person.\n"
+				"Please restart the program."
+				);
+
+			exit(0);
+		}
+	}
 }
 
 
@@ -222,6 +328,8 @@ void initPlayerOnStage(Player *player, Stage stage) {
 
 void initStage(Stage *stage, Player *player, unsigned int stageLevel) {
 	(*stage) = generateStage(stageLevel);
+	initEnemiesAndTreasuresOnStage(stage, stageLevel);
+	initStairDownOnStage(stage);
 	initPlayerOnStage(player, *stage);
 }
 
@@ -243,7 +351,7 @@ void dirToShiftValues(Direction dir, int *xShift, int *yShift) {
 }
 
 int isAdjacent(Point a, Point b){
-    if( a.x == b.x-1 || a.x == b.x || a.x == b.x+1 ){/*x are adjacent*/
+    if( a.x == b.x-1 || a.x == b.x || a.x == b.x+1 ){   /*x are adjacent*/
         if(a.y == b.y-1 || a.y == b.y || a.y == b.y+1 ){/*y are adjacent*/
             return 1;
         }
@@ -305,24 +413,31 @@ void quickPrintStage(Stage stage) {
 Stage generateStageTest( void ){
 	
 	Stage stage;
+	Cell test;
+	Cell test2;
 	int i, j;
 
 	/* The empty spaces */
 	for(i = 1; i < TEST_LEVEL_HEIGHT; i++) {
 		for(j = 1; j < TEST_LEVEL_WIDTH-1; j++  ){
-			stage.cells[i][j] = initCell(0, (Point){j, i}, ROOM, CONTAINS_NOTHING, 0);
+			stage.cells[i][j] = initCell(1, (Point){j, i}, ROOM, CONTAINS_NOTHING, 1);
 		}
 	}
 
 	/*stairs*/
-	stage.cells[1][1] = initCell(0, (Point){1, 1}, STAIR_UP, CONTAINS_NOTHING, 0);
-	stage.cells[1][TEST_LEVEL_WIDTH-2] = initCell(0, (Point){1, TEST_LEVEL_WIDTH-2}, STAIR_DOWN, CONTAINS_NOTHING, 0);
+	stage.cells[1][1] = initCell(0, (Point){1, 1}, STAIR_UP, CONTAINS_NOTHING, 1);
+	stage.cells[1][TEST_LEVEL_WIDTH-2] = initCell(1, (Point){1, TEST_LEVEL_WIDTH-2}, STAIR_DOWN, CONTAINS_NOTHING, 1);
 
 	/*treasure*/
-	stage.cells[2][4] = initCell(0, (Point){2, 4}, TREASURE, CONTAINS_NOTHING, 0);
+	stage.cells[2][4] = initCell(1, (Point){2, 4}, TREASURE, CONTAINS_NOTHING, 0);
 
 	/* Enemy */
-	stage.cells[2][TEST_LEVEL_WIDTH-2] = initCell(0, (Point){2, TEST_LEVEL_WIDTH-2}, ENEMY, CONTAINS_NOTHING, 0);
+	test = initCell(1, (Point){2, TEST_LEVEL_WIDTH-2}, ENEMY, CONTAINS_ENEMY, 1);
+	printf("Cell test level = \n");
+	quickPrintEnemy(test.enemy);
+	stage.cells[2][TEST_LEVEL_WIDTH-2] = initCell(1, (Point){2, TEST_LEVEL_WIDTH-2}, ENEMY, CONTAINS_NOTHING, 1);
+	printf("in stage level = \n");
+	quickPrintEnemy(stage.cells[2][TEST_LEVEL_WIDTH-2].enemy);
 
 	return stage;
 }

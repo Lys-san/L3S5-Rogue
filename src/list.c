@@ -13,11 +13,13 @@ ListStage* newListStage(Stage stage){
     return newList;
 }
 
-Stage searchStage(ListStage* dungeon, unsigned int level){
+Stage* searchStage(ListStage* dungeon, unsigned int level){
     NodeStage* tmp;
     tmp = dungeon->lastLevel;
     while(tmp != NULL){
-        if()
+        if(1){
+            return &tmp->stage;
+        }
     }
     return NULL;
 }

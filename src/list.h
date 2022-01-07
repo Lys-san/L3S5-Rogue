@@ -32,7 +32,7 @@
 
     ListStage* newListStage(Stage stage);
 
-    Stage searchStage(unsigned int level);
+    Stage* searchStage(ListStage* dungeon, unsigned int level);
 
     ListStage* addStage(ListStage *dungeon, Stage stage);
 
