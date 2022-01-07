@@ -8,7 +8,6 @@ Cell initCell(unsigned int stageLevel, Point coords, CellType type, enum contain
 		case CONTAINS_ENEMY :
 			cell.enemy = generateEnemy(stageLevel, dist);
 			break;
-			cell.contains = generateEnemy(stageLevel, dist);
 		case CONTAINS_TREASURE :
 			cell.treasure = generateTreasure(stageLevel, rand() % MAX_RARITY);
 			break;
@@ -247,10 +246,6 @@ void initEnemiesAndTreasuresOnStage(Stage *stage, int stageLevel) {
 						if(stage->cells[ii][jj].type == ROOM && distanceWithL1Norm((Point){jj, ii}, (Point){j, i}) == 1) {
 							distToOrigin = distanceWithL1Norm(stageCenter, (Point){jj, ii});
 							stage->cells[ii][jj] = initCell(stageLevel, (Point){jj, ii}, ENEMY, CONTAINS_ENEMY, distToOrigin);
-<<<<<<< HEAD
-							/*quickPrintEnemy(stage->cells[jj][ii].enemy);*/
-=======
->>>>>>> 42408439bfb7ad4867546dfbefdcdc0fe551a431
 							break;
 						}
 					}
@@ -421,7 +416,7 @@ Stage generateStageTest( void ){
 	
 	Stage stage;
 	Cell test;
-	Cell test2;
+	/*Cell test2;*/
 	int i, j;
 
 	/* The empty spaces */

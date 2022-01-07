@@ -8,6 +8,7 @@ int main(int argc, char * argv[]) {
 	srand(time(NULL));
 	Stage stage;
 	Player player;
+	ListStage *dungeon;
 	char playerName[] = "Ruby"; /* random init for testing */
 
 	/*printf("***TEST STARTS HERE***\n\n");
@@ -47,6 +48,9 @@ int main(int argc, char * argv[]) {
 	printf("Stage initialized.\n");
 	/*stage = generateStageTest();*/
 	quickPrintStage(stage);
+
+	/* initializing dungeon */
+	dungeon = newListStage(stage);
 
 	printf(">>>Creating game window.\n");
 	createGameWindow();
@@ -88,7 +92,7 @@ int main(int argc, char * argv[]) {
 						action = getPlayerAction();
 						MLV_wait_milliseconds( 50 );
 					}
-					actionDone = doAction(action, &stage, &player);
+					actionDone = doAction(action, &stage, &player, dungeon);
 
 					/* exit game */
 					if(actionDone == -1) {
