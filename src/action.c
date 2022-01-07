@@ -158,7 +158,7 @@ int playerMove(Stage *level, Player* player, Direction dir, ListStage *dungeon){
     switch(type){
 
         case WALL:
-            printf("Stopped \n");
+            /*printf("Stopped \n");*/
             return 0;/* The player doesn't move */
         break;
 
@@ -200,8 +200,12 @@ int playerMove(Stage *level, Player* player, Direction dir, ListStage *dungeon){
     }
 
     /*the player moved*/
+<<<<<<< HEAD
     printf("Moves \n");
     printf("New coord = x=%d, y=%d \n", newCoord.x, newCoord.y);
+=======
+    /*printf("Moves \n");*/
+>>>>>>> 42408439bfb7ad4867546dfbefdcdc0fe551a431
     player->coords.x = newCoord.x;
     player->coords.y = newCoord.y;
     return 0;

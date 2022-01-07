@@ -246,7 +246,10 @@ void initEnemiesAndTreasuresOnStage(Stage *stage, int stageLevel) {
 						if(stage->cells[ii][jj].type == ROOM && distanceWithL1Norm((Point){jj, ii}, (Point){j, i}) == 1) {
 							distToOrigin = distanceWithL1Norm(stageCenter, (Point){jj, ii});
 							stage->cells[ii][jj] = initCell(stageLevel, (Point){jj, ii}, ENEMY, CONTAINS_ENEMY, distToOrigin);
+<<<<<<< HEAD
 							/*quickPrintEnemy(stage->cells[jj][ii].enemy);*/
+=======
+>>>>>>> 42408439bfb7ad4867546dfbefdcdc0fe551a431
 							break;
 						}
 					}
