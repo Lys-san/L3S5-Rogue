@@ -16,7 +16,6 @@ Enemy generateEnemy(unsigned int stage, unsigned int distance) {
     monster.crit.modificater = 3 ;   /* 300% */
     monster.crit.rate = 5;           /* 5% */
     monster.crit.accuracy = 20 ;    /* +/-20% */
-
     return monster;
 }
 

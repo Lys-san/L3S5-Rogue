@@ -13,31 +13,35 @@
 #ifndef __LIST__
 #define __LIST__
 
-    typedef struct NextEnemy{
-        Enemy enemy;
+    typedef struct NextCoord{
         Point coords;
-        struct NextEnemy* nextEnemy;
-    }ListEnemy;
+        struct NextCoord *nextCoord;
+    }ListCoord;
 
-    typedef struct NextTreasure{
-        Treasure treasure;
-        Point coords;
-        struct NextTreasure* nextTreasure;
-    }ListTreasure;
+    typedef struct Node{
+        Stage stage;
+        struct Node *nextLevel;
+        struct Node *previousLevel;
+    }NodeStage;
 
-    ListTreasure* addTreasure(ListTreasure* allTreasures, int level , int x, int y, Player *player);
+    typedef struct{
+        size_t length;
+        NodeStage *firstLevel;
+        NodeStage *lastLevel;
+    }ListStage;
 
-    ListTreasure* locatesAllTreasures(Stage stage, int level, Player *player);
+    ListStage* newListStage(Stage stage);
 
-    ListEnemy* addEnemy(ListEnemy* allEnemies,int level , int x, int y, Point  stairUpCoords);
+    Stage* searchStage(ListStage* dungeon, unsigned int level);
 
-    ListEnemy* locatesAllEnemies(Stage stage, int level);
+    ListStage* addStage(ListStage *dungeon, Stage stage);
 
-    ListEnemy* searchEnemy(ListEnemy* allEnemies, Point coordEnemy);
+    ListCoord* addCoord(ListCoord *listCoords,int level , int x, int y);
 
-    ListEnemy* removeEnemy(ListEnemy* allEnemies, Point coordEnemy);
+    ListCoord* removeCoord(ListCoord *listCoords, Point coord);
 
-    void printAllEnemies(ListEnemy *allEnemies);
+    ListCoord* generateAllCoords(Stage stage, int level);
 
-    void printAllTreasures(ListTreasure *allTresures);
+    void printAllCoords(ListCoord *listCoords);
+
 #endif
