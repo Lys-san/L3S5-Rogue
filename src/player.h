@@ -30,6 +30,8 @@
     #define STANDARD_EXP_TO_NEXT_LVL 350 + 50*(player->stat.current.Lvl)*/
 
     /*Struct*/
+    enum playerStatus { PHYSICAL_ATTCK, MAGICAL_ATTCK }; /* will determine which attack will be done */
+
     typedef struct {
         int x;
         int y;
@@ -67,6 +69,7 @@
     } Stat;
 
     typedef struct {
+        enum playerStatus status;     /* physical attack mode or magical */
         Point coords;                 /* Coords of the player in the stage */
         Stat stat;                    /* Stats of the player */
         Spell spell;                  /* description of the spell that can be cast */

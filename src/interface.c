@@ -389,6 +389,7 @@ int displayCellSprite(Cell cell) {
             sprite = MLV_load_image("src/files/stairup.png");
             break;
         case STAIR_DOWN :
+            MLV_draw_filled_rectangle(x, y, CELL_SIZE, CELL_SIZE, MLV_COLOR_GRAY1);
             sprite = MLV_load_image("src/files/stairup.png");
             break;
         default : /* out of map */
@@ -416,13 +417,25 @@ Point topLeftCellOnScreen(Point playerCoords) {
 }
 
 
-void displayPlayerBasic() {
-    MLV_draw_filled_circle(WINDOW_WIDTH/2, WINDOW_HEIGHT/2, CELL_SIZE/3, PLAYER_COLOR_BAS);
+MLV_Color playerColor(Player player) {
+    if(player.status == MAGICAL_ATTCK)
+        return MAGICAL_MODE_COLOR_BAS;
+    return PHYSICAL_MODE_COLOR_BAS; /* default */
 }
 
 
-void displayPlayerSprite() {
-    displayPlayerBasic(); /* TODO */
+void displayPlayerBasic(Player player) {
+    MLV_draw_filled_circle(
+        WINDOW_WIDTH/2,
+        WINDOW_HEIGHT/2,
+        CELL_SIZE/3,
+        playerColor(player)
+        );
+}
+
+
+void displayPlayerSprite(Player player) {
+    displayPlayerBasic(player); /* TODO */
 }
 
 
@@ -435,13 +448,6 @@ void displayStage(Stage stage, Player player, enum mode mode) {
             /* tmp indexes for display to be centered on the player */
             tmp = stage.cells[j][i];
 
-            /* test starts here */
-            if(i == tlc.x + SCREEN_WIDTH/2 && j == tlc.y + SCREEN_HEIGHT/2) {
-                printf(isDeadEnd(tmp, stage) ? "DeadEnd\n" : "");
-            }
-
-            /* test ends here. Remove after.*/
-
             tmp.coords.x = i - tlc.x;
             tmp.coords.y = j - tlc.y;
             /* out of map */
@@ -449,7 +455,6 @@ void displayStage(Stage stage, Player player, enum mode mode) {
                i > LEVEL_WIDTH || j > LEVEL_HEIGHT) {
                 tmp.type = OOM;
             }
-
 
             if(mode == WITH_SPRITES)
                 displayCellSprite(tmp);
@@ -460,9 +465,9 @@ void displayStage(Stage stage, Player player, enum mode mode) {
 
     /* displaying the player : */
     if(mode == WITH_SPRITES)
-        displayPlayerSprite();
+        displayPlayerSprite(player);
     else
-        displayPlayerBasic();
+        displayPlayerBasic(player);
 
     MLV_actualise_window();
 }
@@ -472,13 +477,17 @@ void displayAtkButtons() {
     unsigned int windowWidth, windowHeight;
     MLV_get_window_size(&windowWidth, &windowHeight);
 
-    int bttnSize = windowWidth/11;
-    int margin   = bttnSize/5;
+    int bttnSize   = windowWidth/11;
+    int margin     = bttnSize/4;
+    int borderSize = 5;
+
+    int i;
 
     Point physicalBttnCoords, magicalBttnCoords;
     physicalBttnCoords.x = windowWidth - (margin + bttnSize);
     physicalBttnCoords.y = windowHeight - (margin + bttnSize);
-    magicalBttnCoords.x  = windowWidth - 2*(margin - bttnSize);
+    magicalBttnCoords.x  = windowWidth - 2*(margin + bttnSize);
+    magicalBttnCoords.y  = physicalBttnCoords.y;
 
     /* Physical attack button */
     MLV_draw_filled_rectangle(
@@ -489,13 +498,49 @@ void displayAtkButtons() {
         PHYS_ATK_BUTTON_COLOR
         );
 
+    /* Basic display */
+    MLV_draw_text(
+        physicalBttnCoords.x,
+        physicalBttnCoords.y + margin,
+        "ATTCK",
+        MLV_COLOR_WHITE
+        );
+
+    for(i = 0; i < borderSize; i++) {
+        MLV_draw_rectangle(
+            physicalBttnCoords.x + i,
+            physicalBttnCoords.y + i,
+            bttnSize - 2*i,
+            bttnSize - 2*i,
+            MLV_COLOR_WHITE
+            );
+    }
+
     /* Magical attack button */
     MLV_draw_filled_rectangle(
-        physicalBttnCoords.x,
-        physicalBttnCoords.y,
+        magicalBttnCoords.x,
+        magicalBttnCoords.y,
         bttnSize,
         bttnSize,
-        PHYS_ATK_BUTTON_COLOR
+        MAGC_ATK_BUTTON_COLOR
+        );
+
+    for(i = 0; i < borderSize; i++) {
+        MLV_draw_rectangle(
+            magicalBttnCoords.x + i,
+            magicalBttnCoords.y + i,
+            bttnSize - 2*i,
+            bttnSize - 2*i,
+            MLV_COLOR_WHITE
+            );
+    }
+
+    /* Basic display */
+    MLV_draw_text(
+        magicalBttnCoords.x,
+        magicalBttnCoords.y + margin,
+        "MAGIC",
+        MLV_COLOR_WHITE
         );
 
     MLV_actualise_window();
@@ -633,7 +678,6 @@ void displayHUD(Player player) {
             boundaryFill(x1LastPixel - 1, y1LastPixel + 1, fillColor, LINE_COLOR);
         }
     }
-
     unsigned int windowWidth, windowHeight;
     MLV_get_window_size(&windowWidth, &windowHeight);
 

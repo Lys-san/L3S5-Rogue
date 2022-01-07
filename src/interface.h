@@ -31,7 +31,11 @@
 
 /* Colors for in-game buttons */
 #define PHYS_ATK_BUTTON_COLOR        MLV_COLOR_DEEP_PINK
-#define MAGC_ATK_BUTTON_COLOR        MLV_COLOR_LIGHT_CYAN
+#define MAGC_ATK_BUTTON_COLOR        MLV_COLOR_DARK_CYAN
+
+/* Colors for basic display of player */
+#define PHYSICAL_MODE_COLOR_BAS      MLV_COLOR_DEEP_PINK
+#define MAGICAL_MODE_COLOR_BAS       MLV_COLOR_DARK_CYAN
 
 /* Colors for basic display of cells */
 #define PLAYER_COLOR_BAS             MLV_COLOR_DEEP_PINK
@@ -103,12 +107,15 @@ int displayCellSprite(Cell cell);
  * middle of the screen. */
 Point topLeftCellOnScreen(Point playerCoords);
 
+/* Returns the corresponding color according to the player status. */
+MLV_Color playerColor(Player player);
+
 /* Basic display of the player in the middle of the screen using the libMLV
  * drawing functions. */
-void displayPlayerBasic();
+void displayPlayerBasic(Player player);
 
 /* Display of the player in the middle of the screen with the corresponding sprite. */
-void displayPlayerSprite();
+void displayPlayerSprite(Player player);
 
 /* Displays the given stage according to the specified mode. */
 void displayStage(Stage stage, Player player, enum mode mode);

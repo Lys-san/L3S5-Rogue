@@ -7,8 +7,10 @@ Cell initCell(unsigned int stageLevel, Point coords, CellType type, enum contain
 	switch(obj) {
 		case CONTAINS_ENEMY :
 			cell.enemy = generateEnemy(stageLevel, dist);
+			break;
 		case CONTAINS_TREASURE :
 			cell.treasure = generateTreasure(stageLevel, rand() % MAX_RARITY);
+			break;
 		default :
 			break;
 	}
@@ -282,7 +284,7 @@ void initStairDownOnStage(Stage *stage) {
 			}
 		}
 		i++;
-		if(i > 50) {
+		if(i > 1000) {
 			fprintf(
 				stderr,
 				"Error : something strange happened while generating the stair down. "
@@ -321,6 +323,9 @@ void initPlayerOnStage(Player *player, Stage stage) {
 
 	/* updating the player's coordonates */
 	player->coords = startingCell.coords;
+
+	/* updating his status to physical attack */
+	player->status = PHYSICAL_ATTCK;
 }
 
 void initStage(Stage *stage, Player *player, unsigned int stageLevel) {

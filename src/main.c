@@ -10,11 +10,37 @@ int main(int argc, char * argv[]) {
 	Player player;
 	char playerName[] = "Ruby"; /* random init for testing */
 
+	/*printf("***TEST STARTS HERE***\n\n");
+	printf(">>>Creating array of cells for testing.\n");
+	
+	Cell cellList[10];
+	int i;
+	for(i = 0; i < 10; i++) {
+		printf(">>>Initializing cell no %d.\n", i);
+		cellList[i] = initCell(i + 1, (Point){2, TEST_LEVEL_WIDTH-2}, ENEMY, CONTAINS_ENEMY, 1);
+		printf("Cell %d initialized.\n", i);
+	}
+	printf(">>>Array initialized.\n");
+	printf(">>>Checking values...\n");
+	for(i = 0; i < 10; i++) {
+		printf("Coords : %d %d\n", cellList[i].coords.x, cellList[i].coords.y);
+		printf("Type   : ");
+		if(cellList[i].type == ENEMY) {
+			printf("ENEMY\n");
+	    	quickPrintEnemy(cellList[i].enemy);
+		}
+		else {
+			printf("NOT ENEMY\n");
+		}
+	}
+
+    printf("***END OF TEST***\n\n");*/
+
 	printf(">>>Initializing player stats.\n");
 	initializeStandard(&player, playerName);
 	printf("Player stats initialized.\n");
 	/*player.coords = (Point){2, 2};*/
-	/*quickPrintPlayer(player);*/
+	quickPrintPlayer(player);
 
 	printf(">>>Initializing stage.\n");
 	initStage(&stage, &player, 1);
@@ -39,6 +65,7 @@ int main(int argc, char * argv[]) {
 	while( !quit ) {
 		switch(mainScreen(1, fadein)) {
 			case PLAY : 
+				printf(">>>Game start.\n");
 				playButtonSound_2();
 				fadein = 0; 
 

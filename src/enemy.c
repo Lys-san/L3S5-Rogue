@@ -1,7 +1,6 @@
 #include "enemy.h"
 
 Enemy generateEnemy(unsigned int stage, unsigned int distance) {
-    
     Enemy monster;
     unsigned int stat;
 
