@@ -43,6 +43,6 @@
     /*Open a treasure chest*/
     void openTreasure(Player* player, unsigned int stage);
 
-    ListStage* movePreviousStage(ListStage *dungeon, Player *player);
+    turnEffect* consumeItem(Player* player, Consummables potion, turnEffect* effects);
 
 #endif

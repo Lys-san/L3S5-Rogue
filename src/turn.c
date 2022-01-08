@@ -5,13 +5,13 @@ int enemyTurn(Enemy monster, Player* player, Point coordEnemy, Stage *level){
     
     /* If the hero is adjacent */
     if(isAdjacent(coordEnemy, player->coords)){
-        /*printf("the player is adjacent \n");
-        enemyAttack(monster, player);*//* perform an attack */
-        /*printf("the player is at %d \n", player->stat.current.hp);
+        printf("the player is adjacent \n");
+        enemyAttack(monster, player);/* perform an attack */
+        printf("the player is at %d \n", player->stat.current.hp);
         if(player->stat.current.hp < 0){
             printf("The player is dead \n");
             return 1;
-        }*/
+        }
     }
     else{
         printf("the player isn't adjacent \n");
@@ -43,13 +43,17 @@ int allEnemyTurn(Stage *level, Player* player, ListCoord* coordsEnnemies){
 int turnEnemyOnScreen(Stage *level, Player* player){
     int i, j;
     int playerDeath;
+    Point topLeft;
     ListCoord* coordsEnnemies;
     coordsEnnemies = NULL;
-    
+
+    topLeft.x = player->coords.x - (SCREEN_WIDTH/2);
+    topLeft.y = player->coords.y - (SCREEN_HEIGHT/2);
+    printf("topLeft : x = %d, y = %d \n", topLeft.x, topLeft.y);
     for(i = 0;i < SCREEN_WIDTH; i++){
         for(j = 0;j < SCREEN_HEIGHT; j++){
-            if(level->cells[i][j].type == ENEMY){
-                coordsEnnemies = addCoord(coordsEnnemies, 1, j, i);
+            if(level->cells[topLeft.y+i][topLeft.x+j].type == ENEMY){
+                coordsEnnemies = addCoord(coordsEnnemies, 1, topLeft.x+j, topLeft.y+i);
             }
         }
     }
@@ -57,32 +61,3 @@ int turnEnemyOnScreen(Stage *level, Player* player){
     free(coordsEnnemies);
     return playerDeath;
 }
-/*
-    
-    Stage stage;
-    Player player;
-    Enemy enemy;
-    Point coordEnemy;
-    int i;
-
-    stage = generateStageTest();
-    enemy = generateEnemy(1, 1);
-
-    coordEnemy.x = 7;
-    coordEnemy.y = 2;
-
-    
-    initializeStandard(&player, "Bob");
-    player.coords.x = 1;
-    player.coords.y = 2;
-    
-    quickPrintEnemy(enemy);
-    quickPrintStage(stage);
-
-    for(i=0;i<10;i++){
-        enemyTurn(enemy,&player, &coordEnemy, &stage);
-        quickPrintStage(stage);
-    }
-
-    return 0;
-*/

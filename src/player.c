@@ -1,7 +1,3 @@
-/*Bibliothèque générale*/
-#include <stdio.h>
-
-/*Bibliothèque interne*/
 #include "player.h"
 
 int standardMaxHP(Player player) {
@@ -47,6 +43,7 @@ void initializeCurrentStat(Player *player) {
 void initializeStat(Player *player, char* name) {
     initializeBaseStat(player, name);
     initializeCurrentStat(player);
+    player->underLearningPotion = 0;
 }
 
 void addBasicSpell(Spell *spell){
@@ -68,7 +65,11 @@ void initializeStandard(Player *player, char* name) {
 }
 
 void gainExp(Player *player, unsigned int exp){
+    if(player->underLearningPotion){
+        player->stat.current.exp += (int)(exp*(30/100));
+    }
     player->stat.current.exp += exp;
+    while(gainLvl(player));
 }
 
 int gainLvl(Player *player){
@@ -84,59 +85,11 @@ int gainLvl(Player *player){
 
     player->stat.current.exp -= nextLvlExp;
     player->stat.current.lvl += 1;
+    player->stat.current.hp = standardMaxHP(*player);
+    player->stat.current.mp = standardMaxMP(*player);
     return 1;
 }
 
-void useMagicPotion(Player *player){
-    int maxMagic;
-    maxMagic = standardMaxMP(*player);
-    player->stat.current.mp += (10*maxMagic)/100;
-    if(player->stat.current.mp > maxMagic){
-        player->stat.current.mp = maxMagic;
-    }
-}
-
-void useHealingPotion(Player *player){
-    int maxHealth;
-    maxHealth = standardMaxHP(*player);
-    player->stat.current.hp += (10*maxHealth)/100;
-    if(player->stat.current.hp > maxHealth){
-        player->stat.current.hp = maxHealth;
-    }
-}
-
-void turnRegenPotion(Player *player){
-    int maxHealth, maxMagic;
-    maxHealth = standardMaxHP(*player);
-    maxMagic = standardMaxMP(*player);
-    player->stat.current.hp += 20;
-    player->stat.current.mp += 10;
-    if(player->stat.current.hp > maxHealth){
-        player->stat.current.hp = maxHealth;
-    }
-    if(player->stat.current.mp > maxMagic){
-        player->stat.current.mp = maxMagic;
-    }
-}
-
-void gainPrecision(Player *player){
-    player->stat.base.CRIT.rate += 10;
-}
-
-void losePrecision(Player *player){
-    player->stat.base.CRIT.rate -= 10;
-    if(player->stat.base.CRIT.rate < 0){
-        player->stat.base.CRIT.rate = 0;
-    }
-}
-
-void gainLearning(Player *player){
-
-}
-
-void loseLearning(Player *player){
-
-}
 
 void updateArmorStat(Player *player, Equipment armor){
 

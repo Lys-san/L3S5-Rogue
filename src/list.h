@@ -6,8 +6,7 @@
 
 /*Bibliothèque interne*/
 #include "level.h"
-#include "player.h"
-#include "treasure.h"
+#include "potions.h"
 #include "enemy.h"
 
 #ifndef __LIST__
@@ -17,6 +16,11 @@
         Point coords;
         struct NextCoord *nextCoord;
     }ListCoord;
+
+    typedef struct NextEffect{ 
+        Effect effect;
+        struct NextEffect *NextEffect;
+    }turnEffect;
 
     typedef struct Node{
         Stage stage;
@@ -30,9 +34,9 @@
         NodeStage *lastLevel;
     }ListStage;
 
-    ListStage* newListStage(Stage stage);
+    ListStage* newListStage(void);
 
-    Stage* searchStage(ListStage* dungeon, unsigned int level);
+    ListStage* searchStage(ListStage* dungeon, unsigned int level);
 
     ListStage* addStage(ListStage *dungeon, Stage stage);
 
@@ -41,6 +45,10 @@
     ListCoord* removeCoord(ListCoord *listCoords, Point coord);
 
     ListCoord* generateAllCoords(Stage stage, int level);
+
+    turnEffect* addEffect(turnEffect* effects, Effect effect);
+
+    turnEffect* gainAllEffects(turnEffect* effects, Player *player);
 
     void printAllCoords(ListCoord *listCoords);
 

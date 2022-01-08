@@ -1,6 +1,6 @@
 #include "list.h"
 
-ListStage* newListStage(Stage stage){
+ListStage* newListStage(void){
     
     ListStage* newList;
 
@@ -13,15 +13,28 @@ ListStage* newListStage(Stage stage){
     return newList;
 }
 
-Stage* searchStage(ListStage* dungeon, unsigned int level){
+ListStage* searchStage(ListStage* dungeon, unsigned int level){
+    
+    ListStage* res;
     NodeStage* tmp;
-    tmp = dungeon->lastLevel;
-    while(tmp != NULL){
-        if(1){
-            return &tmp->stage;
+    int found;
+
+    res = NULL;
+    tmp = dungeon->firstLevel;
+    found = 0;
+    printf("Searching for level %d \n", level);
+    while(tmp != NULL && !found){
+        printf("%d\n", tmp->stage.level);
+        if(tmp->stage.level == level){
+            res = newListStage();
+            res = addStage(res, tmp->stage);
+            found = 1;
+        }
+        else{
+            tmp = tmp->nextLevel;
         }
     }
-    return NULL;
+    return res;
 }
 
 ListStage* addStage(ListStage *dungeon, Stage stage){
@@ -103,4 +116,44 @@ void printAllCoords(ListCoord *listCoords){
         printf("coord : \n x = %d \n y = %d \n", tmp->coords.x, tmp->coords.y);
         tmp = tmp->nextCoord;
     }
+}
+
+turnEffect* addEffect(turnEffect* effects, Effect effect){
+    
+    turnEffect *newEffect;
+
+    /* Create  a new element */
+    newEffect = malloc(sizeof(turnEffect));
+    newEffect->effect = effect;
+
+    newEffect->NextEffect = effects;/*Adds at the top of the list because the order doesn't really matter*/
+
+    return newEffect;
+}
+
+turnEffect* gainAllEffects(turnEffect* effects, Player *player){
+    
+    turnEffect *tmp;
+    tmp = effects;
+
+    if(tmp != NULL){
+        if(tmp->effect.turnLeft == 0){
+            if(NULL != tmp->effect.malus){
+                tmp->effect.malus(player);
+            }
+            tmp = effects->NextEffect;
+            free(effects);
+            tmp = gainAllEffects(tmp, player);
+            return tmp;
+        }
+        else{
+            if(NULL != tmp->effect.bonus && tmp->effect.turnLeft%tmp->effect.turnActivation == 0){
+                effects->effect.bonus(player);
+            }
+            effects->effect.turnLeft -= 1;
+            effects->NextEffect = gainAllEffects(effects->NextEffect, player);
+            return effects;
+        }
+    }
+    return NULL;
 }

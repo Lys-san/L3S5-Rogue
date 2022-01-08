@@ -133,7 +133,7 @@ int playerMagicalAttack(Player* player, Enemy* monster){
     unsigned int damage;
 
     /* Check the mp */
-    if(player->spell.cost > player->stat.current.mp){
+    if(player->spell.cost <= player->stat.current.mp){
         return 0;
     }
     player->stat.current.mp -= player->spell.cost;
@@ -149,6 +149,7 @@ int playerMove(Stage *level, Player* player, Direction dir, ListStage *dungeon){
     
     Point newCoord;
     CellType type;
+    ListStage *tmpDungeon;
 
     /* Calculate the new coord */
     newCoord = Move(player->coords,dir);
@@ -168,23 +169,27 @@ int playerMove(Stage *level, Player* player, Direction dir, ListStage *dungeon){
             playerPhysicalAttack(*player, &level->cells[newCoord.y][newCoord.x].enemy);
             if(level->cells[newCoord.y][newCoord.x].enemy.hp <= 0){
                 printf("The enemy is dead \n");
+                gainExp(player, level->cells[newCoord.y][newCoord.x].enemy.exp);
                 level->cells[newCoord.y][newCoord.x] = initCell(1, newCoord, ROOM, CONTAINS_NOTHING, 0);
             }
-            return 1;/* The player will perform a physical attack */
+            return 0;/* The player will perform a physical attack */
         break;
 
         case TREASURE:/* The player will open a Treasure */
             printf("Open treasure \n");
-            return 1;
+            return 0;
         break;
 
         case STAIR_DOWN:/* The player will descend to the next level */
             printf("Go downstair \n");
             player->coords.x = newCoord.x;
             player->coords.y = newCoord.y;
-            if(dungeon->lastLevel == NULL){
-                initStage(level, player, 1);
+            tmpDungeon = searchStage(dungeon, (level->level+1));
+            if(NULL == tmpDungeon){
+                /*generateStageTest(level, player, level->level+1);*/
+                initStage(level, player, level->level+1);
                 dungeon = addStage(dungeon, *level);
+                printf("Current level is %d \n", level->level);
             }
             return 1;
         break;
@@ -210,6 +215,24 @@ int playerMove(Stage *level, Player* player, Direction dir, ListStage *dungeon){
 
 void openTreasure(Player* player, unsigned int stage){}
 
-ListStage* movePreviousStage(ListStage *dungeon, Player *player){
-    return NULL;
+turnEffect* consumeItem(Player* player, Consummables potion, turnEffect* effects){
+    switch(potion){
+        case HEAL:
+            useHealingPotion(player);
+            break;
+        case MAGIC:
+            useMagicPotion(player);
+            break;
+        case REGEN:
+            effects = addEffect(effects, createEffect(REGEN));
+            break;
+        case LEARNING:
+            effects = addEffect(effects, createEffect(LEARNING));
+            break;
+        case PRECISION:
+            effects = addEffect(effects, createEffect(PRECISION));
+            break;
+        default:fprintf(stderr, "This item doesn't exist");
+    }
+    return effects;
 }
