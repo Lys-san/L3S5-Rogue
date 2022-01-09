@@ -7,7 +7,6 @@
 /*Bibliothèque interne*/
 #include "level.h"
 #include "potions.h"
-#include "enemy.h"
 
 #ifndef __LIST__
 #define __LIST__

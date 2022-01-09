@@ -1,10 +1,8 @@
 /* Autors : Nicolas Mazeyrac, Lysandre Macke
  * Creation : 27/11/2021
- * Modification : 03/01/2022*/
+ * Modification : 09/01/2022*/
 
 /* General libraries */
-#include <stdlib.h>
-#include <stdio.h>
 
 /* Internal libraries */
 #include "player.h"

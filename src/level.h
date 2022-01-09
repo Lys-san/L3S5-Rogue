@@ -1,14 +1,11 @@
 /* Autors : Nicolas Mazeyrac, Lysandre Macke
  * Creation : 27/11/2021
- * Last modified : 06/12/2021*/
+ * Last modified : 09/01/2021*/
 
 /* General libraries */
-#include <stdlib.h>
-#include <stdio.h>
 
 /* Internal libraries */
-#include "enemy.h" /*includes player.h*/
-#include "treasure.h"
+#include "enemy.h"
 
 #ifndef __LEVEL__
 #define __LEVEL__

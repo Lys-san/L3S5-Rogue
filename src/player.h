@@ -1,11 +1,8 @@
 /* Auteurs : Nicolas Mazeyrac, Lysandre Macke
  * Creation : 30/11/2021
- * Modification : 03/01/2022*/
+ * Modification : 09/01/2022*/
 
 /*Bibliothèque générale*/
-#include <stdlib.h>
-#include <stdio.h>
-
 
 /*Bibliothèque interne*/
 #include "treasure.h"
@@ -70,6 +67,7 @@
         Spell spell;                  /* description of the spell that can be cast */
         Loot equip[MAX_EQUIP];        /* Equipment item that changes Player current stat 0=ARMOR, 1=WEAPON, 2=WAND*/
         Loot inventory[MAX_INVENTORY];/* Inventory of non-equipment item */
+        int nbrItemHeld;
     } Player;
 
 
@@ -116,6 +114,8 @@
 
     int checkEquip(Player *player, Equipment equip, int position);
 
-    int newEquipment(Player *player, Equipment equip);
+    void newEquipment(Player *player, Equipment equip);
+
+    void pickUp(Player* player, Loot loot);
 
 #endif

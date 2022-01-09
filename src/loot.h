@@ -1,6 +1,6 @@
 /* Auteurs : Nicolas Mazeyrac, Lysandre Macke
  * Creation : 06/01/2022
- * Modification : 06/01/2022*/
+ * Modification : 09/01/2022*/
 
 /*Bibliothèque générale*/
 #include <stdlib.h>
@@ -58,14 +58,5 @@
 
     /* Returns a randomly generated item if it's an equipment also give the quality and rarity */
     Loot generateLoot(unsigned int quality, unsigned int rarity, LootType type);
-
-    /* Shell display of an equipment (to use for debug) */
-    void quickPrintEquipment(Equipment equip);
-
-    /* Shell display of a consummable (to use for debug) */
-    void quickPrintConsummable(Consummables consummable);
-
-    /* Shell display of any loot (to use for debug) */
-    void quickPrintLoot(Loot loot);
 
 #endif

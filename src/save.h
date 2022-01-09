@@ -1,12 +1,11 @@
 /* Auteurs : Nicolas Mazeyrac, Lysandre Macke
  * Creation : 26/11/2021
- * Modification : 30/11/2021*/
+ * Modification : 09/01/2022*/
 
 /*Bibliothèque générale*/
-#include <stdio.h>
-#include <stdlib.h>
 
 /*Bibliothèque interne*/
+#include"list.h"
 
 #ifndef __SAVE__
 #define __SAVE__

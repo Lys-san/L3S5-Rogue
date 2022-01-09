@@ -62,6 +62,7 @@ void initializeStandard(Player *player, char* name) {
     initializeStat(player, name);
     addBasicSpell(&player->spell);
     addBasicEquipment(player);
+    player->nbrItemHeld = 0;
 }
 
 void gainExp(Player *player, unsigned int exp){
@@ -135,18 +136,22 @@ int checkEquip(Player *player, Equipment equip, int position){
     return 0;
 }
 
-int newEquipment(Player *player, Equipment equip){
-    if(!checkEquip(player, equip, (int)equip.type)){
-        return 1;
+void newEquipment(Player *player, Equipment equip){
+    if(checkEquip(player, equip, (int)equip.type)){
+        switch(equip.type){
+            case ARMOR: updateArmorStat(player, equip) ;break;
+            case WEAPON : updateWeaponStat(player, equip) ;break;
+            case WAND: updateWandStat(player, equip)  ;break;
+            default: printf("ERROR \n");
+        }
     }
+}
 
-    switch(equip.type){
-        case ARMOR: updateArmorStat(player, equip) ;break;
-        case WEAPON : updateWeaponStat(player, equip) ;break;
-        case WAND: updateWandStat(player, equip)  ;break;
-        default: printf("ERROR \n");
+void pickUp(Player* player, Loot loot){
+    if(player->nbrItemHeld < MAX_INVENTORY){
+        player->inventory[player->nbrItemHeld] = loot;
+        player->nbrItemHeld += 1;
     }
-    return 0;
 }
 
 void quickPrintPlayer(Player player){

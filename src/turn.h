@@ -1,9 +1,8 @@
 /* Auteurs : Nicolas Mazeyrac, Lysandre Macke
  * Creation : 26/12/2021
- * Modification : 03/01/2022*/
+ * Modification : 09/01/2022*/
 
 /*Bibliothèque générale*/
-#include <stdio.h>
 
 /*Bibliothèque interne*/
 #include "action.h"
