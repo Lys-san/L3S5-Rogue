@@ -1,6 +1,6 @@
 /* Auteurs : Nicolas Mazeyrac, Lysandre Macke
  * Creation : 27/11/2021
- * Modification : 06/01/2022*/
+ * Modification : 09/01/2022*/
 
 /*Bibliothèque générale*/
 
@@ -19,6 +19,7 @@
 
     typedef struct {
         Loot loot[MAX_LOOT_PER_TREASURE]; /*Basically, a treasure is a box full of loot*/
+        int closed;
     } Treasure;
 
     /*Functions*/

@@ -144,6 +144,46 @@ int playerMagicalAttack(Player* player, Enemy* monster){
     return 1;
 }
 
+void openTreasure(Player* player, Stage* stage, int x, int y){
+    Loot loot;
+
+    if(stage->cells[y][x].treasure.closed){
+        loot = generateLoot(10, 10, CONSUMMABLE);/*choose a treasure*/
+        quickPrintLoot(loot);
+        switch(loot.type){
+            case EQUIPMENT:
+                newEquipment(player, loot.equipment);
+                break;
+            case CONSUMMABLE:
+                pickUp(player, loot);
+                break;
+            default:fprintf(stderr, "this loot doesn't exist");
+        }
+        stage->cells[y][x].treasure.closed = 0;
+    }
+}
+
+turnEffect* consumeItem(Player* player, Consummables potion, turnEffect* effects){
+    switch(potion){
+        case HEAL:
+            useHealingPotion(player);
+            break;
+        case MAGIC:
+            useMagicPotion(player);
+            break;
+        case REGEN:
+            effects = addEffect(effects, createEffect(REGEN));
+            break;
+        case LEARNING:
+            effects = addEffect(effects, createEffect(LEARNING));
+            break;
+        case PRECISION:
+            effects = addEffect(effects, createEffect(PRECISION));
+            break;
+        default:fprintf(stderr, "This item doesn't exist");
+    }
+    return effects;
+}
 
 int playerMove(Stage *level, Player* player, Direction dir, ListStage *dungeon){
     
@@ -177,6 +217,8 @@ int playerMove(Stage *level, Player* player, Direction dir, ListStage *dungeon){
 
         case TREASURE:/* The player will open a Treasure */
             printf("Open treasure \n");
+            openTreasure(player, level, newCoord.x, newCoord.y);
+            quickPrintPlayer(*player);
             return 0;
         break;
 
@@ -211,28 +253,4 @@ int playerMove(Stage *level, Player* player, Direction dir, ListStage *dungeon){
     player->coords.x = newCoord.x;
     player->coords.y = newCoord.y;
     return 0;
-}
-
-void openTreasure(Player* player, unsigned int stage){}
-
-turnEffect* consumeItem(Player* player, Consummables potion, turnEffect* effects){
-    switch(potion){
-        case HEAL:
-            useHealingPotion(player);
-            break;
-        case MAGIC:
-            useMagicPotion(player);
-            break;
-        case REGEN:
-            effects = addEffect(effects, createEffect(REGEN));
-            break;
-        case LEARNING:
-            effects = addEffect(effects, createEffect(LEARNING));
-            break;
-        case PRECISION:
-            effects = addEffect(effects, createEffect(PRECISION));
-            break;
-        default:fprintf(stderr, "This item doesn't exist");
-    }
-    return effects;
 }

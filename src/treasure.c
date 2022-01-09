@@ -25,6 +25,7 @@ Treasure generateTreasure(unsigned int stage, unsigned int playerlevel) {
 			treasure.loot[i] = generateLoot(quality, rarity, CONSUMMABLE);/* Generate a consummable */
 		}
 	}
+	treasure.closed = 1;
 	return treasure;
 }
 

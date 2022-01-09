@@ -4,8 +4,6 @@
 
 /*Bibliothèque générale*/
 #include <time.h>
-#include <stdlib.h>
-#include <stdio.h>
 
 /*Bibliothèque interne*/
 #include "list.h"
@@ -41,7 +39,7 @@
     int playerMove(Stage *level, Player *player, Direction dir, ListStage *dungeon);
     
     /*Open a treasure chest*/
-    void openTreasure(Player* player, unsigned int stage);
+    void openTreasure(Player* player, Stage *stage, int x, int y);
 
     turnEffect* consumeItem(Player* player, Consummables potion, turnEffect* effects);
 
