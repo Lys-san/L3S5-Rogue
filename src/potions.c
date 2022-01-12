@@ -32,7 +32,12 @@ void turnRegenPotion(Player *player){
     }
 }
 
+void gainRegenPotion(Player *player){
+    player->underRegenPotion = 30;
+}
+
 void gainPrecision(Player *player){
+    player->underPrecisionPotion = 30;
     player->stat.base.CRIT.rate += 10;
 }
 
@@ -44,37 +49,22 @@ void losePrecision(Player *player){
 }
 
 void gainLearning(Player *player){
-    player->underLearningPotion = 1;
+    player->underLearningPotion = 30;
 }
 
-void loseLearning(Player *player){
-    player->underLearningPotion = 0;
-}
-
-
-Effect createEffect(Consummables potion){
-    Effect effect;
-
-    switch(potion){
-        case REGEN:
-            effect.turnActivation = 3;
-            effect.turnLeft = 30;
-            effect.bonus = &turnRegenPotion;
-            effect.malus = NULL;
-            break;
-        case LEARNING:
-            effect.turnActivation = 30;
-            effect.turnLeft = 30;
-            effect.bonus = &gainLearning;
-            effect.malus = &loseLearning;
-        break;
-        case PRECISION:
-            effect.turnActivation = 30;
-            effect.turnLeft = 30;
-            effect.bonus = &gainPrecision;
-            effect.malus = &losePrecision;
-            break;
-        default: fprintf(stderr, "doesnt give effect") ;
+void gainAllEffect(Player *player){
+    if(player->underLearningPotion != 0){
+        player->underLearningPotion -= 1;
     }
-    return effect;
+
+    if(player->underPrecisionPotion != 0){
+        player->underPrecisionPotion -= 1;
+        if(player->underPrecisionPotion == 0){
+            losePrecision(player);
+        }
+    }
+    if(player->underRegenPotion != 0){
+        player->underRegenPotion -= 1;
+        turnRegenPotion(player);
+    }
 }

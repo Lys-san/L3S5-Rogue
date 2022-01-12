@@ -10,18 +10,13 @@
 #ifndef __POTIONS__
 #define __POTIONS__
 
-    typedef struct {
-        int turnActivation;
-        int turnLeft;
-        void (*bonus)(Player* player);
-        void (*malus)(Player* player);
-    }Effect;
-
     void useMagicPotion(Player *player);
 
     void useHealingPotion(Player *player);
 
     void turnRegenPotion(Player *player);
+
+    void gainRegenPotion(Player *player);
 
     void gainPrecision(Player *player);
 
@@ -31,5 +26,5 @@
 
     void loseLearning(Player *player);
 
-    Effect createEffect(Consummables potion);
+    void gainAllEffect(Player *player);
 #endif

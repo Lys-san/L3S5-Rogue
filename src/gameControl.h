@@ -14,6 +14,6 @@
 
     /* Performs the specified action. Returns 1 if the action was performed
      * correctly, 0 otherwise, and -1 if QUIT. */
-    int doAction(enum PLAYER_ACTION act, Stage *stage, Player *player, ListStage *dungeon);
+    int doAction(enum PLAYER_ACTION act, Player *player, StageList *dungeon);
     
 #endif

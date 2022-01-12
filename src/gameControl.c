@@ -83,18 +83,18 @@ enum PLAYER_ACTION getPlayerAction() {
     }
     return NO_ACTION;
 }
-int doAction(enum PLAYER_ACTION act, Stage *stage, Player *player, ListStage *dungeon) {
+int doAction(enum PLAYER_ACTION act, Player *player, StageList *dungeon) {
 	switch( act ) {
 		case UP :
-			playerMove(stage, player, N, dungeon);
+			playerMove(player, N, dungeon);
 			return 1;
 		case DOWN :
-			return playerMove(stage, player, S, dungeon);
+			return playerMove(player, S, dungeon);
 		case LEFT :
-			playerMove(stage, player, W, dungeon);
+			playerMove(player, W, dungeon);
 			return 1;
 		case RIGHT :
-			playerMove(stage, player, E, dungeon);
+			playerMove(player, E, dungeon);
 			return 1;
 		case PHYSICAL :
             player->status = PHYSICAL_ATTCK;
