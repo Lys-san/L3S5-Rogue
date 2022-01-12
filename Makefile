@@ -17,7 +17,9 @@ OBJECTS = \
 	src/turn.o \
 	src/loot.o \
 	src/list.o \
-	src/potions.o
+	src/potions.o \
+	src/test.o \
+	src/save.o
 
 FILES =                  \
 	redistributables/data  \
