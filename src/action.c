@@ -148,7 +148,7 @@ void openTreasure(Player* player, Stage* stage, int x, int y){
     Loot loot;
 
     if(stage->cells[y][x].treasure.closed){
-        loot = generateLoot(10, 10, CONSUMMABLE);/*choose a treasure*/
+        loot = stage->cells[y][x].treasure.loot[0];/*choose a treasure*/
         quickPrintLoot(loot);
         switch(loot.type){
             case EQUIPMENT:
@@ -163,37 +163,50 @@ void openTreasure(Player* player, Stage* stage, int x, int y){
     }
 }
 
-turnEffect* consumeItem(Player* player, Consummables potion, turnEffect* effects){
+int consumeItem(Player* player, Consummables potion){
     switch(potion){
         case HEAL:
             useHealingPotion(player);
+            return 1;
             break;
         case MAGIC:
             useMagicPotion(player);
+            return 1;
             break;
         case REGEN:
-            effects = addEffect(effects, createEffect(REGEN));
+            if(player->underRegenPotion == 0){
+                gainRegenPotion(player);
+                return 1;
+            }
             break;
         case LEARNING:
-            effects = addEffect(effects, createEffect(LEARNING));
+            if(player->underLearningPotion == 0){
+                gainLearning(player);
+                return 1;
+            }
             break;
         case PRECISION:
-            effects = addEffect(effects, createEffect(PRECISION));
+            if(player->underPrecisionPotion == 0){
+                gainPrecision(player);
+                return 1;
+            }
             break;
         default:fprintf(stderr, "This item doesn't exist");
     }
-    return effects;
+    return 0;
 }
 
-int playerMove(Stage *level, Player* player, Direction dir, ListStage *dungeon){
+int playerMove(Player* player, Direction dir, StageList *dungeon){
     
     Point newCoord;
     CellType type;
-    ListStage *tmpDungeon;
+    Stage *stage;
+    Stage newStage;
 
     /* Calculate the new coord */
     newCoord = Move(player->coords,dir);
-    type = level->cells[newCoord.y][newCoord.x].type;
+    stage = &((*dungeon)->stage);
+    type = stage->cells[newCoord.y][newCoord.x].type;
 
     /* Special Action based on the next tile*/
     switch(type){
@@ -205,19 +218,19 @@ int playerMove(Stage *level, Player* player, Direction dir, ListStage *dungeon){
 
         case ENEMY:
             printf("Attack \n");
-            quickPrintEnemy(level->cells[newCoord.y][newCoord.x].enemy);
-            playerPhysicalAttack(*player, &level->cells[newCoord.y][newCoord.x].enemy);
-            if(level->cells[newCoord.y][newCoord.x].enemy.hp <= 0){
+            quickPrintEnemy(stage->cells[newCoord.y][newCoord.x].enemy);
+            playerPhysicalAttack(*player, &(stage->cells[newCoord.y][newCoord.x].enemy));
+            if(stage->cells[newCoord.y][newCoord.x].enemy.hp <= 0){
                 printf("The enemy is dead \n");
-                gainExp(player, level->cells[newCoord.y][newCoord.x].enemy.exp);
-                level->cells[newCoord.y][newCoord.x] = initCell(1, newCoord, ROOM, CONTAINS_NOTHING, 0);
+                gainExp(player, stage->cells[newCoord.y][newCoord.x].enemy.exp);
+                stage->cells[newCoord.y][newCoord.x] = initCell(1, newCoord, ROOM, CONTAINS_NOTHING, 0);
             }
             return 0;/* The player will perform a physical attack */
         break;
 
         case TREASURE:/* The player will open a Treasure */
             printf("Open treasure \n");
-            openTreasure(player, level, newCoord.x, newCoord.y);
+            openTreasure(player, stage, newCoord.x, newCoord.y);
             quickPrintPlayer(*player);
             return 0;
         break;
@@ -226,12 +239,16 @@ int playerMove(Stage *level, Player* player, Direction dir, ListStage *dungeon){
             printf("Go downstair \n");
             player->coords.x = newCoord.x;
             player->coords.y = newCoord.y;
-            tmpDungeon = searchStage(dungeon, (level->level+1));
-            if(NULL == tmpDungeon){
-                /*generateStageTest(level, player, level->level+1);*/
-                initStage(level, player, level->level+1);
-                dungeon = addStage(dungeon, *level);
-                printf("Current level is %d \n", level->level);
+            if((*dungeon)->nextLevel == NULL){
+                /*generateStageTest(&newStage, player, stage->level+1);*/
+                initStage(&newStage, player, stage->level+1);
+                addStage(dungeon, newStage);
+                quickPrintStage(newStage);
+            }
+            else{
+                (*dungeon) =(*dungeon)->nextLevel ;
+                initPlayerOnStage(player,  (*dungeon)->stage);
+                /*player->coords = (Point){2, 2};*/
             }
             return 1;
         break;
@@ -240,6 +257,13 @@ int playerMove(Stage *level, Player* player, Direction dir, ListStage *dungeon){
             printf("Go upstair \n");
             player->coords.x = newCoord.x;
             player->coords.y = newCoord.y;
+            if((*dungeon)->previousLevel != NULL){
+                printf("target level is %d \n", stage->level-1);
+                (*dungeon) =(*dungeon)->previousLevel ;
+                printf("Current level is %d \n", (*dungeon)->stage.level);
+                /*initPlayerOnStage(player,  (*dungeon)->stage);*/
+                player->coords = (Point){2, 2};
+            }
             return 1;
         break;
 
@@ -249,7 +273,6 @@ int playerMove(Stage *level, Player* player, Direction dir, ListStage *dungeon){
     /*the player moved*/
     printf("Moves \n");
     printf("New coord = x=%d, y=%d \n", newCoord.x, newCoord.y);
-    /*printf("Moves \n");*/
     player->coords.x = newCoord.x;
     player->coords.y = newCoord.y;
     return 0;

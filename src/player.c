@@ -21,9 +21,7 @@ void initializeCritStat(Player *player) {
     player->stat.base.CRIT.accuracy = STANDARD_BASE_ACCURACY;          /*  +/-20%  */
 }
 
-void initializeBaseStat(Player *player, char* name) {
-    
-    player->stat.base.name = name;
+void initializeBaseStat(Player *player) {
     
     /*Reminder : STANDARD_BASE_STAT = 10*/
     player->stat.base.ATTACK = STANDARD_BASE_STAT;
@@ -40,8 +38,8 @@ void initializeCurrentStat(Player *player) {
     player->stat.current.exp = 0;
 }
 
-void initializeStat(Player *player, char* name) {
-    initializeBaseStat(player, name);
+void initializeStat(Player *player) {
+    initializeBaseStat(player);
     initializeCurrentStat(player);
     player->underLearningPotion = 0;
 }
@@ -58,8 +56,8 @@ void addBasicEquipment(Player *player){
 }
 
 
-void initializeStandard(Player *player, char* name) {
-    initializeStat(player, name);
+void initializeStandard(Player *player) {
+    initializeStat(player);
     addBasicSpell(&player->spell);
     addBasicEquipment(player);
     player->nbrItemHeld = 0;
@@ -156,7 +154,6 @@ void pickUp(Player* player, Loot loot){
 
 void quickPrintPlayer(Player player){
     printf("****PLAYER STATS****\n");
-    printf("name          : %s\n", player.stat.base.name);
 
     printf("lvl           : %d\n", player.stat.current.lvl);
     printf("exp           : %d\n", player.stat.current.exp);

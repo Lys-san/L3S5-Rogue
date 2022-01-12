@@ -18,7 +18,6 @@
     /*Struct*/
 
     typedef struct {
-        char* name;/*Name of the monster*/
         unsigned int exp;/*Exp given after its death*/
         unsigned int attack;/* Used to calculate the power of a melee attack */
         int hp;/*hp*/

@@ -12,27 +12,21 @@
 
     /*Define*/
 
-    #define MEMORY_FILE_NAME "game.sav" /*temporaire : je cherche encore sous quelle forme sont écrits les fichiers .sav*/
+    #define MEMORY_FILE_NAME "game.bin" /*temporaire : je cherche encore sous quelle forme sont écrits les fichiers .sav*/
 
     /*Struct*/
 
 
     /*Functions*/
 
-    /*returns 1 if a given file is found and 0 otherwise.*/
-    int memoryFileIsFound();
-
     /*creates a new memory file.
       If a memory file already exists this one will be replaced with the new one.*/
-    void newGame();
+    int newGame(Player *player, StageList* dungeon);
 
     /*loads the game according the data found in the given memory file.*/
-    void loadGame(FILE *memoryFile); /*RAJOUTER DES ARGUMENTS PAR LA SUITE (bawi sinon cette fonction sert à rien)*/
+    StageList loadGame(Player *player);
 
     /*saves the current progression in the given memory file.*/
-    void saveGame(FILE *memoryFile);
-
-    /*deletes a given memory file */
-    void deleteMemoryFile(FILE *memoryFile);
+    int saveGame(Player *player, StageList* dungeon);
 
 #endif

@@ -10,6 +10,7 @@
 #ifndef __TREASURE__
 #define __TREASURE__
 
+
     /*Define*/
 
     #define MAX_RARITY            5 /* The maximum rarity of a loot */
@@ -26,9 +27,10 @@
 
     /* Returns a randomly generated loot box based on the current stage
      * The player's level argument will determine the average quality of the loot,*/
-    Treasure generateTreasure(unsigned int stage, unsigned int playerlevel);
+    Treasure generateTreasure(unsigned int stage);
 
     /* Shell display of the treasure (to use for debug) */
     void quickPrintTreasure(Treasure treasure);
+
 
 #endif

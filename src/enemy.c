@@ -3,9 +3,7 @@
 Enemy generateEnemy(unsigned int stage, unsigned int distance) {
     Enemy monster;
     unsigned int stat;
-
-    monster.name = "Monster";
-
+    
     stat = 10*stage + distance;
     
     monster.attack = stat;/*Stat*/
@@ -21,7 +19,6 @@ Enemy generateEnemy(unsigned int stage, unsigned int distance) {
 
 void quickPrintEnemy(Enemy monster){
     printf("****Enemy STATS****\n");
-    printf("name            : %s\n", monster.name);
 
     printf("strenght        : %d\n",  monster.attack);
 

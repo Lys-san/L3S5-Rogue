@@ -36,11 +36,11 @@
     int playerMagicalAttack(Player* player, Enemy* monster);
 
     /* Move the player to the next tile if he can, perform a special action if the tile isn't empty */
-    int playerMove(Stage *level, Player *player, Direction dir, ListStage *dungeon);
+    int playerMove(Player *player, Direction dir, StageList *dungeon);
     
     /*Open a treasure chest*/
     void openTreasure(Player* player, Stage *stage, int x, int y);
 
-    turnEffect* consumeItem(Player* player, Consummables potion, turnEffect* effects);
+    int consumeItem(Player* player, Consummables potion);
 
 #endif

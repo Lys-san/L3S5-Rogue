@@ -139,4 +139,5 @@
     /* Check if two points have the same coordinates */
     int isTheSame(Point a, Point b);
 
+    void copyStage(Stage *copy, Stage stage);
 #endif

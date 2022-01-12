@@ -47,7 +47,6 @@
     } CurrentStat;
 
     typedef struct {
-        char* name;                   /* name of the player*/
         unsigned int ATTACK;          /* Used to calculate the power of a melee attack */
         unsigned int INTELLIGENCE;    /* Used to calculate the max Mp and the Power of a Spell */
         unsigned int DEFENSE;         /* Used to calculate the max Hp of the player */
@@ -60,14 +59,16 @@
     } Stat;
 
     typedef struct {
-        int underLearningPotion;
         enum playerStatus status;     /* physical attack mode or magical */
         Point coords;                 /* Coords of the player in the stage */
         Stat stat;                    /* Stats of the player */
         Spell spell;                  /* description of the spell that can be cast */
         Loot equip[MAX_EQUIP];        /* Equipment item that changes Player current stat 0=ARMOR, 1=WEAPON, 2=WAND*/
         Loot inventory[MAX_INVENTORY];/* Inventory of non-equipment item */
-        int nbrItemHeld;
+        unsigned int nbrItemHeld;
+        unsigned int underLearningPotion;
+        unsigned int underRegenPotion;
+        unsigned int underPrecisionPotion;
     } Player;
 
 
@@ -86,16 +87,16 @@
     void initializeCritStat(Player *player);
 
     /* Initialize all standard base stat */
-    void initializeBaseStat(Player *player, char* name);
+    void initializeBaseStat(Player *player);
 
     /* Initialize all standard current stat  */
     void initializeCurrentStat(Player *player);
 
     /* Initialize all standard stat  */
-    void initializeStat(Player *player, char* name);
+    void initializeStat(Player *player);
 
     /* Initialize a Player character with standard stats */
-    void initializeStandard(Player *player, char *name);
+    void initializeStandard(Player *player);
 
     /* Debug */
     void quickPrintPlayer(Player player);

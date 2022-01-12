@@ -1,65 +1,97 @@
 #include "list.h"
 
-ListStage* newListStage(void){
-    
-    ListStage* newList;
+StageList allocStage(Stage stage) {
+    StageList tmp;
 
-    newList = malloc(sizeof *newList);
-    if(NULL != newList){
-        newList->length = 0;
-        newList->firstLevel = NULL;
-        newList->lastLevel = NULL;
+    tmp = (Levels *)malloc(sizeof(Levels));
+
+    /* initializing the level informations */
+    if(tmp != NULL) {
+        tmp->stage         = stage;
+        tmp->nextLevel     = NULL;
+        tmp->previousLevel = NULL;
     }
-    return newList;
+    return tmp;
 }
 
-ListStage* searchStage(ListStage* dungeon, unsigned int level){
+void addStage(StageList *dungeon, Stage stage){
+    StageList newStage = NULL;
     
-    ListStage* res;
-    NodeStage* tmp;
-    int found;
+    /* Creating the new element in the list */
+    newStage = allocStage(stage);
 
-    res = NULL;
-    tmp = dungeon->firstLevel;
-    found = 0;
-    printf("Searching for level %d \n", level);
-    while(tmp != NULL && !found){
-        printf("%d\n", tmp->stage.level);
-        if(tmp->stage.level == level){
-            res = newListStage();
-            res = addStage(res, tmp->stage);
-            found = 1;
+    /* If we're adding the first element */
+    if(*dungeon == NULL) {
+        newStage->stage.level = 1;
+        *dungeon = newStage;
+    }
+
+    /* Else, linking the stage at the end of the list */
+    else {
+        newStage->previousLevel = *dungeon;
+        (*dungeon)->nextLevel   = newStage;
+        *dungeon                = (*dungeon)->nextLevel; /* updating the position */ 
+        (*dungeon)->stage.level = (*dungeon)->previousLevel->stage.level + 1; /* updating the level index*/
+    }
+}
+
+void addStageHead(StageList *dungeon, Stage stage){
+
+    StageList newStage = NULL;
+    
+    /* Creating the new element in the list */
+    newStage = allocStage(stage);
+
+    /* If we're adding the first element */
+    if(*dungeon == NULL) {
+        newStage->stage.level = 1;
+        *dungeon = newStage;
+    }
+
+    /* Else, linking the stage at the start of the list */
+    else {
+        newStage->nextLevel         = *dungeon;
+        (*dungeon)->previousLevel   = newStage;
+        *dungeon                    = (*dungeon)->previousLevel; /* updating the position */ 
+        (*dungeon)->stage.level     = (*dungeon)->nextLevel->stage.level - 1; /* updating the level index*/
+    }
+}
+
+void searchStage(StageList *dungeon, unsigned int level){
+
+    StageList* tmpStage;
+
+    tmpStage = dungeon;
+    if(dungeon != NULL){
+        if((*dungeon)->stage.level != level){
+            searchStage(&((*tmpStage)->previousLevel), level);
         }
         else{
-            tmp = tmp->nextLevel;
+            (*dungeon)->nextLevel   = (*tmpStage)->nextLevel;
+            (*dungeon)->previousLevel   = (*tmpStage)->previousLevel;
+            (*dungeon)->stage            =(*tmpStage)->stage;
         }
     }
-    return res;
 }
 
-ListStage* addStage(ListStage *dungeon, Stage stage){
-    
-    NodeStage *newStage;
-    
-    /* Create  a new element */
-    newStage = malloc(sizeof *newStage);
-    if(NULL != newStage){
-        newStage->stage = stage;
-        newStage->nextLevel = NULL;
-        if(NULL == dungeon->lastLevel){
-            newStage->previousLevel = NULL;
-            dungeon->firstLevel = newStage;
-            dungeon->lastLevel = newStage;
-        }
-        else{
-            dungeon->lastLevel->nextLevel = newStage;
-            newStage->previousLevel = dungeon->lastLevel;
-            dungeon->lastLevel = newStage;
-        }
-        dungeon->length += 1;
+int countNumberLevels(StageList dungeon){
+    int numberLevels;
+
+    StageList currentStage = dungeon;
+    numberLevels = 0;
+
+    while(currentStage->nextLevel != NULL){
+        currentStage = currentStage->nextLevel; /*Tails of the structure*/
     }
-    return dungeon;
+
+
+    while(currentStage != NULL){
+        numberLevels += 1;
+        currentStage = currentStage->previousLevel;
+    }
+    return numberLevels;
 }
+
 
 ListCoord* addCoord(ListCoord* listCoords,int level , int x, int y){
     
@@ -118,42 +150,12 @@ void printAllCoords(ListCoord *listCoords){
     }
 }
 
-turnEffect* addEffect(turnEffect* effects, Effect effect){
-    
-    turnEffect *newEffect;
-
-    /* Create  a new element */
-    newEffect = malloc(sizeof(turnEffect));
-    newEffect->effect = effect;
-
-    newEffect->NextEffect = effects;/*Adds at the top of the list because the order doesn't really matter*/
-
-    return newEffect;
-}
-
-turnEffect* gainAllEffects(turnEffect* effects, Player *player){
-    
-    turnEffect *tmp;
-    tmp = effects;
-
-    if(tmp != NULL){
-        if(tmp->effect.turnLeft == 0){
-            if(NULL != tmp->effect.malus){
-                tmp->effect.malus(player);
-            }
-            tmp = effects->NextEffect;
-            free(effects);
-            tmp = gainAllEffects(tmp, player);
-            return tmp;
-        }
-        else{
-            if(NULL != tmp->effect.bonus && tmp->effect.turnLeft%tmp->effect.turnActivation == 0){
-                effects->effect.bonus(player);
-            }
-            effects->effect.turnLeft -= 1;
-            effects->NextEffect = gainAllEffects(effects->NextEffect, player);
-            return effects;
-        }
-    }
-    return NULL;
+void quickPrintStageList(StageList dungeon){
+   StageList currentStage = dungeon; /* Starting with the last element in the list */
+   printf("***Dungeon***\n");
+   printf("Printing stages from last inserted to first.\n");
+   while(currentStage != NULL){
+     printf("Level %d\n",currentStage->stage.level);
+     currentStage = currentStage->previousLevel;
+   }
 }

@@ -9,7 +9,7 @@ Cell initCell(unsigned int stageLevel, Point coords, CellType type, enum contain
 			cell.enemy = generateEnemy(stageLevel, dist);
 			break;
 		case CONTAINS_TREASURE :
-			cell.treasure = generateTreasure(stageLevel, rand() % MAX_RARITY);
+			cell.treasure = generateTreasure(stageLevel);
 			break;
 		default :
 			break;
@@ -298,7 +298,11 @@ void initStairDownOnStage(Stage *stage) {
 	}
 }
 
+void initPlayerOnStage(Player *player, Stage stage){
+	player->coords = (Point){LEVEL_WIDTH/2, LEVEL_HEIGHT/2};
+}
 
+/*
 void initPlayerOnStage(Player *player, Stage stage) {
 	Point stageCenter;
 	stageCenter.x = LEVEL_WIDTH/2;
@@ -309,24 +313,24 @@ void initPlayerOnStage(Player *player, Stage stage) {
 
 	int i, j;
 
-	/* getting the cells next to the stair-up */
+	*//* getting the cells next to the stair-up *//*
 	for(i = stageCenter.y - 1; i <= stageCenter.y + 1; i += 2)
 		adjacent[k++] = stage.cells[i][stageCenter.x];
 
 	for(j = stageCenter.x - 1; j <= stageCenter.x + 1; j += 2)
 		adjacent[k++] = stage.cells[stageCenter.y][j];
 
-	/* choosing a cell for the player to be in */
+	*//* choosing a cell for the player to be in *//*
 	Cell startingCell = drawRandomCellFromList(adjacent, &k);
 	while( startingCell.type != ROOM)
 		startingCell = drawRandomCellFromList(adjacent, &k);
 
-	/* updating the player's coordonates */
+	*//* updating the player's coordonates *//*
 	player->coords = startingCell.coords;
 
-	/* updating his status to physical attack */
+	*//* updating his status to physical attack *//*
 	player->status = PHYSICAL_ATTCK;
-}
+}*/
 
 
 void initStage(Stage *stage, Player *player, unsigned int stageLevel) {
@@ -447,4 +451,15 @@ int isTheSame(Point a, Point b){
 		return 1;
 	}
 	return 0;
+}
+
+void copyStage(Stage *copy, Stage stage){
+    int i;
+    int j;
+    for(i = 0; i < LEVEL_HEIGHT; i++) {
+        for(j = 0; j < LEVEL_WIDTH; j++) {
+            copy->cells[i][j] = stage.cells[i][j];
+        }
+    }
+    copy->level = stage.level;
 }

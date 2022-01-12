@@ -16,28 +16,22 @@
         struct NextCoord *nextCoord;
     }ListCoord;
 
-    typedef struct NextEffect{ 
-        Effect effect;
-        struct NextEffect *NextEffect;
-    }turnEffect;
+     /* DoubleLinked list of Stages */
+    typedef struct level{
+        Stage stage;                 /* Level data (Stage object, cf level.h) */
+        struct level *nextLevel;     /* Pointer on the next level */
+        struct level *previousLevel; /* Pointer on the previous level */
+    }Levels, *StageList;
 
-    typedef struct Node{
-        Stage stage;
-        struct Node *nextLevel;
-        struct Node *previousLevel;
-    }NodeStage;
+    StageList allocStage(Stage stage);
 
-    typedef struct{
-        size_t length;
-        NodeStage *firstLevel;
-        NodeStage *lastLevel;
-    }ListStage;
+    void addStage(StageList *dungeon, Stage stage);
 
-    ListStage* newListStage(void);
+    void addStageHead(StageList *dungeon, Stage stage);
+    
+    void searchStage(StageList *dungeon, unsigned int level);
 
-    ListStage* searchStage(ListStage* dungeon, unsigned int level);
-
-    ListStage* addStage(ListStage *dungeon, Stage stage);
+    int countNumberLevels(StageList dungeon);
 
     ListCoord* addCoord(ListCoord *listCoords,int level , int x, int y);
 
@@ -45,10 +39,7 @@
 
     ListCoord* generateAllCoords(Stage stage, int level);
 
-    turnEffect* addEffect(turnEffect* effects, Effect effect);
-
-    turnEffect* gainAllEffects(turnEffect* effects, Player *player);
-
     void printAllCoords(ListCoord *listCoords);
 
+    void quickPrintStageList(StageList dungeon);
 #endif
