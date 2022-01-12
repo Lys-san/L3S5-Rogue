@@ -96,6 +96,10 @@ int mainScreen(int profileFound, int fadein);
 /* Generates a snowy cinematic using the libMLV functions. */
 void snowdrops(unsigned int frames);
 
+/* Returns the corresponding sprite according to the position of the wall cell in the 
+ * stage. */
+MLV_Image *wallSprite(Cell cell, Stage stage);
+
 /* Basic display of a given cell using the libMLV drawing functions */
 void displayCellBasic(Cell cell);
 

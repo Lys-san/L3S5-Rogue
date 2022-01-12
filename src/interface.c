@@ -330,9 +330,89 @@ void snowdrops(unsigned int frames) {
 }
 
 
+MLV_Image *wallSprite(Cell cell, Stage stage) {
+	int wallLeft  = 0;
+	int wallRight = 0;
+	int wallUp    = 0;
+	int wallDown  = 0;
+
+    int i, j;
+
+	/* getting surrounding cells informations */
+	for(i = cell.coords.x - 1; i <= cell.coords.x + 1; i += 2) {
+		if(stage.cells[cell.coords.y][i].type == WALL) {
+			if(i == cell.coords.x - 1)
+				wallLeft = 1;
+			if(i == cell.coords.x + 1)
+				wallRight = 1;
+		}
+	}
+	
+	for(j = cell.coords.y - 1; j <= cell.coords.y + 1; j += 2) {
+		if(stage.cells[cell.coords.y][i].type == WALL) {
+			if(j == cell.coords.y - 1)
+				wallUp = 1;
+			if(j == cell.coords.y + 1)
+				wallDown = 1;
+		}
+	}
+	/* choosing the right sprite */
+
+	/* 1 surrounding wall */
+	if(wallLeft && !wallRight && !wallUp && !wallDown) /* wall left */
+		return MLV_load_image("src/files/wall_1.png");
+
+	if(!wallLeft && wallRight && !wallUp && !wallDown) /* wall right */
+		return MLV_load_image("src/files/wall_3.png");
+
+	if(!wallLeft && !wallRight && wallUp && !wallDown) /* wall down */
+		return MLV_load_image("src/files/wall_3.png");
+
+	if(!wallLeft && !wallRight && !wallUp && wallDown) /* wall up*/
+		return MLV_load_image("src/files/wall_3.png");
+
+	/* 2 surrounding walls*/
+	if(wallLeft && wallRight && !wallUp && !wallDown) /* wall left and right */
+		return MLV_load_image("src/files/wall_2.png");
+
+	if(wallLeft && !wallRight && wallUp && !wallDown) /* wall left and up */
+		return MLV_load_image("src/files/wall_2.png");
+
+	if(wallLeft && !wallRight && !wallUp && wallDown) /* wall left and down */
+		return MLV_load_image("src/files/wall_2.png");
+
+	if(!wallLeft && wallRight && !wallUp && wallDown) /* wall right and down */
+		return MLV_load_image("src/files/wall_2.png");
+
+	if(!wallLeft && wallRight && wallUp && !wallDown) /* wall right and up */
+		return MLV_load_image("src/files/wall_2.png");
+
+	if(!wallLeft && !wallRight && wallUp && wallDown) /* wall up and down */
+		return MLV_load_image("src/files/wall_2.png");
+
+	/* 3 surrounding walls */
+	if(wallLeft && wallRight && wallUp && !wallDown)
+		return MLV_load_image("src/files/wall_3.png"); /* wall left, right and up */
+
+	if(wallLeft && wallRight && !wallUp && wallDown)
+		return MLV_load_image("src/files/wall_3.png"); /* wall left, right and down */
+
+    if(wallLeft && !wallRight && wallUp && wallDown)
+        return MLV_load_image("src/files/wall_4.png"); /* wall left, up and down */
+
+    if(!wallLeft && wallRight && wallUp && wallDown)
+        return MLV_load_image("src/files/wall_4.png"); /* wall right, up and down */
+
+	/* 4 surrounding walls */
+    else
+        return MLV_load_image("src/files/wall_4.png");
+}
+
+
 void displayCellBasic(Cell cell) {
     int x = (cell.coords.x) * CELL_SIZE;
     int y = (cell.coords.y) * CELL_SIZE;
+    Cell tmp = cell;
     /* checking the cell type */
     switch(cell.type) {
         case WALL : 
@@ -342,7 +422,8 @@ void displayCellBasic(Cell cell) {
             MLV_draw_filled_rectangle(x, y, CELL_SIZE, CELL_SIZE, EMPTY_COLOR_BAS);
             break;
         case ENEMY : 
-            MLV_draw_filled_rectangle(x, y, CELL_SIZE, CELL_SIZE, EMPTY_COLOR_BAS);
+            tmp.type = ROOM;
+        	displayCellSprite(tmp); /* floor display */
             MLV_draw_filled_circle(x + CELL_SIZE/2, y + CELL_SIZE/2, CELL_SIZE/3, ENEMY_COLOR_BAS);
             break;
         case TREASURE : 
@@ -364,21 +445,30 @@ int displayCellSprite(Cell cell) {
     int x = (cell.coords.x) * CELL_SIZE;
     int y = (cell.coords.y) * CELL_SIZE;
     int imgWidth, imgHeight;
+    Cell tmp = cell;
     float ratio;
     MLV_Image *sprite;
 
     /* checking the cell type to load the sprite */
     switch(cell.type) {
         case WALL : 
-            displayCellBasic(cell); /* TODO */
-            return 1;
+            /*sprite = MLV_load_image("src/files/wall_1.png");*/
+        	displayCellBasic(cell);
             break;
         case ROOM : 
-            displayCellBasic(cell); /* TODO */
-            return 1;
+        	if((cell.coords.x + cell.coords.y)%3 == 0)
+        		sprite = MLV_load_image("src/files/floor_1.png");
+        	else {
+        		if((cell.coords.x + cell.coords.y)%3 == 1)
+        			sprite = MLV_load_image("src/files/floor_2.png");
+        		else
+        			sprite = MLV_load_image("src/files/floor_3.png");
+        	}
             break;
         case ENEMY : 
-            displayCellBasic(cell); /* TODO */
+        	tmp.type = ROOM;
+        	displayCellSprite(tmp); /* floor display */
+            MLV_draw_filled_circle(x + CELL_SIZE/2, y + CELL_SIZE/2, CELL_SIZE/3, ENEMY_COLOR_BAS); /* TODO */
             return 1;
             break;
         case TREASURE : 
@@ -401,7 +491,7 @@ int displayCellSprite(Cell cell) {
     /* resizing, adjusting coords and drawing */
     MLV_get_image_size(sprite, &imgWidth, &imgHeight);
     ratio = imgWidth > CELL_SIZE ? CELL_SIZE/(float)imgWidth : (float)imgWidth/CELL_SIZE;
-    MLV_resize_image_with_proportions(sprite, imgWidth*ratio, imgHeight*ratio);
+    MLV_resize_image_with_proportions(sprite, imgWidth*ratio + 1, imgHeight*ratio + 1);
 
     if(cell.type == STAIR_UP) {
         y = y + CELL_SIZE - imgHeight*ratio;
