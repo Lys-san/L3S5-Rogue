@@ -197,7 +197,7 @@ Stage generateStage(unsigned int stageLevel) {
 	}
 	/* initializing the stair-up */
 	stage.cells[stageCenter.y][stageCenter.x] = initCell(stageLevel, stageCenter, STAIR_UP, CONTAINS_NOTHING, 0);
-
+	stage.level = stageLevel;
 	return stage;
 }
 
@@ -328,6 +328,7 @@ void initPlayerOnStage(Player *player, Stage stage) {
 	player->status = PHYSICAL_ATTCK;
 }
 
+
 void initStage(Stage *stage, Player *player, unsigned int stageLevel) {
 	(*stage) = generateStage(stageLevel);
 	initEnemiesAndTreasuresOnStage(stage, stageLevel);
@@ -353,10 +354,8 @@ void dirToShiftValues(Direction dir, int *xShift, int *yShift) {
 }
 
 int isAdjacent(Point a, Point b){
-    if( a.x == b.x-1 || a.x == b.x || a.x == b.x+1 ){   /*x are adjacent*/
-        if(a.y == b.y-1 || a.y == b.y || a.y == b.y+1 ){/*y are adjacent*/
-            return 1;
-        }
+    if((a.x == b.x && (a.y == b.y-1 || a.y == b.y+1)) || (a.y == b.y && (a.x == b.x-1 || a.x == b.x+1))){/*adjacent but not diagonal*/
+        return 1;
     }
     return 0;
 }
@@ -412,36 +411,28 @@ void quickPrintStage(Stage stage) {
 
 */
 
-Stage generateStageTest( void ){
-	
-	Stage stage;
-	Cell test;
-	/*Cell test2;*/
+void generateStageTest(Stage *stage, Player *player, int level){
 	int i, j;
 
 	/* The empty spaces */
 	for(i = 1; i < TEST_LEVEL_HEIGHT; i++) {
 		for(j = 1; j < TEST_LEVEL_WIDTH-1; j++  ){
-			stage.cells[i][j] = initCell(1, (Point){j, i}, ROOM, CONTAINS_NOTHING, 1);
+			stage->cells[i][j] = initCell(1, (Point){j, i}, ROOM, CONTAINS_NOTHING, 1);
 		}
 	}
 
 	/*stairs*/
-	stage.cells[1][1] = initCell(0, (Point){1, 1}, STAIR_UP, CONTAINS_NOTHING, 1);
-	stage.cells[1][TEST_LEVEL_WIDTH-2] = initCell(1, (Point){1, TEST_LEVEL_WIDTH-2}, STAIR_DOWN, CONTAINS_NOTHING, 1);
+	stage->cells[1][1] = initCell(level, (Point){1, 1}, STAIR_UP, CONTAINS_NOTHING, 1);
+	stage->cells[1][TEST_LEVEL_WIDTH-2] = initCell(level, (Point){1, TEST_LEVEL_WIDTH-2}, STAIR_DOWN, CONTAINS_NOTHING, 1);
 
 	/*treasure*/
-	stage.cells[2][4] = initCell(1, (Point){2, 4}, TREASURE, CONTAINS_NOTHING, 0);
+	stage->cells[2][4] = initCell(level, (Point){2, 4}, TREASURE, CONTAINS_TREASURE, 1);
 
 	/* Enemy */
-	test = initCell(1, (Point){2, TEST_LEVEL_WIDTH-2}, ENEMY, CONTAINS_ENEMY, 1);
-	printf("Cell test level = \n");
-	quickPrintEnemy(test.enemy);
-	stage.cells[2][TEST_LEVEL_WIDTH-2] = initCell(1, (Point){2, TEST_LEVEL_WIDTH-2}, ENEMY, CONTAINS_NOTHING, 1);
-	printf("in stage level = \n");
-	quickPrintEnemy(stage.cells[2][TEST_LEVEL_WIDTH-2].enemy);
+	stage->cells[2][TEST_LEVEL_WIDTH-2] = initCell(level, (Point){2, TEST_LEVEL_WIDTH-2}, ENEMY, CONTAINS_ENEMY, 1);
 
-	return stage;
+	stage->level = level;
+	player->coords = (Point){2, 2};
 }
 
 Point newPoint(int x, int y){

@@ -4,6 +4,8 @@
 
 /*Bibliothèque générale*/
 #include <stdlib.h>
+#include <stdio.h>
+
 
 /*Bibliothèque interne*/
 #include "treasure.h"
@@ -20,14 +22,6 @@
     #define STANDARD_BASE_CRIT_MODIFIER 3   /*percentage*/
     #define STANDARD_BASE_CRIT_RATE     5   /*percentage*/
     #define STANDARD_BASE_ACCURACY      20  /*percentage*/
-
-    /*Maxed stat for different value*/
-    /*#define STANDARD_MAX_HP(DEFENSE) 10*DEFENSE
-    #define STANDARD_MAX_MP(INTELLIGENCE) (10*INTELLIGENCE - 50 > 0) ? (10 * INTELLIGENCE - 50) : 0
-    #define STANDARD_EXP_TO_NEXT_LVL(Lvl) 350 + 50*(Lvl)
-    #define STANDARD_MAX_HP          10 * player->stat.base.DEFENSE
-    #define STANDARD_MAX_MP          (10*player->stat.base.INTELLIGENCE - 50 > 0) ? (10 * player->stat.base.INTELLIGENCE - 50) : 0
-    #define STANDARD_EXP_TO_NEXT_LVL 350 + 50*(player->stat.current.Lvl)*/
 
     /*Struct*/
     enum playerStatus { PHYSICAL_ATTCK, MAGICAL_ATTCK }; /* will determine which attack will be done */
@@ -69,6 +63,7 @@
     } Stat;
 
     typedef struct {
+        int underLearningPotion;
         enum playerStatus status;     /* physical attack mode or magical */
         Point coords;                 /* Coords of the player in the stage */
         Stat stat;                    /* Stats of the player */
@@ -112,20 +107,6 @@
 
     /*Gain a lvl if the current exp is higher than the exp needed to pass the next lvl*/
     int gainLvl(Player *player);
-
-    void useMagicPotion(Player *player);
-
-    void useHealingPotion(Player *player);
-
-    void turnRegenPotion(Player *player);
-
-    void gainPrecision(Player *player);
-
-    void losePrecision(Player *player);
-
-    void gainLearning(Player *player);
-
-    void loseLearning(Player *player);
 
     void updateWeaponStat(Player *player, Equipment weapon);
 

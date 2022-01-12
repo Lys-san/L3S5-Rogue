@@ -134,7 +134,7 @@
     void quickPrintStage(Stage stage);
 
     /*Generate a set stage to debug*/
-    Stage generateStageTest( void );
+    void generateStageTest(Stage *stage, Player *player, int level);
 
     /* Generate a New point from the coordonates*/
     Point newPoint(int x, int y);
