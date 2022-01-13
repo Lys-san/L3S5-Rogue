@@ -1,6 +1,6 @@
 /* Auteurs : Nicolas Mazeyrac, Lysandre Macke
  * Creation : 06/01/2022
- * Modification : 09/01/2022*/
+ * Modification : 13/01/2022*/
 
 /*Bibliothèque générale*/
 #include <stdlib.h>
@@ -76,7 +76,5 @@
 
     /* Shell display of any loot (to use for debug) */
     int quickPrintLoot(Loot loot);
-
-    int quickPrintConsummable(Consummables consummable);
 
 #endif

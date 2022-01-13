@@ -634,20 +634,19 @@ void displayAtkButtons() {
     MLV_actualise_window();
 }
 
-
+/*
 MLV_Image *itemSprite(Loot loot) {
-    /* TODO */
-}
+}*/
 
 
 void displayItemBasic(Loot loot, int itemBoxSize) {
-    switch( loot.type ) {
-        case EQUIPMENT:
+ /*   switch( loot.type ) {
+        case EQUIPMENT:*/
             /* display item box */
             /* TODO */
-        default :
+        /*default :*/
             /* TODO */
-    }
+    /*}*/
 }
 
 

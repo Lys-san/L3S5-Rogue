@@ -14,7 +14,7 @@ StageList allocStage(Stage stage) {
     return tmp;
 }
 
-void addStage(StageList *dungeon, Stage stage){
+void addStageTail(StageList *dungeon, Stage stage){
     StageList newStage = NULL;
     
     /* Creating the new element in the list */
@@ -62,11 +62,12 @@ void searchStage(StageList *dungeon, unsigned int level){
     StageList* tmpStage;
 
     tmpStage = dungeon;
+    
     if(dungeon != NULL){
         if((*dungeon)->stage.level != level){
-            searchStage(&((*tmpStage)->previousLevel), level);
+            searchStage(&((*tmpStage)->previousLevel), level);/* check the next level */
         }
-        else{
+        else{/* The current level is the right one */
             (*dungeon)->nextLevel   = (*tmpStage)->nextLevel;
             (*dungeon)->previousLevel   = (*tmpStage)->previousLevel;
             (*dungeon)->stage            =(*tmpStage)->stage;
@@ -75,33 +76,39 @@ void searchStage(StageList *dungeon, unsigned int level){
 }
 
 int countNumberLevels(StageList dungeon){
+
     int numberLevels;
 
     StageList currentStage = dungeon;
     numberLevels = 0;
 
+    /* Go to the tail of the structure */
     while(currentStage->nextLevel != NULL){
-        currentStage = currentStage->nextLevel; /*Tails of the structure*/
+        currentStage = currentStage->nextLevel;
     }
 
-
+    /* Count all Elements */
     while(currentStage != NULL){
         numberLevels += 1;
         currentStage = currentStage->previousLevel;
     }
+
     return numberLevels;
 }
 
 
-ListCoord* addCoord(ListCoord* listCoords,int level , int x, int y){
+ListCoord* addCoord(ListCoord* listCoords, int x, int y){
     
     ListCoord *newCoord;
 
     /* Create  a new element */
     newCoord = malloc(sizeof(ListCoord));
-    newCoord->coords = newPoint(x, y);
 
-    newCoord->nextCoord = listCoords;/*Adds at the top of the list because the order doesn't really matter*/
+    /* If the allocation didn't fail */
+    if( NULL != newCoord ){
+        newCoord->coords = (Point){x,y};
+        newCoord->nextCoord = listCoords;/*Adds at the top of the list because the order doesn't really matter*/
+    }
 
     return newCoord;
 }
@@ -115,47 +122,63 @@ ListCoord* removeCoord(ListCoord* listCoords, Point coord){
         if(isTheSame(newCoord->coords, coord)){
             newCoord = listCoords->nextCoord;
             free(listCoords);
-            return newCoord;
+            return newCoord;/*return the new list*/
         }
         else{
-            listCoords->nextCoord = removeCoord(listCoords->nextCoord, coord);
+            listCoords->nextCoord = removeCoord(listCoords->nextCoord, coord);/* change the next part of the list*/
         }
     }
     return NULL;
 }
 
-ListCoord* generateAllCoords(Stage stage, int level){
+ListCoord* generateAllEnemyCoords(Stage stage){
     
     int i,j;
     ListCoord* listCoords;
     
     listCoords = NULL;
 
+    /* Search the whole level */
     for(i = 0; i < LEVEL_HEIGHT; i++) {
         for(j = 0; j < LEVEL_WIDTH; j++) {
-            if(stage.cells[i][j].type == ENEMY){
-                listCoords = addCoord(listCoords, level, j, i);
+            if(stage.cells[i][j].type == ENEMY){/* if there's an enemy collect it */
+                listCoords = addCoord(listCoords, j, i);
             }
         }
     }
+
     return listCoords;
 }
 
-void printAllCoords(ListCoord *listCoords){
+int printAllCoords(ListCoord *listCoords){
+    
     ListCoord *tmp;
+    
     tmp = listCoords;
+
+    printf("***ListCoords***\n");
+    
     while(tmp != NULL){
-        printf("coord : \n x = %d \n y = %d \n", tmp->coords.x, tmp->coords.y);
+        printf("coord : \n x = %d \n y = %d \n\n", tmp->coords.x, tmp->coords.y);
         tmp = tmp->nextCoord;
     }
+
+    printf("***END***\n");
+
+    return 1;
 }
 
-void quickPrintStageList(StageList dungeon){
+int printStageList(StageList dungeon){
+
    StageList currentStage = dungeon; /* Starting with the last element in the list */
+
    printf("***Dungeon***\n");
    printf("Printing stages from last inserted to first.\n");
+   
    while(currentStage != NULL){
      printf("Level %d\n",currentStage->stage.level);
      currentStage = currentStage->previousLevel;
    }
+
+   return 1;
 }

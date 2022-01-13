@@ -1,6 +1,6 @@
 /* Auteurs : Nicolas Mazeyrac, Lysandre Macke
  * Creation : 27/11/2021
- * Modification : 09/01/2022*/
+ * Modification : 13/01/2022*/
 
 /*Bibliothèque générale*/
 
@@ -20,17 +20,17 @@
 
     typedef struct {
         Loot loot[MAX_LOOT_PER_TREASURE]; /*Basically, a treasure is a box full of loot*/
-        int closed;
+        int closed; /* indicates the status of the treasure either closed (= 1) or open (= 0) */
     } Treasure;
 
     /*Functions*/
 
     /* Returns a randomly generated loot box based on the current stage
      * The player's level argument will determine the average quality of the loot,*/
-    Treasure generateTreasure(unsigned int stage);
+    Treasure generateTreasure(unsigned int level);
 
     /* Shell display of the treasure (to use for debug) */
-    void quickPrintTreasure(Treasure treasure);
+    int quickPrintTreasure(Treasure treasure);
 
 
 #endif

@@ -7,25 +7,29 @@ int saveGame(Player *player, StageList* dungeon){
     int numberLevels;
     int currentLevel;
 
+    assert(NULL != player);
+    assert(NULL != dungeon);
+
     file=fopen(MEMORY_FILE_NAME,"wb");
     if(file == NULL){
         return 0;
     }
-    printf(">>>Creating a SaveFile.\n");
 
-    fwrite(player,sizeof(Player),1,file);
+    fwrite(player,sizeof(Player),1,file); /* Save the information of the player */
 
     tmpDungeon = (*dungeon);
     currentLevel = (*dungeon)->stage.level;
     numberLevels = countNumberLevels((*dungeon));
 
+    /* Go to the tail of the dungeon */
     while(tmpDungeon->nextLevel != NULL){
-        tmpDungeon = tmpDungeon->nextLevel; /*Tails of the structure*/
+        tmpDungeon = tmpDungeon->nextLevel;
     }
 
-    fwrite(&currentLevel,sizeof(int),1,file);
-    fwrite(&numberLevels,sizeof(int),1,file);
+    fwrite(&currentLevel,sizeof(int),1,file);/* Save the information of the current level */
+    fwrite(&numberLevels,sizeof(int),1,file);/* Save the information of the number of level in total */
 
+    /* Save all of the dungeon */
     while(tmpDungeon != NULL){
         fwrite(&(tmpDungeon->stage),sizeof(Stage),1,file);
         tmpDungeon = tmpDungeon->previousLevel;
@@ -51,14 +55,15 @@ StageList loadGame(Player *player){
         return NULL;
     }
 
-    printf(">>>Recuperating a SaveFile.\n");
+    /* Recuperating player information */
     fread(player,sizeof(Player),1,file);
 
+
+    /* Recuperating dungeon information */
     fread(&currentLevel,sizeof(int),1,file);
     fread(&numberLevels,sizeof(int),1,file);
     for(i=0;i < numberLevels;i++){
         fread(&tmpStage,sizeof(Stage),1,file);
-        printf("recuperating level %d \n", tmpStage.level);
         if(i==0){
             dungeon = allocStage(tmpStage);
         }
@@ -66,10 +71,10 @@ StageList loadGame(Player *player){
             addStageHead(&dungeon, tmpStage);
         }
     }
-    while(dungeon != NULL && dungeon->stage.level != currentLevel){
-        printf("%d != %d", dungeon->stage.level, currentLevel);
-        dungeon = dungeon->nextLevel;
-    }
+
+    /* Move the dungeon to the current level */
+    searchStage(&dungeon, currentLevel);
+
     fclose(file);
     return dungeon;
 }
