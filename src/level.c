@@ -25,8 +25,8 @@ int distanceWithL1Norm(Point a, Point b) {
 
 Point getStageCenter() {
 	Point stageCenter;
-	stageCenter.x = LEVEL_WIDTH/2;
-	stageCenter.y = LEVEL_HEIGHT/2;
+	stageCenter.x = (LEVEL_WIDTH+4)/2;
+	stageCenter.y = (LEVEL_HEIGHT+4)/2;
 	return stageCenter;
 }
 
@@ -270,8 +270,8 @@ void initStairDownOnStage(Stage *stage) {
 
 	/* loops until the stair-down isn't initialized. */
 	while(!stairsInitialized) {
-		for(i = 0; i < LEVEL_WIDTH && !stairsInitialized; i++) {
-			for(j = 0; j < LEVEL_HEIGHT && !stairsInitialized; j++) {
+		for(i = 2; i < LEVEL_WIDTH+2 && !stairsInitialized; i++) {
+			for(j = 2; j < LEVEL_HEIGHT+2 && !stairsInitialized; j++) {
 				distance = distanceWithL1Norm((Point){i, j}, stageCenter);
 				if(distance >= maxDistance) {
 					if(stage->cells[j][i].type == ROOM) {
@@ -298,45 +298,56 @@ void initStairDownOnStage(Stage *stage) {
 	}
 }
 
-void initPlayerOnStage(Player *player, Stage stage){
-	player->coords = (Point){LEVEL_WIDTH/2, LEVEL_HEIGHT/2};
+void initExteriorWall(Stage *stage) {
+	int i;
+	for(i=0;i<LEVEL_WIDTH+4;i++){
+		stage->cells[0][i] = initCell(0, (Point){i, 0}, WALL, CONTAINS_NOTHING, 0);
+		stage->cells[1][i] = initCell(1, (Point){i, 1}, WALL, CONTAINS_NOTHING, 0);
+		stage->cells[LEVEL_HEIGHT+1][i] = initCell(0, (Point){i, LEVEL_HEIGHT+1}, WALL, CONTAINS_NOTHING, 0);
+		stage->cells[LEVEL_HEIGHT+2][i] = initCell(0, (Point){i, LEVEL_HEIGHT+2}, WALL, CONTAINS_NOTHING, 0);
+	}
+	for(i=0;i<LEVEL_HEIGHT+4;i++){
+		stage->cells[i][0] = initCell(0, (Point){0, i}, WALL, CONTAINS_NOTHING, 0);
+		stage->cells[i][1] = initCell(0, (Point){1, i}, WALL, CONTAINS_NOTHING, 0);
+		stage->cells[i][LEVEL_WIDTH+1] = initCell(0, (Point){LEVEL_WIDTH+1, i}, WALL, CONTAINS_NOTHING, 0);
+		stage->cells[i][LEVEL_WIDTH+2] = initCell(0, (Point){LEVEL_WIDTH+2, i}, WALL, CONTAINS_NOTHING, 0);
+	}
 }
 
-/*
 void initPlayerOnStage(Player *player, Stage stage) {
 	Point stageCenter;
-	stageCenter.x = LEVEL_WIDTH/2;
-	stageCenter.y = LEVEL_HEIGHT/2;
+	stageCenter = getStageCenter();
 	
 	Cell adjacent[4];
 	unsigned int k = 0;
 
 	int i, j;
 
-	*//* getting the cells next to the stair-up *//*
+	/* getting the cells next to the stair-up */
 	for(i = stageCenter.y - 1; i <= stageCenter.y + 1; i += 2)
 		adjacent[k++] = stage.cells[i][stageCenter.x];
 
 	for(j = stageCenter.x - 1; j <= stageCenter.x + 1; j += 2)
 		adjacent[k++] = stage.cells[stageCenter.y][j];
 
-	*//* choosing a cell for the player to be in *//*
+	/* choosing a cell for the player to be in */
 	Cell startingCell = drawRandomCellFromList(adjacent, &k);
 	while( startingCell.type != ROOM)
 		startingCell = drawRandomCellFromList(adjacent, &k);
 
-	*//* updating the player's coordonates *//*
+	/* updating the player's coordonates */
 	player->coords = startingCell.coords;
 
-	*//* updating his status to physical attack *//*
+	/* updating his status to physical attack */
 	player->status = PHYSICAL_ATTCK;
-}*/
+}
 
 
 void initStage(Stage *stage, Player *player, unsigned int stageLevel) {
 	(*stage) = generateStage(stageLevel);
 	initEnemiesAndTreasuresOnStage(stage, stageLevel);
 	initStairDownOnStage(stage);
+	initExteriorWall(stage);
 	initPlayerOnStage(player, *stage);
 }
 
@@ -376,8 +387,8 @@ int isInScreen(Point a, Point b){
 
 void quickPrintStage(Stage stage) {
 	int i, j;
-	for(i = 0; i < LEVEL_HEIGHT; i++) {
-		for(j = 0; j < LEVEL_WIDTH; j++) {
+	for(i = 0; i < LEVEL_HEIGHT+4; i++) {
+		for(j = 0; j < LEVEL_WIDTH+4; j++) {
 			switch(stage.cells[i][j].type) {
 				case WALL:
 					printf("#");
@@ -456,8 +467,8 @@ int isTheSame(Point a, Point b){
 void copyStage(Stage *copy, Stage stage){
     int i;
     int j;
-    for(i = 0; i < LEVEL_HEIGHT; i++) {
-        for(j = 0; j < LEVEL_WIDTH; j++) {
+    for(i = 0; i < LEVEL_HEIGHT+4; i++) {
+        for(j = 0; j < LEVEL_WIDTH+4; j++) {
             copy->cells[i][j] = stage.cells[i][j];
         }
     }
