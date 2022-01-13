@@ -4,9 +4,8 @@ Cell initCell(unsigned int stageLevel, Point coords, CellType type, enum contain
     Cell cell;
     cell.coords = coords;
     cell.type = type;
-    /* uncomment after */
 
-    /*
+    
     switch(obj) {
         case CONTAINS_ENEMY :
             cell.enemy = generateEnemy(stageLevel, dist);
@@ -16,7 +15,7 @@ Cell initCell(unsigned int stageLevel, Point coords, CellType type, enum contain
             break;
         default :
             break;
-    }*/
+    }
     return cell;
 }
 

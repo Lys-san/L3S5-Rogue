@@ -1,4 +1,4 @@
-CC = gcc
+CC = i686-w64-mingw32-gcc
 CFLAGS = -ansi -Wall -lMLV 
 LDLIBS = -lMLV -lm -lSDL -lSDL_mixer -lSDL_image -lSDL_ttf -lSDL_gfx -lxml2 -lglib-2.0 -D SDL_MAIN_HANDLED
 
@@ -19,7 +19,9 @@ OBJECTS = \
 	src/list.o \
 	src/potions.o \
 	src/save.o\
-	src/test.o
+	src/test.o\
+	src/draw.o\
+
 
 FILES =                  \
 	redistributables/data  \

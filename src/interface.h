@@ -1,10 +1,8 @@
-#include <MLV/MLV_all.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <time.h>
 
+#include "draw.h"
 #include "sound.h"
-#include "colors.h"
 #include "level.h"
 #include "player.h"
 
@@ -29,7 +27,6 @@
 #define EMPTY_BOX_COLOR              MLV_COLOR_MISTYROSE3
 
 /* Colors for HUD */
-#define LINE_COLOR                   MLV_COLOR_BLACK
 #define HP_BAR_COLOR                 MLV_COLOR_DEEP_PINK
 #define MP_BAR_COLOR                 MLV_COLOR_LIGHT_CYAN
 #define EXP_BAR_COLOR                MLV_COLOR_VIOLET_RED
@@ -54,9 +51,7 @@
 
 /* expressions */
 #define IS_SELECTABLE      (profileFound || i != PROFILE)
-#define BREAK_NESTED_LOOPS pixelFound = 1; break;
 
-#define SQUARED(a) (a*a)
 
 enum MENU { /*accessible via the main screen*/
 	PLAY,
@@ -98,9 +93,6 @@ int displayMainScreen(int xMouse, int yMouse, int profileFound, int buttonSize[]
  * which will indicate if the PROFILE menu is available or not, and and interger
  * telling if there is a fede-in effect or not */
 int mainScreen(int profileFound, int fadein);
-
-/* Generates a snowy cinematic using the libMLV functions. */
-void snowdrops(unsigned int frames);
 
 /* Returns the corresponding sprite according to the position of the wall cell in the 
  * stage. */
@@ -162,6 +154,10 @@ Loot inventory(Loot inventory[], enum mode mode);
 
 /* Display of the Head Up Display on the left top of the screen */
 void displayHUD(Player player);
+
+/* Displays a menu where the user can choose between two Loot items. 
+ * Loops until the user makes a choice. */
+Loot chooseBetweenTwo(Loot item_a, Loot item_b);
 
 /* Frees what need to be freed and closes the window. */
 void exitGame();

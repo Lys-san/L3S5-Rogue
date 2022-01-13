@@ -247,89 +247,6 @@ int mainScreen(int profileFound, int fadein) {
 }
 
 
-void snowdrops(unsigned int frames) {
-    typedef struct {
-        int x;         /*x coordonate*/
-        int y;         /*y coordonate*/
-        int radius;    /*in px*/
-        Uint8 opacity; /*[0-255]*/
-    } Snowdrop;
-
-    /*updates the (x, y) coordonates of a Snowdrop*/
-    void calculateNextCoord(Snowdrop *snowdrop, unsigned int windowWidth, unsigned int windowHeight) {
-        int windIntensity     = 7;  /*[0-10]*/
-        int gravityForce      = 2;  /*[0-10]*/
-
-        int randomFluctuationX = (rand()%2 == 0)?(rand()%2):(-(rand()%2));
-        int randomFluctuationY = rand()%5;
-
-        snowdrop->x += (windIntensity + randomFluctuationX);
-        snowdrop->y += (gravityForce + randomFluctuationY);
-
-        snowdrop->x %= windowWidth;
-        snowdrop->y %= windowHeight;
-    }
-
-    /*display update*/
-    void displayNewSnowdropsFrame(Snowdrop snowdrops[], int nbOfSnowdrops, unsigned int windowWidth, unsigned int windowHeight) {
-        int i;
-        for(i = 0; i < nbOfSnowdrops; i++) {
-            /*generation of the new coordonates*/
-            calculateNextCoord(&snowdrops[i], windowWidth, windowHeight);
-
-            /*white color : all the rgb values are 255*/
-            MLV_Color color = MLV_convert_rgba_to_color(255, 255, 255, snowdrops[i].opacity);
-            MLV_draw_filled_circle(snowdrops[i].x, snowdrops[i].y, snowdrops[i].radius, color);
-        }
-        MLV_actualise_window();
-    }
-
-    int fadeoutTime = 50;
-
-    MLV_Color fadeoutColor = MLV_COLOR_GHOSTWHITE;
-    MLV_Color backgroundColor = MLV_COLOR_POWDERBLUE;
-    Uint8 backgroundRGBA[4];
-    MLV_convert_color_to_rgba(backgroundColor, &backgroundRGBA[0], &backgroundRGBA[1], &backgroundRGBA[2], &backgroundRGBA[3]);
-
-    int maxSnowdropRadius = 15;
-    int nbOfSnowdrops     = 20; 
-    int i;
-
-    Snowdrop snowdrops[nbOfSnowdrops];
-
-    unsigned int windowWidth, windowHeight;
-    MLV_get_window_size(&windowWidth, &windowHeight);
-
-    srand(time(NULL));
-
-    /*random generation of the snowdrops*/
-    for(i = 0; i < nbOfSnowdrops; i++) {
-        snowdrops[i].x = rand() % windowWidth;
-        snowdrops[i].y = rand() % windowHeight;
-        snowdrops[i].radius = rand() % maxSnowdropRadius;
-        snowdrops[i].opacity = rand() % 255;
-    }
-
-    /*animation of the generated snowdrops*/
-    for(i = 0; i < frames; i++) {
-        MLV_clear_window(backgroundColor);
-        displayNewSnowdropsFrame(snowdrops, nbOfSnowdrops, windowWidth, windowHeight);
-
-        /*fadeout at the end*/
-        if(i > frames - fadeoutTime) {
-            fadeoutColor = addOpacity(fadeoutColor, -(255 / fadeoutTime));
-            backgroundColor = avgOfColors(backgroundColor, fadeoutColor);
-
-            MLV_draw_filled_rectangle(0, 0, windowWidth, windowHeight, fadeoutColor);
-            MLV_actualise_window();
-            /* display will take more time so we don't have to wait 5 more ms */
-        }
-        else
-            MLV_wait_milliseconds( 5 );
-    }
-}
-
-
 MLV_Image *wallSprite(Cell cell, Stage stage) {
 	int wallLeft  = 0;
 	int wallRight = 0;
@@ -775,7 +692,7 @@ char *itemName(Loot item) {
 }
 
 void displayItemInfo(Loot item, Point start, int boxWidth, int boxHeight) {
-    MLV_draw_filled_rectangle(start.x, start.y, boxWidth, boxHeight, INVENTORY_MENU_COLOR);
+    /*MLV_draw_filled_rectangle(start.x, start.y, boxWidth, boxHeight, INVENTORY_MENU_COLOR);*/
     MLV_draw_text(start.x + 20, start.y, "%s", MLV_COLOR_WHITE, itemName(item));
     if(item.type == EQUIPMENT) {
         MLV_draw_text(
@@ -978,9 +895,17 @@ Loot inventory(Loot inventory[], enum mode mode) {
     infoBox.x = 0;
     infoBox.y = windowHeight - infoBoxHeight;
 
-    /* TODO open animation ?*/
+    int i;
+    int frames = 5;
 
     blurBackground(MLV_COLOR_GRAY1);
+
+    for(i = 0; i < frames; i++) {
+        MLV_draw_filled_rectangle(0, 0, ((float)i/(float)frames)*menuWidth, windowHeight, INVENTORY_MENU_COLOR);
+        MLV_wait_milliseconds( 10 );
+        MLV_actualise_window();
+    }
+
     MLV_draw_filled_rectangle(0, 0, menuWidth, windowHeight, INVENTORY_MENU_COLOR);
 
     /* display and choose */
@@ -1077,6 +1002,7 @@ Loot inventory(Loot inventory[], enum mode mode) {
                         xIndex = (xMouse - ((xMouse % itemPerRow)*margin)) / itemBoxSize;
                         itemIndex = yIndex*itemPerRow + xIndex;
                         selection = itemIndex;
+                        MLV_draw_filled_rectangle(infoBox.x, infoBox.y, infoBoxWidth, infoBoxHeight, INVENTORY_MENU_COLOR);
                         displayItemInfo(inventory[itemIndex], infoBox, infoBoxWidth, infoBoxHeight);
                         if(inventory[itemIndex].type != NO_ITEM)
                             canSelect = 1;
@@ -1100,137 +1026,89 @@ Loot inventory(Loot inventory[], enum mode mode) {
     return chosenItem;
 }
 
-void displayHUD(Player player) {
-    /* Converts a number of points (hp/mp/exp) into a bar percentage */
-    int convertPointsToBarPercentg(int points, int maxPoints) {
-        return (points * 100)/maxPoints;
-    }
 
-    /* Converts a bar percentage into a length depending on a bar length (px) */
-    int convertBarPercentgToLenght(int barPrctg, int barLength) {
-        return (barPrctg * barLength)/100;
-    }
+Loot chooseBetweenTwo(Loot item_a, Loot item_b) {
+    unsigned int windowWidth, windowHeight;
+    MLV_get_window_size(&windowWidth, &windowHeight);
 
-    /* Draws a bar filled at fillPrctg % */
-    void drawBar(int xStart, int yStart, int length, int height, int fillPrctg, MLV_Color fillColor) {
-        int xList[4] = {xStart, xStart + length, xStart + length + height/2, xStart};
-        int yList[4] = {yStart, yStart, yStart + height, yStart + height};
-        MLV_draw_polygon(xList, yList, 4, LINE_COLOR);
+    int x, y;
+    int i;
 
-        int fillLength = convertBarPercentgToLenght(fillPrctg, length);
-        MLV_draw_line(xStart + fillLength, yStart, xStart + fillLength + height/2, yStart + height, LINE_COLOR);
-        boundaryFill(xStart + fillLength - 1, yStart + 1, fillColor, LINE_COLOR);
-    }
+    Point aStart, bStart, aInfoStart, bInfoStart;
+    int itemBoxSize = windowWidth/6;
+    aStart.x        = windowWidth/3.5;
+    aStart.y        = windowHeight/4;
+    bStart.x        = windowWidth - itemBoxSize - aStart.x;
+    bStart.y        = aStart.y;
+    aInfoStart.x    = aStart.x - 20;
+    aInfoStart.y    = aStart.y + itemBoxSize + 50;
+    bInfoStart.x    = bStart.x - 20;
+    bInfoStart.y    = bStart.y + itemBoxSize + 50;
 
-    /* Draws a quarter circle bar of center (xCenter, yCenter) and radius radius filled at fillPrctg % */
-    void drawQuarterCircleBar(int xCenter, int yCenter, int radius, int fillPrctg, MLV_Color fillColor) {
-        unsigned int windowWidth, windowHeight;
-        MLV_get_window_size(&windowWidth, &windowHeight);
+    Loot chosenItem;
 
-        int x, y;
+    blurBackground(OUT_OF_MAP_COLOR_BAS);
 
-        /* since we only want the bottom left quarter of the circle, we focus on the following area : */
-        int xAreaStart = xCenter - radius;
-        int yAreaStart = yCenter;
-        int xAreaEnd   = xCenter;
-        int yAreaEnd   = yCenter + radius;
+    MLV_draw_text(windowWidth/2.35, windowHeight/8, "You found", MLV_COLOR_WHITE);
 
-        int x1LastPixel, y1LastPixel;
-        int x1FillPixel, y1FillPixel;
-        int nbPixelsInsideBorder = 0;
+    
 
-        unsigned int epsilon = windowWidth/20;
+    displayItemInfo(item_a, aInfoStart, itemBoxSize + 70, 2*itemBoxSize);
+    displayItemInfo(item_b, bInfoStart, itemBoxSize + 70, 2*itemBoxSize);
 
-        /* Drawing pixel by pixel of the inside border*/
-        for(y = yAreaStart; y <= yAreaEnd; y++) {
-            for(x = xAreaStart; x <= xAreaEnd; x++) {
-                /* circle equation formula */
-                if(SQUARED((x - xCenter)) + SQUARED((y - yCenter)) <= SQUARED(radius) + epsilon
-                    && SQUARED((x - xCenter)) + SQUARED((y - yCenter)) >= SQUARED(radius) - epsilon) {
-                    nbPixelsInsideBorder++;
-                    MLV_draw_pixel(x, y, LINE_COLOR);
-                    x1LastPixel = x;
-                    y1LastPixel = y;
-                }
+    while(1) {
+        MLV_get_mouse_position(&x, &y);
+        /* A item */
+        if(x > aStart.x && x < aStart.x + itemBoxSize &&
+            y > aStart.y && y < aStart.y + itemBoxSize ) {
+            for(i = 0; i < 5; i++) {
+                displayItemBasic(item_a, aStart, itemBoxSize);
+                MLV_draw_rectangle(
+                    aStart.x + i,
+                    aStart.y + i,
+                    itemBoxSize - 2*i,
+                    itemBoxSize - 2*i,
+                    MLV_COLOR_WHITE
+                    );
+            }
+            if(MLV_get_mouse_button_state(MLV_BUTTON_LEFT) == MLV_PRESSED) {
+                chosenItem = item_a;
+                break;
             }
         }
-
-        float r0 = (float)radius;
-        float commonDifference =  1.0/(windowHeight / 2);
-
-        int x2LastPixel, y2LastPixel;
-        int x2FillPixel, y2FillPixel;
-        int nbPixelsOutsideBorder = 0;
-
-        /*outside border*/
-        for(y = yAreaStart; y <= yAreaEnd + 100; y++) {
-            for(x = xAreaStart - xAreaStart/2; x <= xAreaEnd; x++) {
-                r0 += commonDifference;
-                /* circle equation formula */
-                if(SQUARED((x - xCenter)) + SQUARED((y - yCenter)) <= SQUARED(r0) + (1.1)*epsilon
-                    && SQUARED((x - xCenter)) + SQUARED((y - yCenter)) >= SQUARED(r0) - (1.1)*epsilon) {
-                    nbPixelsOutsideBorder++;
-                    MLV_draw_pixel(x, y, LINE_COLOR);
-                    x2LastPixel = x;
-                    y2LastPixel = y;
-                }
-            }
-        }
-
-        MLV_draw_line(x1LastPixel, y1LastPixel, x2LastPixel, y2LastPixel, LINE_COLOR);
-
-        /* fill */
-        if(fillPrctg > 5 && fillPrctg < 100) {
-            int searchedPixel = convertBarPercentgToLenght(fillPrctg, nbPixelsInsideBorder);
-            int pixelIndex = 0;
-            int pixelFound = 0; /* flag to break out of the nested loops */
-
-            for(y = yAreaStart; y <= yAreaEnd && !pixelFound; y++) {
-                for(x = xAreaStart; x <= xAreaEnd; x++) {
-                    if(SQUARED((x - xCenter)) + SQUARED((y - yCenter)) <= SQUARED(radius) + epsilon
-                        && SQUARED((x - xCenter)) + SQUARED((y - yCenter)) >= SQUARED(radius) - epsilon) {
-                        if(searchedPixel == pixelIndex) {
-                            x1FillPixel = x;
-                            y1FillPixel = y;
-                            printf("y : %d\n", y);
-                            BREAK_NESTED_LOOPS
-                        }
-                        pixelIndex++;
-
-                    }
-                }
-            }
-
-            searchedPixel = convertBarPercentgToLenght(fillPrctg, nbPixelsOutsideBorder);
-            r0 = (float)radius;
-            pixelIndex = 0;
-            pixelFound = 0;
-
-            for(y = yAreaStart; y <= yAreaEnd + 100 && !pixelFound; y++) {
-                for(x = xAreaStart - 10; x <= xAreaEnd; x++) {
-                    r0 += commonDifference;
-                    if(SQUARED((x - xCenter)) + SQUARED((y - yCenter)) <= SQUARED(r0) + (1.1)*epsilon
-                        && SQUARED((x - xCenter)) + SQUARED((y - yCenter)) >= SQUARED(r0) - (1.1)*epsilon) {
-                        if(searchedPixel == pixelIndex) {
-                            x2FillPixel = x;
-                            y2FillPixel = y;
-                            BREAK_NESTED_LOOPS
-                        }
-                        pixelIndex++;
-
-                    }
-                }
-            }
-        MLV_draw_line(x1FillPixel, y1FillPixel, x2FillPixel, y2FillPixel, LINE_COLOR);
-        if(fillPrctg >= 15)
-            boundaryFill(x1FillPixel - 1, y1FillPixel + 1, fillColor, LINE_COLOR);
         else
-            boundaryFill(x2FillPixel + 1, y2FillPixel - 2, fillColor, LINE_COLOR);
+            displayItemBasic(item_a, aStart, itemBoxSize);
+
+        /* B item */
+
+        if(x > bStart.x && x < bStart.x + itemBoxSize &&
+            y > bStart.y && y < bStart.y + itemBoxSize) {
+            for(i = 0; i < 5; i++) {
+                displayItemBasic(item_b, bStart, itemBoxSize);
+                MLV_draw_rectangle(
+                    bStart.x + i,
+                    bStart.y + i,
+                    itemBoxSize - 2*i,
+                    itemBoxSize - 2*i,
+                    MLV_COLOR_WHITE
+                    );
+            }
+            if(MLV_get_mouse_button_state(MLV_BUTTON_LEFT) == MLV_PRESSED) {
+                chosenItem = item_b;
+                break;
+            }
         }
-        else if(fillPrctg == 100){
-            boundaryFill(x1LastPixel - 1, y1LastPixel + 1, fillColor, LINE_COLOR);
-        }
+        else 
+            displayItemBasic(item_b, bStart, itemBoxSize);
+
+        MLV_actualise_window();
+
     }
+    printf("chosen\n");
+    return chosenItem;
+}
+
+void displayHUD(Player player) {    
     unsigned int windowWidth, windowHeight;
     MLV_get_window_size(&windowWidth, &windowHeight);
 

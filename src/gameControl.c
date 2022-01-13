@@ -56,6 +56,9 @@ enum PLAYER_ACTION getPlayerAction() {
     					return INVENTORY;
     				case MLV_KEYBOARD_o :
     					return OPTN;
+                    case MLV_KEYBOARD_t : /* for testing, remove after */
+                        chooseBetweenTwo(generateLoot(1, 1, EQUIPMENT), generateLoot(1, 1, EQUIPMENT));
+                        break;
     				default :
     					break;
     			}
@@ -97,11 +100,9 @@ int doAction(enum PLAYER_ACTION act, Player *player, StageList *dungeon) {
 			return 1;
 		case PHYSICAL :
             player->status = PHYSICAL_ATTCK;
-            printf("PHYSICAL ATTACK BUTTON CLICKED\n");
 			return 1;
 		case MAGICAL :
             player->status = MAGICAL_ATTCK;
-            printf("MAGICAL ATTACK BUTTON CLICKED\n");
 			return 1;
 		case INVENTORY :
 			inventory(player->inventory, BASIC);

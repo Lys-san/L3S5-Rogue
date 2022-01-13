@@ -21,8 +21,9 @@ int main(int argc, char * argv[]) {
     pickUp(&player, loot);
 
     printf(">>>Initializing stage.\n");
+    initStage(&stage, &player, 1);
     printf("Stage initialized.\n");
-    generateStageTest(&stage, &player, 1);
+    /*stage = generateStageTest();*/
     quickPrintStage(stage);
 
     /* initializing dungeon */
