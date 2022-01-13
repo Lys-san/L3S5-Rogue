@@ -1,6 +1,6 @@
 /* Auteurs : Nicolas Mazeyrac, Lysandre Macke
  * Creation : 06/01/2022
- * Modification : 06/01/2022*/
+ * Modification : 13/01/2022*/
 
 /*Bibliothèque générale*/
 
@@ -12,8 +12,8 @@
 #define __LIST__
 
     typedef struct NextCoord{
-        Point coords;
-        struct NextCoord *nextCoord;
+        Point coords;                /* Current coord */
+        struct NextCoord *nextCoord; /* Pointer to the next coord */
     }ListCoord;
 
      /* DoubleLinked list of Stages */
@@ -27,22 +27,31 @@
      * ready to be used as a StageList. */
     StageList allocStage(Stage stage);
 
-    /* Adds the given stage in the specified dungeon. */
-    void addStage(StageList *dungeon, Stage stage);
+    /* Adds the given stage at the end of specified dungeon. */
+    void addStageTail(StageList *dungeon, Stage stage);
 
+    /* Adds the given stage at the start of specified dungeon. */
     void addStageHead(StageList *dungeon, Stage stage);
     
+    /* Changes the StageList so that he points to be the correct stage based on its level
+    * if he exists */
     void searchStage(StageList *dungeon, unsigned int level);
 
+    /* Count the number of stages in the dungeon */
     int countNumberLevels(StageList dungeon);
 
-    ListCoord* addCoord(ListCoord *listCoords,int level , int x, int y);
+    /* Add a point to the list */
+    ListCoord* addCoord(ListCoord *listCoords, int x, int y);
 
+    /* Remove a point to the list  */
     ListCoord* removeCoord(ListCoord *listCoords, Point coord);
 
-    ListCoord* generateAllCoords(Stage stage, int level);
+    /* Generate the a list containing all of the coordonnates of the enemy in a stage  */
+    ListCoord* generateAllEnemyCoords(Stage stage);
 
-    void printAllCoords(ListCoord *listCoords);
+    /* Shell display of a ListCoord (to use for debug) */
+    int printAllCoords(ListCoord *listCoords);
 
-    void quickPrintStageList(StageList dungeon);
+    /* Shell display of a StageList (to use for debug) */
+    int printStageList(StageList dungeon);
 #endif

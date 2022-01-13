@@ -1,24 +1,24 @@
 #include "treasure.h"
 
-Treasure generateTreasure(unsigned int stage) {
+Treasure generateTreasure(unsigned int level) {
     
     int i;
     int rarity, quality, type;
     Treasure treasure;
 
     /*Fills the two items of the treasure */
-    for( i = 0 ; i < 2 ; i++ ){
+    for( i = 0 ; i < MAX_LOOT_PER_TREASURE ; i++ ){
 
         /* calculate rarity */
-        rarity = rand() % 4 + 1;/*random beetwen 1 and 5*/
+        rarity = (rand() % (MAX_RARITY-1)) + 1;/*random beetwen 1 and MAX_RARITY*/
 
         /* calculate type Equip/Consummable*/
-        type = rand() % 2 + 1;/*random beetwen 1 and 2*/
+        type = rand() % 2;/*random beetwen 0 and 1*/
 
         /* calculate quality */
-        quality = rand() % stage + 1;/*random beetwen 1 and the level of stage*/
+        quality = rand() % level + 1;/*random beetwen 1 and the level of stage*/
 
-        if(type == 1){
+        if(type){/* no loot is rarer than the other */
             treasure.loot[i] = generateLoot(quality, rarity, EQUIPMENT);/* Generate an equipment */
         }
         else{
@@ -29,7 +29,7 @@ Treasure generateTreasure(unsigned int stage) {
     return treasure;
 }
 
-void quickPrintTreasure(Treasure treasure){
+int quickPrintTreasure(Treasure treasure){
 
     int i;
 
@@ -39,6 +39,9 @@ void quickPrintTreasure(Treasure treasure){
 
     for( i = 0 ; i < 2 ; i++){
         printf("item %d : \n", i);
-        quickPrintLoot(treasure.loot[i]); /* print all of it's content */
+        if(!quickPrintLoot(treasure.loot[i])){
+            return 0;
+        } /* print all of it's content */
     }
+    return 1;
 }

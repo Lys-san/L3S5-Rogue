@@ -1,6 +1,6 @@
 /* Auteurs : Nicolas Mazeyrac, Lysandre Macke
  * Creation : 26/11/2021
- * Modification : 09/01/2022*/
+ * Modification : 13/01/2022*/
 
 /*Bibliothèque générale*/
 
@@ -12,7 +12,7 @@
 
     /*Define*/
 
-    #define MEMORY_FILE_NAME "game.bin" /*temporaire : je cherche encore sous quelle forme sont écrits les fichiers .sav*/
+    #define MEMORY_FILE_NAME "game.bin" /* Name of the save file */
 
     /*Struct*/
 
@@ -20,7 +20,7 @@
     /*Functions*/
 
     /*creates a new memory file.
-      If a memory file already exists this one will be replaced with the new one.*/
+    *  If a memory file already exists this one will be replaced with the new one.*/
     int newGame(Player *player, StageList* dungeon);
 
     /*loads the game according the data found in the given memory file.*/

@@ -1,63 +1,72 @@
 #include "turn.h"
 
 
-int enemyTurn(Enemy monster, Player* player, Point coordEnemy, Stage *level){
+int enemyTurn(Enemy monster, Player* player, Point coordEnemy, Stage *stage){
+
+    assert(NULL != stage);
+    assert(NULL != player);
     
     /* If the hero is adjacent */
     if(isAdjacent(coordEnemy, player->coords)){
-        printf("the player is adjacent \n");
-        enemyAttack(monster, player);/* perform an attack */
-        printf("the player is at %d \n", player->stat.current.hp);
-        if(player->stat.current.hp < 0){
-            printf("The player is dead \n");
+        enemyAttack(monster, player);/* Perform an attack */
+        if(player->stat.current.hp < 0){/* The player is dead */
             return 1;
         }
-    }
-    else{
-        printf("the player isn't adjacent \n");
     }
 
     /* If the hero is in the same screen */
     if(isInScreen(coordEnemy, player->coords)){
-        printf("the player is on the screen \n");
-        enemyMove(level, coordEnemy, player->coords);/*Move to the player*/
+        enemyMove(stage, coordEnemy, player->coords);/* Move to the player */
     }
-    else{
-        printf("the player isn't on the screen \n");
-    }
+
     return 0;
 }
 
-int allEnemyTurn(Stage *level, Player* player, ListCoord* coordsEnnemies){
+int allEnemyTurn(Stage *stage, Player* player, ListCoord* coordsEnnemies){
+    
     ListCoord* tmp;
+    
+    assert(NULL != stage);
+    assert(NULL != player);
+
     tmp = coordsEnnemies;
+
     while(tmp != NULL){
-        if(enemyTurn(level->cells[tmp->coords.y][tmp->coords.x].enemy, player, tmp->coords, level)){
-            printf("Game Over \n");
-            return 1;
+        if(enemyTurn(stage->cells[tmp->coords.y][tmp->coords.x].enemy, player, tmp->coords, stage)){
+            return 1;/* The player is dead */
         }
-        tmp = tmp->nextCoord;
+        tmp = tmp->nextCoord; /* Activate the next enemy */
     }
+
     return 0;
 }
-int turnEnemyOnScreen(Stage *level, Player* player){
+int turnEnemyOnScreen(Stage *stage, Player* player){
+    
     int i, j;
     int playerDeath;
     Point topLeft;
     ListCoord* coordsEnnemies;
-    coordsEnnemies = NULL;
 
+    assert(NULL != stage);
+    assert(NULL != player);
+
+    coordsEnnemies = NULL;
+    /* Point to the top left of the screen */
     topLeft.x = player->coords.x - (SCREEN_WIDTH/2);
     topLeft.y = player->coords.y - (SCREEN_HEIGHT/2);
-    printf("topLeft : x = %d, y = %d \n", topLeft.x, topLeft.y);
+
+    /* Make listCoord(see list.h) of all the coordinates of the enemy */
     for(i = 0;i < SCREEN_WIDTH; i++){
         for(j = 0;j < SCREEN_HEIGHT; j++){
-            if(level->cells[topLeft.y+i][topLeft.x+j].type == ENEMY){
-                coordsEnnemies = addCoord(coordsEnnemies, 1, topLeft.x+j, topLeft.y+i);
-            }
+            if(stage->cells[topLeft.y+i][topLeft.x+j].type == ENEMY){
+                coordsEnnemies = addCoord(coordsEnnemies, topLeft.x+j, topLeft.y+i);
+            }/* If there is an enemy add it's coordinates */
         }
     }
-    playerDeath = allEnemyTurn(level, player, coordsEnnemies);
+
+    /*Activates all enemies*/
+    playerDeath = allEnemyTurn(stage, player, coordsEnnemies);
     free(coordsEnnemies);
+
     return playerDeath;
 }

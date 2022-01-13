@@ -1,26 +1,11 @@
 #include "loot.h"
 
-Consummables generateRandomConsummable(void){
-    int randomnumber;
-
-    randomnumber = rand() % NUM_DIFF_CONSUMMABLE;
-
-    switch(randomnumber){
-        case 0:return HEAL;
-        case 1:return MAGIC;
-        case 2:return REGEN;
-        case 3:return LEARNING;
-        case 4:return PRECISION;
-        default :fprintf(stderr, "ERROR: not a consummable randomnumber = %d \n", randomnumber);
-    }
-
-    return EMPTY;
-}
-
 Equipment generateEquipment(EquipType type, unsigned int quality, unsigned int rarity){
     
     Equipment equipment;
     
+    assert(type != NONE);
+
     /* Generate a new equipment object */
     equipment.quality = quality;
     equipment.rarity = rarity;
@@ -34,7 +19,7 @@ Equipment generateRandomEquipment(unsigned int quality, unsigned int rarity){
     Equipment equipment;
     int randomnumber;
 
-    randomnumber = rand() % NUM_EQUIP_TYPE;
+    randomnumber = rand() % NUM_EQUIP_TYPE;/* no equipment is rarer than the other */
 
     /* The quality and rarety are the same no matter the type of equipment */
     switch(randomnumber){
@@ -45,6 +30,23 @@ Equipment generateRandomEquipment(unsigned int quality, unsigned int rarity){
     }
 
     return equipment;
+}
+
+Consummables generateRandomConsummable(void){
+    int randomnumber;
+
+    randomnumber = rand() % NUM_DIFF_CONSUMMABLE;/* no object is rarer than the other */
+
+    switch(randomnumber){
+        case 0:return HEAL;
+        case 1:return MAGIC;
+        case 2:return REGEN;
+        case 3:return LEARNING;
+        case 4:return PRECISION;
+        default :fprintf(stderr, "ERROR: not a consummable randomnumber = %d \n", randomnumber);
+    }
+
+    return EMPTY;
 }
 
 Loot generateLoot(unsigned int quality, unsigned int rarity, LootType type) {
@@ -75,7 +77,7 @@ int quickPrintEquipment(Equipment equip){
         case NONE: printf("NONE \n");break;
         default: fprintf(stderr, "ERROR \n");return 0;
     }
-
+    /* in addition to the type print all other information */
     printf("- rarity : %d \n", equip.rarity);
     printf("- quality : %d \n", equip.quality);
     return 1;
@@ -103,6 +105,7 @@ int quickPrintLoot(Loot loot){
         return quickPrintEquipment(loot.equipment);
     }
     else{
+        /* If the type doesn't act as it is a random consumable if it isn't it would still be an error*/
         printf("CONSUMMABLE : \n");
         return quickPrintConsummable(loot.consummable);
     }

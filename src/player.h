@@ -1,6 +1,6 @@
 /* Auteurs : Nicolas Mazeyrac, Lysandre Macke
  * Creation : 30/11/2021
- * Modification : 09/01/2022*/
+ * Modification : 13/01/2022*/
 
 /*Bibliothèque générale*/
 
@@ -11,8 +11,8 @@
 #define __PLAYER__
 
     /*Define*/
-    #define MAX_EQUIP     3 /*Number of equipment a player can wield */
-    #define MAX_INVENTORY 9 /*Number of non-equipment a player can carry*/
+    #define MAX_EQUIP     3   /* Number of equipment a player can wield */
+    #define MAX_INVENTORY 9   /* Number of non-equipment a player can carry*/
 
     /*Base stat at lvl one for a Standard player*/
     #define STANDARD_BASE_STAT          10
@@ -24,8 +24,8 @@
     enum playerStatus { PHYSICAL_ATTCK, MAGICAL_ATTCK }; /* will determine which attack will be done */
 
     typedef struct {
-        int x;
-        int y;
+        int x; /* The cell's number on the line of the stage(see level.h) */
+        int y; /* The line's on the stage(see level.h) */
     } Point;
     
     typedef struct {
@@ -40,8 +40,8 @@
     } Spell;
 
     typedef struct {
-        unsigned int lvl;             /* Current lvl of the player */
         int hp;                       /* Current hp of the player, different from max HP */
+        unsigned int lvl;             /* Current lvl of the player */
         unsigned int mp;              /* Current mp of the player, different from max MP */
         unsigned int exp;             /* Current exp of the player */
     } CurrentStat;
@@ -59,16 +59,16 @@
     } Stat;
 
     typedef struct {
-        enum playerStatus status;     /* physical attack mode or magical */
-        Point coords;                 /* Coords of the player in the stage */
-        Stat stat;                    /* Stats of the player */
-        Spell spell;                  /* description of the spell that can be cast */
-        Loot equip[MAX_EQUIP];        /* Equipment item that changes Player current stat 0=ARMOR, 1=WEAPON, 2=WAND*/
-        Loot inventory[MAX_INVENTORY];/* Inventory of non-equipment item */
-        unsigned int nbrItemHeld;
-        unsigned int underLearningPotion;
-        unsigned int underRegenPotion;
-        unsigned int underPrecisionPotion;
+        enum playerStatus status;           /* Physical attack mode or magical */
+        Point coords;                       /* Coords of the player in the stage */
+        Stat stat;                          /* Stats of the player */
+        Spell spell;                        /* Description of the spell that can be cast */
+        Loot equip[MAX_EQUIP];              /* Equipment item that changes Player current stat 0=ARMOR, 1=WEAPON, 2=WAND*/
+        Loot inventory[MAX_INVENTORY];      /* Inventory of non-equipment item */
+        unsigned int nbrItemHeld;           /* Number of items held */
+        unsigned int underLearningPotion;   /* Number of turn left under a learning potion */
+        unsigned int underRegenPotion;      /* Number of turn left under a regen potion */
+        unsigned int underPrecisionPotion;  /* Number of turn left under a precision potion */
     } Player;
 
 
@@ -98,25 +98,31 @@
     /* Initialize a Player character with standard stats */
     void initializeStandard(Player *player);
 
-    /* Debug */
-    void quickPrintPlayer(Player player);
-
-    /*Gain exp to the player*/
-    void gainExp(Player *player, unsigned int exp);
-
-    /*Gain a lvl if the current exp is higher than the exp needed to pass the next lvl*/
+    /* Gain a lvl if the current exp is higher than the exp needed to pass the next lvl */
     int gainLvl(Player *player);
 
-    void updateWeaponStat(Player *player, Equipment weapon);
+    /* Gain exp to the player and level up the player has many times as necessary given the amount of exp */
+    void gainExp(Player *player, unsigned int exp);
 
-    void updateWandStat(Player *player, Equipment wand);
+    /* Equip a weaponType weapon to the player and adjust his stat accordingly  */
+    void equipWeapon(Player *player, Equipment weapon);
 
-    void updateArmorStat(Player *player, Equipment armor);
+    /* Equip a weaponType wand to the player and adjust his stat accordingly */
+    void equipWand(Player *player, Equipment wand);
 
-    int checkEquip(Player *player, Equipment equip, int position);
+    /* Equip a weaponType armor to the player and adjust his stat accordingly */
+    void equipArmor(Player *player, Equipment armor);
 
+    /* Check if the Equipment equip is better than the currently held equipment */
+    int checkEquip(Player *player, Equipment equip);
+
+    /* Equip the Equipment equip to the player if the equipment is better */
     void newEquipment(Player *player, Equipment equip);
 
+    /* Add the loot to the players inventory if there is place */
     void pickUp(Player* player, Loot loot);
+
+    /* Shell display of the player (to use for debug) */
+    int quickPrintPlayer(Player player);
 
 #endif

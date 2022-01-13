@@ -65,7 +65,6 @@ Point Move(Point coordInit, Direction dir){
 void enemyAttack(Enemy monster, Player* player){
     unsigned int damage;
     damage = attackPhysical(monster.attack, monster.crit);
-    printf("I attack for %d damage \n", damage);
     player->stat.current.hp -= damage;
 }
 
@@ -82,35 +81,26 @@ void enemyMove(Stage* level, Point coordEnemy, Point coordPlayer){
 
     if(ABS(verticalDistance) >= ABS(lateralDistance)){
         if(verticalDistance < 0){
-            printf("Try to move up \n");
             newCoord = Move(coordEnemy, N);/* Move up */
         }
         else{
-            printf("Try to move down \n");
             newCoord = Move(coordEnemy, S);/* Move down */
         }
     }
     else{
         /*left and right*/
         if(lateralDistance < 0){
-            printf("Try to move left \n");
             newCoord = Move(coordEnemy, W);/* Move left */
         }
         else{
-            printf("Try to move right \n");
             newCoord = Move(coordEnemy, E);/* Move right */
         }
     }
 
     if( ( level->cells[newCoord.y][newCoord.x].type == ROOM ) && ( !isTheSame(newCoord, coordPlayer) ) ){
-        printf("I moved \n");
-        printf("new coord x = %d, y = %d \n", newCoord.x, newCoord.y);
         tmp =  level->cells[coordEnemy.y][coordEnemy.x];
         level->cells[coordEnemy.y][coordEnemy.x] = level->cells[newCoord.y][newCoord.x];
         level->cells[newCoord.y][newCoord.x] = tmp;
-    }
-    else{
-        printf("There isn't space \n");
     }
 }
 
@@ -124,7 +114,6 @@ void playerPhysicalAttack(Player player, Enemy* monster){
     /* do the damage */
     damage = attackPhysical(player.stat.base.ATTACK, player.stat.base.CRIT);
     monster->hp -= damage;
-    printf("damage dealt = %d \n", damage);
 
 }
 
@@ -149,7 +138,6 @@ void openTreasure(Player* player, Stage* stage, int x, int y){
 
     if(stage->cells[y][x].treasure.closed){
         loot = stage->cells[y][x].treasure.loot[0];/*choose a treasure*/
-        quickPrintLoot(loot);
         switch(loot.type){
             case EQUIPMENT:
                 newEquipment(player, loot.equipment);
@@ -217,11 +205,8 @@ int playerMove(Player* player, Direction dir, StageList *dungeon){
         break;
 
         case ENEMY:
-            printf("Attack \n");
-            quickPrintEnemy(stage->cells[newCoord.y][newCoord.x].enemy);
             playerPhysicalAttack(*player, &(stage->cells[newCoord.y][newCoord.x].enemy));
             if(stage->cells[newCoord.y][newCoord.x].enemy.hp <= 0){
-                printf("The enemy is dead \n");
                 gainExp(player, stage->cells[newCoord.y][newCoord.x].enemy.exp);
                 stage->cells[newCoord.y][newCoord.x] = initCell(1, newCoord, ROOM, CONTAINS_NOTHING, 0);
             }
@@ -229,40 +214,30 @@ int playerMove(Player* player, Direction dir, StageList *dungeon){
         break;
 
         case TREASURE:/* The player will open a Treasure */
-            printf("Open treasure \n");
             openTreasure(player, stage, newCoord.x, newCoord.y);
-            quickPrintPlayer(*player);
             return 0;
         break;
 
         case STAIR_DOWN:/* The player will descend to the next level */
-            printf("Go downstair \n");
             player->coords.x = newCoord.x;
             player->coords.y = newCoord.y;
             if((*dungeon)->nextLevel == NULL){
-                /*generateStageTest(&newStage, player, stage->level+1);*/
                 initStage(&newStage, player, stage->level+1);
-                addStage(dungeon, newStage);
-                quickPrintStage(newStage);
+                addStageHead(dungeon, newStage);
             }
             else{
                 (*dungeon) =(*dungeon)->nextLevel ;
                 initPlayerOnStage(player,  (*dungeon)->stage);
-                /*player->coords = (Point){2, 2};*/
             }
             return 1;
         break;
 
         case STAIR_UP:/* The player will ascend to the previous level */
-            printf("Go upstair \n");
             player->coords.x = newCoord.x;
             player->coords.y = newCoord.y;
             if((*dungeon)->previousLevel != NULL){
-                printf("target level is %d \n", stage->level-1);
                 (*dungeon) =(*dungeon)->previousLevel ;
-                printf("Current level is %d \n", (*dungeon)->stage.level);
-                /*initPlayerOnStage(player,  (*dungeon)->stage);*/
-                player->coords = (Point){2, 2};
+                initPlayerOnStage(player,  (*dungeon)->stage);
             }
             return 1;
         break;
@@ -271,8 +246,6 @@ int playerMove(Player* player, Direction dir, StageList *dungeon){
     }
 
     /*the player moved*/
-    printf("Moves \n");
-    printf("New coord = x=%d, y=%d \n", newCoord.x, newCoord.y);
     player->coords.x = newCoord.x;
     player->coords.y = newCoord.y;
     return 0;

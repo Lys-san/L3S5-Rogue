@@ -1,6 +1,6 @@
 /* Auteurs : Nicolas Mazeyrac, Lysandre Macke
  * Creation : 26/12/2021
- * Modification : 03/01/2022*/
+ * Modification : 13/01/2022*/
 
 /*Bibliothèque générale*/
 #include <time.h>
@@ -38,9 +38,10 @@
     /* Move the player to the next tile if he can, perform a special action if the tile isn't empty */
     int playerMove(Player *player, Direction dir, StageList *dungeon);
     
-    /*Open a treasure chest*/
+    /* Open a treasure chest */
     void openTreasure(Player* player, Stage *stage, int x, int y);
 
+    /* Apply the effect of a potion to a player */
     int consumeItem(Player* player, Consummables potion);
 
 #endif
