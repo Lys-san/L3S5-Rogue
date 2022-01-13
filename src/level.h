@@ -63,7 +63,7 @@
 
 	/* A stage is an array of cells */
 	typedef struct {
-		Cell cells[LEVEL_HEIGHT][LEVEL_WIDTH]; /* array of [lines][cells] (when called use this way : .cells[y][x]) */
+		Cell cells[LEVEL_HEIGHT+4][LEVEL_WIDTH+4]; /* array of [lines][cells] (when called use this way : .cells[y][x]) */
 		int level;
 	} Stage;
 
