@@ -142,7 +142,7 @@ void openTreasure(Player* player, Stage* stage, int x, int y){
                 newEquipment(player, loot.equipment);
                 break;
             case CONSUMMABLE:
-                pickUp(player, loot);
+                addToInventory(player, loot);
                 break;
             default:fprintf(stderr, "this loot doesn't exist");
         }

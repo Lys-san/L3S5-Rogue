@@ -12,17 +12,14 @@ int main(int argc, char * argv[]) {
     Player player;
     StageList dungeon;
     Loot loot;
-;
     initializeStandard(&player);
     generateStageTest(&stage, &player, 1);
 
     /* initializing dungeon */
     dungeon = allocStage(stage);
     createGameWindow();
-
-    loot = generateLoot(0, 0, HEAL);
-    pickUp(&player, loot);
-
+    loot = generateLoot(1,1,CONSUMMABLE);
+    addToInventory(&player, loot);
     int quit = 0;
     int play = 1;
     int fadein = 1;

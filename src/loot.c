@@ -55,12 +55,11 @@ Loot generateLoot(unsigned int quality, unsigned int rarity, LootType type) {
 
     loot.type = type;
 
-    if(loot.type == EQUIPMENT){
-        loot.equipment = generateRandomEquipment(quality, rarity);
-    }
-    else{
-        /* If the type doesn't exist generate a random consumable as to not break the game */
-        loot.consummable = generateRandomConsummable();/* the quality and rarity are not used for consummables */
+    switch(loot.type){
+        case EQUIPMENT: loot.equipment = generateRandomEquipment(quality, rarity);break;
+        case CONSUMMABLE: loot.consummable = generateRandomConsummable();break;/* the quality and rarity are not used for consummables */
+        case NO_ITEM:break;
+        default : fprintf(stderr, "This type of loot doesn't exist");
     }
 
     return loot;
@@ -100,15 +99,12 @@ int quickPrintConsummable(Consummables consummable){
 
 int quickPrintLoot(Loot loot){
     
-    if(loot.type == EQUIPMENT){
-        printf("EQUIPMENT : \n");
-        return quickPrintEquipment(loot.equipment);
+
+    switch(loot.type){
+        case EQUIPMENT: printf("EQUIPMENT : \n");return quickPrintEquipment(loot.equipment);break;
+        case CONSUMMABLE: printf("CONSUMMABLE : \n");return quickPrintConsummable(loot.consummable);break;
+        case NO_ITEM:printf("NO_ITEM : \n"); return 1;break;
+        default : fprintf(stderr, "This type of loot doesn't exist");
     }
-    else{
-        /* If the type doesn't act as it is a random consumable if it isn't it would still be an error*/
-        printf("CONSUMMABLE : \n");
-        return quickPrintConsummable(loot.consummable);
-    }
-    
     return 0;
 }
