@@ -30,10 +30,10 @@
     void enemyMove(Stage *level, Point coordEnemy, Point coordPlayer);
 
     /* Do a physical attack from the player to the monster */
-    void playerPhysicalAttack(Player player, Enemy* monster);
+    void playerPhysicalAttack(Player player, Enemy* enemy);
 
     /* Do a magical attack from the player to the monster, if the player doesn't have mp doesnt do the attack and return 0 */
-    int playerMagicalAttack(Player* player, Enemy* monster);
+    int playerMagicalAttack(Player* player, Enemy* enemy);
 
     /* Move the player to the next tile if he can, perform a special action if the tile isn't empty */
     int playerMove(Player *player, Direction dir, StageList *dungeon);

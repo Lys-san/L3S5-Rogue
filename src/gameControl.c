@@ -104,7 +104,7 @@ int doAction(enum PLAYER_ACTION act, Player *player, StageList *dungeon) {
             printf("MAGICAL ATTACK BUTTON CLICKED\n");
 			return 1;
 		case INVENTORY :
-			inventory(player->inventory, BASIC);
+			quickPrintLoot(inventory(player->inventory, BASIC));
 			return 1;
 		case OPTN :
 			/* function for the options */

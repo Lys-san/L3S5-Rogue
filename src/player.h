@@ -123,6 +123,6 @@
     void pickUp(Player* player, Loot loot);
 
     /* Shell display of the player (to use for debug) */
-    int quickPrintPlayer(Player player);
+    int printPlayer(Player player);
 
 #endif

@@ -75,6 +75,16 @@ void addBasicEquipment(Player *player){
     player->equip[(int)WAND].equipment = generateEquipment(WAND, 0, 0);
 }
 
+void initializeInventory(Player *player){
+
+    int i;
+    assert(NULL != player);
+    
+    for(i = 0;i < MAX_INVENTORY; i++){
+        player->inventory[i] = EMPTY;
+    }
+}
+
 
 void initializeStandard(Player *player) {
 
@@ -85,6 +95,7 @@ void initializeStandard(Player *player) {
     /* adds the other basic information that is not part of the stats*/
     addBasicSpell(&player->spell);
     addBasicEquipment(player);
+    initializeInventory(player);
     player->nbrItemHeld = 0;
     player->underLearningPotion = 0;
     player->underRegenPotion = 0;
@@ -206,12 +217,17 @@ void pickUp(Player* player, Loot loot){
     assert(NULL != player);
 
     if(player->nbrItemHeld < MAX_INVENTORY){/* if there is still place in it's inventory */
+        printf("there is space \n");
+        printf("%d \n", player->nbrItemHeld);
         player->inventory[player->nbrItemHeld] = loot;/* place it on a new place */
         player->nbrItemHeld += 1;
     }
+    else{
+        printf("there is no space  \n");
+    }
 }
 
-int quickPrintPlayer(Player player){
+int printPlayer(Player player){
     printf("****PLAYER STATS****\n");
 
     printf("lvl           : %d\n", player.stat.current.lvl);

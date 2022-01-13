@@ -4,9 +4,6 @@ Cell initCell(unsigned int stageLevel, Point coords, CellType type, enum contain
     Cell cell;
     cell.coords = coords;
     cell.type = type;
-    /* uncomment after */
-
-    /*
     switch(obj) {
         case CONTAINS_ENEMY :
             cell.enemy = generateEnemy(stageLevel, dist);
@@ -16,7 +13,7 @@ Cell initCell(unsigned int stageLevel, Point coords, CellType type, enum contain
             break;
         default :
             break;
-    }*/
+    }
     return cell;
 }
 
@@ -262,12 +259,6 @@ void initEnemiesAndTreasuresOnStage(Stage *stage, int stageLevel) {
     }
 }
 
-
-void initEnemiesOnStage(Stage *stage) {
-    /* TODO */
-}
-
-
 void initStairDownOnStage(Stage *stage) {
     int maxDistance   = 25;
     Point stageCenter = getStageCenter();
@@ -447,6 +438,7 @@ void generateStageTest(Stage *stage, Player *player, int level){
     /*stairs*/
     stage->cells[1][1] = initCell(level, (Point){1, 1}, STAIR_UP, CONTAINS_NOTHING, 1);
     stage->cells[1][TEST_LEVEL_WIDTH-2] = initCell(level, (Point){1, TEST_LEVEL_WIDTH-2}, STAIR_DOWN, CONTAINS_NOTHING, 1);
+    stage->stairDown = (Point){TEST_LEVEL_WIDTH-2, 1};
 
     /*treasure*/
     stage->cells[2][4] = initCell(level, (Point){2, 4}, TREASURE, CONTAINS_TREASURE, 1);
