@@ -551,10 +551,9 @@ void displayAtkButtons() {
     MLV_actualise_window();
 }
 
-
+/*
 MLV_Image *itemSprite(Loot loot) {
-    /* TODO */
-}
+}*/
 
 
 void displayItemBasic(Loot loot, Point coordsOnScreen, int itemBoxSize) {

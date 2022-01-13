@@ -95,6 +95,9 @@
     /* Initialize all standard stat  */
     void initializeStat(Player *player);
 
+    /* Initialize an empty inventory  */
+    void initializaInventory(Player *player);
+
     /* Initialize a Player character with standard stats */
     void initializeStandard(Player *player);
 
@@ -120,9 +123,9 @@
     void newEquipment(Player *player, Equipment equip);
 
     /* Add the loot to the players inventory if there is place */
-    void pickUp(Player* player, Loot loot);
+    void  addToInventory(Player* player, Loot loot);
 
     /* Shell display of the player (to use for debug) */
-    int quickPrintPlayer(Player player);
+    int printPlayer(Player player);
 
 #endif

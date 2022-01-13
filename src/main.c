@@ -1,4 +1,5 @@
 #include "gameControl.h"
+#include "turn.h"
 
 #undef main /*( 'o_o)*/
 
@@ -11,9 +12,8 @@ int main(int argc, char * argv[]) {
     Player player;
     StageList dungeon;
     Loot loot;
-
-    printf(">>>Initializing player stats.\n");
     initializeStandard(&player);
+
     printf("Player stats initialized.\n");
     /*player.coords = (Point){2, 2};*/
     quickPrintPlayer(player);
@@ -26,12 +26,12 @@ int main(int argc, char * argv[]) {
     /*stage = generateStageTest();*/
     quickPrintStage(stage);
 
+
     /* initializing dungeon */
     dungeon = allocStage(stage);
-
-    printf(">>>Creating game window.\n");
     createGameWindow();
-
+    loot = generateLoot(1,1,CONSUMMABLE);
+    addToInventory(&player, loot);
     int quit = 0;
     int play = 1;
     int fadein = 1;
@@ -40,19 +40,6 @@ int main(int argc, char * argv[]) {
         fprintf(stderr, "L'infrastructure de la libMLV ne s'est pas correctement initialisée.");
         exit(1);
     }
-
-    /* test start here (remove after) */
-    int i_test;
-    for(i_test = 0; i_test < 5; i_test++) {
-        player.inventory[i_test] = generateLoot(1, 1, EQUIPMENT);
-    }
-    for(i_test = 4; i_test < 7; i_test++) {
-        player.inventory[i_test] = generateLoot(1, 1, CONSUMMABLE);
-    }
-    for(i_test = 6; i_test < MAX_INVENTORY; i_test++) {
-        player.inventory[i_test] = generateLoot(1, 1, NO_ITEM);
-    }
-    
 
     /*snowdrops( 500 );*/
     
@@ -71,7 +58,7 @@ int main(int argc, char * argv[]) {
 
                     /* display */
                     MLV_clear_window(MLV_COLOR_WHITE); /*pour les tests*/
-                    displayStage(dungeon->stage, player, WITH_SPRITES);
+                    displayStage(dungeon->stage, player, BASIC);
                     displayHUD(player);
                     displayAtkButtons();
 
@@ -79,7 +66,6 @@ int main(int argc, char * argv[]) {
                     action = getPlayerAction();
                     while(action == NO_ACTION) {
                         action = getPlayerAction();
-                        MLV_wait_milliseconds( 50 );
                     }
                     actionDone = doAction(action, &player, &dungeon);
 
@@ -90,6 +76,12 @@ int main(int argc, char * argv[]) {
                             quit = 1;
                             break;
                         }
+                    }
+                    if(turnEnemyOnScreen(&(dungeon->stage), &player)){
+                        printf("Game Over \n");
+                        play = 0;
+                        quit = 1;
+                        break;
                     }
                 }
                 break;

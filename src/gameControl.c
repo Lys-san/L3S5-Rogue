@@ -86,6 +86,9 @@ enum PLAYER_ACTION getPlayerAction() {
     return NO_ACTION;
 }
 int doAction(enum PLAYER_ACTION act, Player *player, StageList *dungeon) {
+
+    Loot loot;
+
 	switch( act ) {
 		case UP :
 			playerMove(player, N, dungeon);
@@ -105,7 +108,9 @@ int doAction(enum PLAYER_ACTION act, Player *player, StageList *dungeon) {
             player->status = MAGICAL_ATTCK;
 			return 1;
 		case INVENTORY :
-			inventory(player->inventory, BASIC);
+            loot = inventory(player->inventory, BASIC);
+            quickPrint(loot);
+			consumeItem(player, loot.consummable);
 			return 1;
 		case OPTN :
 			/* function for the options */

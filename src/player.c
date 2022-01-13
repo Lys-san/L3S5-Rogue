@@ -75,7 +75,18 @@ void addBasicEquipment(Player *player){
     player->equip[(int)WAND].equipment = generateEquipment(WAND, 0, 0);
 }
 
+void initializaInventory(Player *player){
 
+    int i;
+
+    assert(NULL != player);
+
+    /* Fill the inventory with NO_ITEM (see loot.h) */
+    for(i = 0; i < MAX_INVENTORY; i++) {
+        player->inventory[i] = generateLoot(1, 1, NO_ITEM);
+    }
+
+}
 void initializeStandard(Player *player) {
 
     assert(NULL != player);
@@ -85,6 +96,7 @@ void initializeStandard(Player *player) {
     /* adds the other basic information that is not part of the stats*/
     addBasicSpell(&player->spell);
     addBasicEquipment(player);
+    initializaInventory(player);
     player->nbrItemHeld = 0;
     player->underLearningPotion = 0;
     player->underRegenPotion = 0;
@@ -201,7 +213,7 @@ void newEquipment(Player *player, Equipment equip){
 
 }
 
-void pickUp(Player* player, Loot loot){
+void  addToInventory(Player* player, Loot loot){
 
     assert(NULL != player);
 
@@ -211,7 +223,7 @@ void pickUp(Player* player, Loot loot){
     }
 }
 
-int quickPrintPlayer(Player player){
+int printPlayer(Player player){
     printf("****PLAYER STATS****\n");
 
     printf("lvl           : %d\n", player.stat.current.lvl);
