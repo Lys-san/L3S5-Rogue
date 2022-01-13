@@ -23,8 +23,11 @@
         struct level *previousLevel; /* Pointer on the previous level */
     }Levels, *StageList;
 
+    /* Allocates the needed memory for a stage objet and returns an object
+     * ready to be used as a StageList. */
     StageList allocStage(Stage stage);
 
+    /* Adds the given stage in the specified dungeon. */
     void addStage(StageList *dungeon, Stage stage);
 
     void addStageHead(StageList *dungeon, Stage stage);

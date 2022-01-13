@@ -19,7 +19,7 @@
     /*Struct*/
 
     typedef enum {
-        HEAL, /* Heal 10% of max hp */
+        HEAL,  /* Heal 10% of max hp */
         MAGIC, /* Heal 10% of max mp */
         REGEN, /* Heal 20 hp and 10 mp every 3 turn for 30 turn, only one at a time */
         LEARNING, /*Up by 30% the exp gained for 30 turn*/
@@ -41,8 +41,9 @@
     } Equipment;
 
     typedef enum {
-        EQUIPMENT, /* permanent change */
-        CONSUMMABLE /* temporary change */
+        EQUIPMENT,   /* permanent change */
+        CONSUMMABLE, /* temporary change */
+        NO_ITEM      /* Void */
     } LootType;
 
     typedef struct{

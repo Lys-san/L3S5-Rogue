@@ -4,6 +4,9 @@ Cell initCell(unsigned int stageLevel, Point coords, CellType type, enum contain
 	Cell cell;
 	cell.coords = coords;
 	cell.type = type;
+	/* uncomment after */
+
+	/*
 	switch(obj) {
 		case CONTAINS_ENEMY :
 			cell.enemy = generateEnemy(stageLevel, dist);
@@ -13,7 +16,7 @@ Cell initCell(unsigned int stageLevel, Point coords, CellType type, enum contain
 			break;
 		default :
 			break;
-	}
+	}*/
 	return cell;
 }
 
@@ -121,6 +124,7 @@ Stage initStageWithWallCells() {
 
 
 Stage generateStage(unsigned int stageLevel) {
+	printf(">>>In function generateStage\n");
 	int i, j;
 	int ii, jj; /* we can't call them i' and j' (*sad maths student noises*) */
 	unsigned int k = 0;
@@ -198,6 +202,7 @@ Stage generateStage(unsigned int stageLevel) {
 	/* initializing the stair-up */
 	stage.cells[stageCenter.y][stageCenter.x] = initCell(stageLevel, stageCenter, STAIR_UP, CONTAINS_NOTHING, 0);
 	stage.level = stageLevel;
+	printf(">>>>>>End of function generateStage.\n");
 	return stage;
 }
 
@@ -243,10 +248,12 @@ void initEnemiesAndTreasuresOnStage(Stage *stage, int stageLevel) {
 				for(ii = i - 1; ii < i + 2; ii++) {
 					for(jj = j - 1; jj < j + 2; jj++) {
 						/* looking for the coordonates next to the treasure */
-						if(stage->cells[ii][jj].type == ROOM && distanceWithL1Norm((Point){jj, ii}, (Point){j, i}) == 1) {
-							distToOrigin = distanceWithL1Norm(stageCenter, (Point){jj, ii});
-							stage->cells[ii][jj] = initCell(stageLevel, (Point){jj, ii}, ENEMY, CONTAINS_ENEMY, distToOrigin);
-							break;
+						if(ii >= 0 && ii < LEVEL_HEIGHT && jj >= 0 && jj < LEVEL_WIDTH){
+							if(stage->cells[ii][jj].type == ROOM && distanceWithL1Norm((Point){jj, ii}, (Point){j, i}) == 1) {
+								distToOrigin = distanceWithL1Norm(stageCenter, (Point){jj, ii});
+								stage->cells[ii][jj] = initCell(stageLevel, (Point){jj, ii}, ENEMY, CONTAINS_ENEMY, distToOrigin);
+								break;
+							}
 						}
 					}
 				}
@@ -297,12 +304,12 @@ void initStairDownOnStage(Stage *stage) {
 		}
 	}
 }
-
+/*
 void initPlayerOnStage(Player *player, Stage stage){
 	player->coords = (Point){LEVEL_WIDTH/2, LEVEL_HEIGHT/2};
-}
+}*/
 
-/*
+
 void initPlayerOnStage(Player *player, Stage stage) {
 	Point stageCenter;
 	stageCenter.x = LEVEL_WIDTH/2;
@@ -313,31 +320,34 @@ void initPlayerOnStage(Player *player, Stage stage) {
 
 	int i, j;
 
-	*//* getting the cells next to the stair-up *//*
+	/* getting the cells next to the stair-up */
 	for(i = stageCenter.y - 1; i <= stageCenter.y + 1; i += 2)
 		adjacent[k++] = stage.cells[i][stageCenter.x];
 
 	for(j = stageCenter.x - 1; j <= stageCenter.x + 1; j += 2)
 		adjacent[k++] = stage.cells[stageCenter.y][j];
 
-	*//* choosing a cell for the player to be in *//*
+	/* choosing a cell for the player to be in */
 	Cell startingCell = drawRandomCellFromList(adjacent, &k);
 	while( startingCell.type != ROOM)
 		startingCell = drawRandomCellFromList(adjacent, &k);
 
-	*//* updating the player's coordonates *//*
+	/* updating the player's coordonates */
 	player->coords = startingCell.coords;
 
-	*//* updating his status to physical attack *//*
+	/* updating his status to physical attack */
 	player->status = PHYSICAL_ATTCK;
-}*/
+}
 
 
 void initStage(Stage *stage, Player *player, unsigned int stageLevel) {
+	printf(">>>In function initStage\n");
 	(*stage) = generateStage(stageLevel);
+	printf("initializing ennemies and treasure.\n");
 	initEnemiesAndTreasuresOnStage(stage, stageLevel);
 	initStairDownOnStage(stage);
 	initPlayerOnStage(player, *stage);
+	printf("End of function initStage.\n");
 }
 
 

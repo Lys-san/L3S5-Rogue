@@ -363,49 +363,49 @@ MLV_Image *wallSprite(Cell cell, Stage stage) {
 		return MLV_load_image("src/files/wall_1.png");
 
 	if(!wallLeft && wallRight && !wallUp && !wallDown) /* wall right */
-		return MLV_load_image("src/files/wall_3.png");
+		return MLV_load_image("src/files/wall_1.png");
 
 	if(!wallLeft && !wallRight && wallUp && !wallDown) /* wall down */
-		return MLV_load_image("src/files/wall_3.png");
+		return MLV_load_image("src/files/wall_1.png");
 
 	if(!wallLeft && !wallRight && !wallUp && wallDown) /* wall up*/
-		return MLV_load_image("src/files/wall_3.png");
+		return MLV_load_image("src/files/wall_1.png");
 
 	/* 2 surrounding walls*/
 	if(wallLeft && wallRight && !wallUp && !wallDown) /* wall left and right */
-		return MLV_load_image("src/files/wall_2.png");
+		return MLV_load_image("src/files/wall_1.png");
 
 	if(wallLeft && !wallRight && wallUp && !wallDown) /* wall left and up */
-		return MLV_load_image("src/files/wall_2.png");
+		return MLV_load_image("src/files/wall_1.png");
 
 	if(wallLeft && !wallRight && !wallUp && wallDown) /* wall left and down */
-		return MLV_load_image("src/files/wall_2.png");
+		return MLV_load_image("src/files/wall_1.png");
 
 	if(!wallLeft && wallRight && !wallUp && wallDown) /* wall right and down */
-		return MLV_load_image("src/files/wall_2.png");
+		return MLV_load_image("src/files/wall_1.png");
 
 	if(!wallLeft && wallRight && wallUp && !wallDown) /* wall right and up */
-		return MLV_load_image("src/files/wall_2.png");
+		return MLV_load_image("src/files/wall_1.png");
 
 	if(!wallLeft && !wallRight && wallUp && wallDown) /* wall up and down */
-		return MLV_load_image("src/files/wall_2.png");
+		return MLV_load_image("src/files/wall_1.png");
 
 	/* 3 surrounding walls */
 	if(wallLeft && wallRight && wallUp && !wallDown)
-		return MLV_load_image("src/files/wall_3.png"); /* wall left, right and up */
+		return MLV_load_image("src/files/wall_1.png"); /* wall left, right and up */
 
 	if(wallLeft && wallRight && !wallUp && wallDown)
-		return MLV_load_image("src/files/wall_3.png"); /* wall left, right and down */
+		return MLV_load_image("src/files/wall_1.png"); /* wall left, right and down */
 
     if(wallLeft && !wallRight && wallUp && wallDown)
-        return MLV_load_image("src/files/wall_4.png"); /* wall left, up and down */
+        return MLV_load_image("src/files/wall_1.png"); /* wall left, up and down */
 
     if(!wallLeft && wallRight && wallUp && wallDown)
-        return MLV_load_image("src/files/wall_4.png"); /* wall right, up and down */
+        return MLV_load_image("src/files/wall_1.png"); /* wall right, up and down */
 
 	/* 4 surrounding walls */
     else
-        return MLV_load_image("src/files/wall_4.png");
+        return MLV_load_image("src/files/wall_1.png");
 }
 
 
@@ -452,9 +452,8 @@ int displayCellSprite(Cell cell) {
     /* checking the cell type to load the sprite */
     switch(cell.type) {
         case WALL : 
-            /*sprite = MLV_load_image("src/files/wall_1.png");*/
         	displayCellBasic(cell);
-            break;
+            return 1;
         case ROOM : 
         	if((cell.coords.x + cell.coords.y)%3 == 0)
         		sprite = MLV_load_image("src/files/floor_1.png");
@@ -470,7 +469,6 @@ int displayCellSprite(Cell cell) {
         	displayCellSprite(tmp); /* floor display */
             MLV_draw_filled_circle(x + CELL_SIZE/2, y + CELL_SIZE/2, CELL_SIZE/3, ENEMY_COLOR_BAS); /* TODO */
             return 1;
-            break;
         case TREASURE : 
             displayCellBasic(cell); /* TODO */
             return 1;
@@ -636,6 +634,121 @@ void displayAtkButtons() {
     MLV_actualise_window();
 }
 
+
+MLV_Image *itemSprite(Loot loot) {
+    /* TODO */
+}
+
+
+void displayItemBasic(Loot loot, int itemBoxSize) {
+    switch( loot.type ) {
+        case EQUIPMENT:
+            /* display item box */
+            /* TODO */
+        default :
+            /* TODO */
+    }
+}
+
+
+void displayItemSprite(Loot loot, int itemBoxSize) {
+    /* TODO */
+}
+
+
+void displayInventory(Loot inventory[], enum mode mode) {
+    unsigned int windowWidth, windowHeight;
+    MLV_get_window_size(&windowWidth, &windowHeight);
+
+    /* note for me : MAX_INVENTORY exists and is equals to 9 */
+    int menuWidth   = windowWidth/3;
+    int margin      = menuWidth/10;
+    int itemPerRow  = 3;
+    int itemBoxSize = menuWidth/itemPerRow - (itemPerRow + 1)*margin;
+
+    int i;
+
+    MLV_draw_filled_rectangle(0, 0, menuWidth, windowHeight, POPUP_COLOR);
+
+    /* iventory display */
+    for(i = 0; i < MAX_INVENTORY; i++) {
+        if(mode == WITH_SPRITES) {
+            displayItemSprite(inventory[i], itemBoxSize);
+        }
+        else /* basic display */
+            displayItemSprite(inventory[i], itemBoxSize);
+    }
+    MLV_actualise_window();
+}
+
+Loot inventory(Loot inventory[], enum mode mode) {
+    /* open animation */
+    blurBackground(MLV_COLOR_GRAY1);
+
+    /* display and choose */
+    /* close animation */
+
+    unsigned int windowWidth, windowHeight;
+    MLV_get_window_size(&windowWidth, &windowHeight);
+    MLV_Keyboard_button sym   = MLV_KEYBOARD_NONE;
+    MLV_Keyboard_modifier mod = MLV_KEYBOARD_KMOD_NONE;
+    MLV_Input_box *input_box  = NULL;
+    char* texte               = NULL;
+    MLV_Button_state state;
+    int xMouse, yMouse;
+
+
+
+    Loot chosenItem;
+
+    /* loops until the user closes the inventory */
+    while(1) {
+
+        /* getting the event */
+        MLV_Event ev = MLV_get_event( 
+                &sym, &mod, NULL,
+                &texte, &input_box,
+                &xMouse, &yMouse, NULL,
+                &state
+        );
+
+        /*MLV_get_mouse_position(&xMouse, &yMouse);*/
+        displayInventory(inventory, mode);
+        MLV_actualise_window();
+
+        switch(ev) {
+            case MLV_KEY :
+                switch( sym) {
+                    case MLV_KEYBOARD_ESCAPE :
+                        printf("ESC keyboard\n");
+                        chosenItem.type = NO_ITEM;
+                        return chosenItem;
+                    /*case MLV_KEYBOARD_i :
+                        printf("i keyboard\n");
+                        chosenItem.type = NO_ITEM;
+                        return chosenItem;*/
+                    default :
+                        break;
+                }
+                break;
+            case MLV_MOUSE_BUTTON :
+                if(state == MLV_PRESSED) {
+                    /*...*/
+                }
+                /*...*/
+                break;
+            case MLV_NONE :
+                break;
+            default :
+                break;
+        }
+
+        if(MLV_get_mouse_button_state(MLV_BUTTON_LEFT) == MLV_PRESSED) {
+            /* test stuff */
+        }
+    }
+    return chosenItem;
+}
 
 void displayHUD(Player player) {
     /* Converts a number of points (hp/mp/exp) into a bar percentage */

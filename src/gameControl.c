@@ -58,7 +58,6 @@ enum PLAYER_ACTION getPlayerAction() {
     					return OPTN;
     				default :
     					break;
-    				/* ideas for PHYSICAL and MAGICAL ? */
     			}
     		}
     	/* mouse event */
@@ -105,7 +104,7 @@ int doAction(enum PLAYER_ACTION act, Player *player, StageList *dungeon) {
             printf("MAGICAL ATTACK BUTTON CLICKED\n");
 			return 1;
 		case INVENTORY :
-			/* function for the inventory */
+			inventory(player->inventory, BASIC);
 			return 1;
 		case OPTN :
 			/* function for the options */

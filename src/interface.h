@@ -23,6 +23,10 @@
 #define MAIN_SCREEN_BACKGROUND_COLOR MLV_COLOR_GHOSTWHITE
 #define POPUP_COLOR                  MLV_COLOR_MISTYROSE4
 
+/* Colors for inventory menu */
+#define INVENTORY_MENU_COLOR         MLV_COLOR_MISTYROSE4
+#define ITEM_BOX_COLOR               MLV_COLOR_MISTYROSE2
+
 /* Colors for HUD */
 #define LINE_COLOR                   MLV_COLOR_BLACK
 #define HP_BAR_COLOR                 MLV_COLOR_DEEP_PINK
@@ -126,6 +130,25 @@ void displayStage(Stage stage, Player player, enum mode mode);
 
 /* Displays physical and magical attack buttons on the screen. */
 void displayAtkButtons();
+
+/* Returns the corresponding sprite according to the given Loot object. */
+MLV_Image *itemSprite(Loot loot);
+
+/* Basic display for a Loot object using libMLV drawing functions. 
+ * The item box size is needed for the display. */
+void displayItemBasic(Loot loot, int itemBoxSize);
+
+/* Display of a given Loot object with the corresponding sprite (image).
+ * The item box size is needed for the display. */
+void displayItemSprite(Loot loot, int itemBoxSize);
+
+/* Displays the inventory board on screen according to the specified mode.*/
+void displayInventory(Loot inventory[], enum mode mode);
+
+/* Display of the given inventory until the user does an action (closing the menu or
+ * choosing to consume or getting rid of an objet).
+ * Returns the chosen objet. */
+Loot inventory(Loot inventory[], enum mode mode);
 
 /* Display of the Head Up Display on the left top of the screen */
 void displayHUD(Player player);
