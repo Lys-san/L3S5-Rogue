@@ -640,56 +640,312 @@ MLV_Image *itemSprite(Loot loot) {
 }
 
 
-void displayItemBasic(Loot loot, int itemBoxSize) {
+void displayItemBasic(Loot loot, Point coordsOnScreen, int itemBoxSize) {
+
     switch( loot.type ) {
-        case EQUIPMENT:
-            /* display item box */
-            /* TODO */
+        case EQUIPMENT :
+            MLV_draw_filled_rectangle(
+                coordsOnScreen.x,
+                coordsOnScreen.y,
+                itemBoxSize,
+                itemBoxSize,
+                ITEM_BOX_COLOR
+                );
+            MLV_draw_text(
+                coordsOnScreen.x,
+                coordsOnScreen.y,
+                "EQP",
+                MLV_COLOR_WHITE
+                );
+            break;
+
+        case CONSUMMABLE :
+            MLV_draw_filled_rectangle(
+                coordsOnScreen.x,
+                coordsOnScreen.y,
+                itemBoxSize,
+                itemBoxSize,
+                ITEM_BOX_COLOR
+                );
+
+            MLV_draw_text(
+                coordsOnScreen.x,
+                coordsOnScreen.y,
+                "CSM",
+                MLV_COLOR_WHITE
+                );
+            break;
+
         default :
-            /* TODO */
+            MLV_draw_filled_rectangle(
+                coordsOnScreen.x,
+                coordsOnScreen.y,
+                itemBoxSize,
+                itemBoxSize,
+                EMPTY_BOX_COLOR
+                );
+            break;
     }
 }
 
 
-void displayItemSprite(Loot loot, int itemBoxSize) {
+void displayItemSprite(Loot loot, Point coordsOnScreen, int itemBoxSize) {
     /* TODO */
 }
 
 
-void displayInventory(Loot inventory[], enum mode mode) {
+void displayInventory(Loot inventory[], enum mode mode, int selection) {
     unsigned int windowWidth, windowHeight;
     MLV_get_window_size(&windowWidth, &windowHeight);
 
     /* note for me : MAX_INVENTORY exists and is equals to 9 */
     int menuWidth   = windowWidth/3;
-    int margin      = menuWidth/10;
+    int margin      = menuWidth/100;
     int itemPerRow  = 3;
-    int itemBoxSize = menuWidth/itemPerRow - (itemPerRow + 1)*margin;
+    int itemBoxSize = (menuWidth - (itemPerRow + 1)*margin)/itemPerRow;
 
-    int i;
+    int i, j;
+    Point boxCoords;
 
-    MLV_draw_filled_rectangle(0, 0, menuWidth, windowHeight, POPUP_COLOR);
+    MLV_draw_filled_rectangle(
+        0,
+        0,
+        menuWidth,
+        margin + ((MAX_INVENTORY)/itemPerRow)*(itemBoxSize + margin),
+        INVENTORY_MENU_COLOR
+        );
 
     /* iventory display */
     for(i = 0; i < MAX_INVENTORY; i++) {
+        boxCoords.x = margin + (i%itemPerRow)*(itemBoxSize + margin);
+        boxCoords.y = margin + (i/itemPerRow)*(itemBoxSize + margin);
+
         if(mode == WITH_SPRITES) {
-            displayItemSprite(inventory[i], itemBoxSize);
+            displayItemSprite(inventory[i], boxCoords, itemBoxSize);
         }
         else /* basic display */
-            displayItemSprite(inventory[i], itemBoxSize);
+            displayItemBasic(inventory[i], boxCoords, itemBoxSize);
+
+        if(i == selection) {
+            for(j = 0; j < 5; j++) {
+                MLV_draw_rectangle(
+                    boxCoords.x + j,
+                    boxCoords.y + j,
+                    itemBoxSize - 2*j,
+                    itemBoxSize - 2*j,
+                    MLV_COLOR_WHITE
+                    );
+            }
+        }
     }
-    MLV_actualise_window();
 }
 
+
+char *itemName(Loot item) {
+    switch( item.type ) {
+        case EQUIPMENT :
+            switch( item.equipment.type ) {
+                case ARMOR :
+                    return "Armor";
+                case WEAPON : 
+                    return "Weapon";
+                case WAND :
+                    return "Wand";
+                default :
+                    return "";
+            }
+        case CONSUMMABLE :
+            switch( item.consummable ) {
+                case HEAL :
+                    return "Heal potion";
+                case MAGIC :
+                    return "Magic battery";
+                case REGEN :
+                    return "Special potion";
+                case LEARNING :
+                    return "Exp potion";
+                case PRECISION :
+                    return "Special lens";
+                default :
+                    return "";
+            }
+        default :
+            return "";
+    }
+}
+
+void displayItemInfo(Loot item, Point start, int boxWidth, int boxHeight) {
+    MLV_draw_filled_rectangle(start.x, start.y, boxWidth, boxHeight, INVENTORY_MENU_COLOR);
+    MLV_draw_text(start.x + 20, start.y, "%s", MLV_COLOR_WHITE, itemName(item));
+    if(item.type == EQUIPMENT) {
+        MLV_draw_text(
+            start.x + boxWidth/2,
+            start.y,
+            "(class : %d)",
+            MLV_COLOR_WHITE,
+            item.equipment.quality
+            );
+    }
+
+    MLV_change_default_font("src/files/Mouser D.otf", 20);
+    if(item.type != NO_ITEM)
+        MLV_draw_text(start.x + 20, start.y + 50, "Description :", MLV_COLOR_WHITE);
+
+    switch( item.type ) {
+        case EQUIPMENT :
+            switch( item.equipment.type ) {
+                case ARMOR :
+                    MLV_draw_text(
+                        start.x + 30,
+                        start.y + 100,
+                        "Increase your defense.",
+                        MLV_COLOR_WHITE,
+                        item.equipment.quality
+                        );
+                    break;
+
+                case WEAPON : 
+                    MLV_draw_text(
+                        start.x + 30,
+                        start.y + 100,
+                        "Increase your attack.",
+                        MLV_COLOR_WHITE,
+                        item.equipment.quality
+                        );
+                    break;
+
+                case WAND :
+                    MLV_draw_text(
+                        start.x + 30,
+                        start.y + 100,
+                        "Increase your magic",
+                        MLV_COLOR_WHITE,
+                        item.equipment.quality
+                        );
+                    MLV_draw_text(
+                        start.x + 30,
+                        start.y + 120,
+                        "power.",
+                        MLV_COLOR_WHITE,
+                        item.equipment.quality
+                        );
+                    break;
+
+                default :
+                    break;
+            }
+            break;
+
+        case CONSUMMABLE :
+            switch( item.consummable ) {
+                case HEAL :
+                    MLV_draw_text(
+                        start.x + 30,
+                        start.y + 100,
+                        "Instantly restores 10%% of",
+                        MLV_COLOR_WHITE,
+                        item.equipment.quality
+                        );
+                    MLV_draw_text(
+                        start.x + 30,
+                        start.y + 120,
+                        "your HP bar.",
+                        MLV_COLOR_WHITE,
+                        item.equipment.quality
+                        );
+                    break;
+
+                case MAGIC :
+                    MLV_draw_text(
+                        start.x + 30,
+                        start.y + 100,
+                        "Instantly restores 10%% of",
+                        MLV_COLOR_WHITE,
+                        item.equipment.quality
+                        );
+                    MLV_draw_text(
+                        start.x + 30,
+                        start.y + 120,
+                        "your MP bar.",
+                        MLV_COLOR_WHITE,
+                        item.equipment.quality
+                        );
+                    break;
+
+                case REGEN :
+                    MLV_draw_text(
+                        start.x + 30,
+                        start.y + 100,
+                        "Restores 20 HP and 10 MP",
+                        MLV_COLOR_WHITE,
+                        item.equipment.quality
+                        );
+                    MLV_draw_text(
+                        start.x + 30,
+                        start.y + 120,
+                        "every 3 turn during 30 turns.",
+                        MLV_COLOR_WHITE,
+                        item.equipment.quality
+                        );
+                    break;
+
+                case LEARNING :
+                    MLV_draw_text(
+                        start.x + 30,
+                        start.y + 100,
+                        "Boost your gained exp by",
+                        MLV_COLOR_WHITE,
+                        item.equipment.quality
+                        );
+                    MLV_draw_text(
+                        start.x + 30,
+                        start.y + 120,
+                        "30%% for the next 30 turns.",
+                        MLV_COLOR_WHITE,
+                        item.equipment.quality
+                        );
+                    break;
+
+                case PRECISION :
+                    MLV_draw_text(
+                        start.x + 30,
+                        start.y + 100,
+                        "Boost your critical rate",
+                        MLV_COLOR_WHITE,
+                        item.equipment.quality
+                        );
+                    MLV_draw_text(
+                        start.x + 30,
+                        start.y + 120,
+                        "by 10%% for the next 30",
+                        MLV_COLOR_WHITE,
+                        item.equipment.quality
+                        );
+                    MLV_draw_text(
+                        start.x + 30,
+                        start.y + 140,
+                        "turns.",
+                        MLV_COLOR_WHITE,
+                        item.equipment.quality
+                        );
+                    break;
+
+                default :
+                    break;
+            }
+            break;
+
+        default :
+            break;
+    }
+    MLV_change_default_font("src/files/Mouser D.otf", 30);
+}
+
+
 Loot inventory(Loot inventory[], enum mode mode) {
-    /* open animation */
-    blurBackground(MLV_COLOR_GRAY1);
-
-    /* display and choose */
-    /* close animation */
-
     unsigned int windowWidth, windowHeight;
     MLV_get_window_size(&windowWidth, &windowHeight);
+
     MLV_Keyboard_button sym   = MLV_KEYBOARD_NONE;
     MLV_Keyboard_modifier mod = MLV_KEYBOARD_KMOD_NONE;
     MLV_Input_box *input_box  = NULL;
@@ -697,13 +953,51 @@ Loot inventory(Loot inventory[], enum mode mode) {
     MLV_Button_state state;
     int xMouse, yMouse;
 
-
-
     Loot chosenItem;
+    int yIndex;
+    int xIndex;
+    int itemIndex = 0;
+    int selection = -1;
+    int canSelect = 0;
+
+    int menuWidth     = windowWidth/3;
+    int margin        = menuWidth/100;
+    int itemPerRow    = 3;
+    int itemBoxSize   = (menuWidth - (itemPerRow + 1)*margin)/itemPerRow;
+    int infoBoxWidth  = menuWidth;
+    int infoBoxHeight = windowHeight/2;
+    int xButton       = menuWidth/5;
+    int yButton       = windowHeight - windowHeight/8;
+    int buttonHeight  = 50;
+    int buttonWidth   = menuWidth - 2*xButton;
+    int buttonSize    = 0;
+    int mouseOnButton = 0;
+    char *buttonText;
+
+    Point infoBox;
+    infoBox.x = 0;
+    infoBox.y = windowHeight - infoBoxHeight;
+
+    /* TODO open animation ?*/
+
+    blurBackground(MLV_COLOR_GRAY1);
+    MLV_draw_filled_rectangle(0, 0, menuWidth, windowHeight, INVENTORY_MENU_COLOR);
+
+    /* display and choose */
+    MLV_draw_text(
+        infoBox.x + 90,
+        infoBox.y + infoBoxHeight/2 - 40,
+        "Select an object",
+        EMPTY_BOX_COLOR);
+    MLV_draw_text(
+        infoBox.x + 30,
+        infoBox.y + infoBoxHeight/2,
+        "to display informations",
+        EMPTY_BOX_COLOR);
+
 
     /* loops until the user closes the inventory */
     while(1) {
-
         /* getting the event */
         MLV_Event ev = MLV_get_event( 
                 &sym, &mod, NULL,
@@ -712,9 +1006,52 @@ Loot inventory(Loot inventory[], enum mode mode) {
                 &state
         );
 
-        /*MLV_get_mouse_position(&xMouse, &yMouse);*/
-        displayInventory(inventory, mode);
+        displayInventory(inventory, mode, selection);
         MLV_actualise_window();
+
+        if(xMouse > xButton && xMouse < xButton + buttonWidth &&
+            yMouse > yButton - buttonHeight/2 && yMouse < yButton + buttonHeight/2) {
+
+            mouseOnButton = 1;
+            if(buttonSize < MAX_BUTTON_SIZE) {
+                MLV_wait_milliseconds( 50 );
+                buttonSize++;
+            }
+        }
+        else {
+            mouseOnButton = 0;
+            if(buttonSize > 0) {
+                MLV_wait_milliseconds( 50 );
+                buttonSize--;
+                MLV_draw_filled_rectangle(
+                    0,
+                    yButton - 100,
+                    menuWidth,
+                    windowHeight - yButton + 100,
+                    INVENTORY_MENU_COLOR
+                    );
+            }
+        }
+
+        if(canSelect) {
+            if(inventory[itemIndex].type == EQUIPMENT)
+                buttonText = "EQUIP";
+            
+            else {
+                if(inventory[itemIndex].type == CONSUMMABLE)
+                    buttonText = "USE";
+                else
+                    buttonText = "";
+            }
+            displayButton(
+                xButton,
+                yButton,
+                buttonWidth,
+                buttonHeight,
+                buttonSize,
+                MLV_COLOR_GHOSTWHITE,
+                buttonText);
+        }
 
         switch(ev) {
             case MLV_KEY :
@@ -723,28 +1060,41 @@ Loot inventory(Loot inventory[], enum mode mode) {
                         printf("ESC keyboard\n");
                         chosenItem.type = NO_ITEM;
                         return chosenItem;
-                    /*case MLV_KEYBOARD_i :
-                        printf("i keyboard\n");
-                        chosenItem.type = NO_ITEM;
-                        return chosenItem;*/
                     default :
                         break;
                 }
                 break;
+
             case MLV_MOUSE_BUTTON :
                 if(state == MLV_PRESSED) {
-                    /*...*/
+                    /* item selection */
+                    if(xMouse > margin
+                        && xMouse < menuWidth - margin
+                        && yMouse > margin
+                        && yMouse < margin + (MAX_INVENTORY/itemPerRow)*(itemBoxSize + margin))
+                    {
+                        yIndex = (yMouse - ((yMouse % (MAX_INVENTORY/itemPerRow))*margin)) / itemBoxSize;
+                        xIndex = (xMouse - ((xMouse % itemPerRow)*margin)) / itemBoxSize;
+                        itemIndex = yIndex*itemPerRow + xIndex;
+                        selection = itemIndex;
+                        displayItemInfo(inventory[itemIndex], infoBox, infoBoxWidth, infoBoxHeight);
+                        if(inventory[itemIndex].type != NO_ITEM)
+                            canSelect = 1;
+                        else
+                            canSelect = 0;
+                    }
+
+                    /* click on button to use item */
+                    if(mouseOnButton)
+                        return inventory[itemIndex]; /* end of function */
                 }
-                /*...*/
+
+
                 break;
             case MLV_NONE :
                 break;
             default :
                 break;
-        }
-
-        if(MLV_get_mouse_button_state(MLV_BUTTON_LEFT) == MLV_PRESSED) {
-            /* test stuff */
         }
     }
     return chosenItem;

@@ -41,6 +41,19 @@ int main(int argc, char * argv[]) {
         exit(1);
     }
 
+    /* test start here (remove after) */
+    int i_test;
+    for(i_test = 0; i_test < 5; i_test++) {
+        player.inventory[i_test] = generateLoot(1, 1, EQUIPMENT);
+    }
+    for(i_test = 4; i_test < 7; i_test++) {
+        player.inventory[i_test] = generateLoot(1, 1, CONSUMMABLE);
+    }
+    for(i_test = 6; i_test < MAX_INVENTORY; i_test++) {
+        player.inventory[i_test] = generateLoot(1, 1, NO_ITEM);
+    }
+    
+
     /*snowdrops( 500 );*/
     
     while( !quit ) {

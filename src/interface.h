@@ -24,8 +24,9 @@
 #define POPUP_COLOR                  MLV_COLOR_MISTYROSE4
 
 /* Colors for inventory menu */
-#define INVENTORY_MENU_COLOR         MLV_COLOR_MISTYROSE4
-#define ITEM_BOX_COLOR               MLV_COLOR_MISTYROSE2
+#define INVENTORY_MENU_COLOR         MLV_COLOR_MISTYROSE2
+#define ITEM_BOX_COLOR               MLV_COLOR_MISTYROSE4
+#define EMPTY_BOX_COLOR              MLV_COLOR_MISTYROSE3
 
 /* Colors for HUD */
 #define LINE_COLOR                   MLV_COLOR_BLACK
@@ -72,7 +73,8 @@ void createGameWindow();
 /* Overlays a reduced opacity rectangle of a given color on the current screen */
 void blurBackground(MLV_Color color);
 
-/* Displays a button of a given size, color, text and given dimensions at given coordonates */
+/* Displays a button of a given size, color, text and given dimensions at given coordonates.
+ * 0 = default size, MAX_BUTTON_SIZE = max size. */
 void displayButton(int x, int y, int width, int height, int size, MLV_Color color, char *text);
 
 /* Displays a popup in the middle of the screen and returns the corresponding number of
@@ -135,15 +137,23 @@ void displayAtkButtons();
 MLV_Image *itemSprite(Loot loot);
 
 /* Basic display for a Loot object using libMLV drawing functions. 
- * The item box size is needed for the display. */
-void displayItemBasic(Loot loot, int itemBoxSize);
+ * The item box size and its coords on screen are needed for the display. */
+void displayItemBasic(Loot loot, Point coordsOnScreen, int itemBoxSize);
 
 /* Display of a given Loot object with the corresponding sprite (image).
- * The item box size is needed for the display. */
-void displayItemSprite(Loot loot, int itemBoxSize);
+ * The item box size and its coords on screen are needed for the display. */
+void displayItemSprite(Loot loot, Point coordsOnScreen, int itemBoxSize);
 
 /* Displays the inventory board on screen according to the specified mode.*/
-void displayInventory(Loot inventory[], enum mode mode);
+void displayInventory(Loot inventory[], enum mode mode, int selection);
+
+/* Returns the name (string) of a given Loot object. */
+char *itemName(Loot item);
+
+/* Displays informations about a given item. 
+ * The informations will be displayed in the area delimited by
+ * a starting point, a width and a height. */
+void displayItemInfo(Loot item, Point start, int boxWidth, int boxHeight);
 
 /* Display of the given inventory until the user does an action (closing the menu or
  * choosing to consume or getting rid of an objet).
