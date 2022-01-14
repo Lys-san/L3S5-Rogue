@@ -94,6 +94,7 @@ int newGame(Player *player, StageList* dungeon){
     initStage(&stage, player, 1);
     (*dungeon) = allocStage(stage);
 
+    /* Save the dungeon in a new saveFile*/
     saveGame(player,dungeon);
     return 1;
 }

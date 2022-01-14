@@ -12,6 +12,8 @@
 
     /*Define*/
 
+    #define MINIMUM_EXP 8 /* The minimum Exp a monster can give in the first stage */
+
     /*Struct*/
 
     typedef struct {

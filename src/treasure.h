@@ -20,7 +20,6 @@
 
     typedef struct {
         Loot loot[MAX_LOOT_PER_TREASURE]; /*Basically, a treasure is a box full of loot*/
-        int closed; /* indicates the status of the treasure either closed (= 1) or open (= 0) */
     } Treasure;
 
     /*Functions*/

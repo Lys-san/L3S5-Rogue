@@ -134,19 +134,15 @@ int playerMagicalAttack(Player *player, Enemy *enemy){
 
 void openTreasure(Player* player, Stage* stage, int x, int y){
     Loot loot;
-
-    if(stage->cells[y][x].treasure.closed){
-        loot = chooseBetweenTwo(stage->cells[y][x].treasure.loot[0], stage->cells[y][x].treasure.loot[1]);/*choose a treasure*/
-        switch(loot.type){
-            case EQUIPMENT:
-                newEquipment(player, loot.equipment);
-                break;
-            case CONSUMMABLE:
-                addToInventory(player, loot);
-                break;
-            default:fprintf(stderr, "this loot doesn't exist");
-        }
-        stage->cells[y][x].treasure.closed = 0;
+    loot = chooseBetweenTwo(stage->cells[y][x].treasure.loot[0], stage->cells[y][x].treasure.loot[1]);/*choose a treasure*/
+    switch(loot.type){
+        case EQUIPMENT:
+            newEquipment(player, loot.equipment);
+            break;
+        case CONSUMMABLE:
+            addToInventory(player, loot);
+            break;
+        default:fprintf(stderr, "this loot doesn't exist");
     }
 }
 
@@ -236,6 +232,7 @@ int playerMove(Player* player, Direction dir, StageList *dungeon){
 
         case TREASURE:/* The player will open a Treasure */
             openTreasure(player, stage, newCoord.x, newCoord.y);
+            stage->cells[newCoord.y][newCoord.x] = initCell(1, newCoord, ROOM, CONTAINS_NOTHING, 0);
             return 0;
         break;
 

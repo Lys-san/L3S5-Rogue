@@ -93,6 +93,7 @@ int playerTurn(Player *player, StageList *dungeon, int *play, int *quit){
         if(yesNoPopup("Exit game ?")) {
             *play = 0;
             *quit = 1;
+            /* Saves before ending the game */
             if(!saveGame(player, dungeon)){
                 fprintf(stderr, "the saveFile wasn't created");
                 return 0;

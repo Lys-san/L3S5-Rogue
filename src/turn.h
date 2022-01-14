@@ -13,8 +13,8 @@
 
     /*Define*/
 
-    #define SCREEN_WIDTH  13
-    #define SCREEN_HEIGHT  9
+    #define SCREEN_WIDTH  13 /* The number of cells presented on the screen horizontaly */
+    #define SCREEN_HEIGHT  9 /* The number of cells presented on the screen verticaly */
 
     /*Struct*/
 
@@ -30,5 +30,6 @@
     /* Perform the turn of all the monsters present on screen */
     int turnEnemyOnScreen(Stage *stage, Player* player);
 
+    /* Perform one turn of a player */
     int playerTurn(Player *player, StageList *dungeon, int *play, int *quit);
 #endif

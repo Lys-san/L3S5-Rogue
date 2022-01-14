@@ -25,7 +25,6 @@ Treasure generateTreasure(unsigned int level) {
             treasure.loot[i] = generateLoot(quality, rarity, CONSUMMABLE);/* Generate a consummable */
         }
     }
-    treasure.closed = 1;
     return treasure;
 }
 
