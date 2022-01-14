@@ -895,9 +895,18 @@ int inventory(Loot inventory[], enum mode mode, int* discard) {
     infoBox.x = 0;
     infoBox.y = windowHeight - infoBoxHeight;
 
-    /* TODO open animation ?*/
+    blurBackground(MLV_COLOR_GRAY1);
+
+    int i;
+    int frames = 5;
 
     blurBackground(MLV_COLOR_GRAY1);
+    for(i = 0; i < frames; i++) {
+        MLV_draw_filled_rectangle(0, 0, ((float)i/(float)frames)*menuWidth, windowHeight, INVENTORY_MENU_COLOR);
+        MLV_wait_milliseconds( 10 );
+        MLV_actualise_window();
+    }
+
     MLV_draw_filled_rectangle(0, 0, menuWidth, windowHeight, INVENTORY_MENU_COLOR);
 
     /* display and choose */
@@ -974,7 +983,6 @@ int inventory(Loot inventory[], enum mode mode, int* discard) {
             }
         }
 
-
         if(canSelect) {
             if(inventory[itemIndex].type == EQUIPMENT)
                 buttonText = "EQUIP";
@@ -1000,7 +1008,7 @@ int inventory(Loot inventory[], enum mode mode, int* discard) {
                 buttonHeight,
                 buttonSize2,
                 MLV_COLOR_GHOSTWHITE,
-                "DISC");
+                "DROP");
         }
 
         switch(ev) {
@@ -1026,6 +1034,7 @@ int inventory(Loot inventory[], enum mode mode, int* discard) {
                         xIndex = (xMouse - ((xMouse % itemPerRow)*margin)) / itemBoxSize;
                         itemIndex = yIndex*itemPerRow + xIndex;
                         selection = itemIndex;
+                        MLV_draw_filled_rectangle(0, 0, menuWidth, windowHeight, INVENTORY_MENU_COLOR);
                         displayItemInfo(inventory[itemIndex], infoBox, infoBoxWidth, infoBoxHeight);
                         if(inventory[itemIndex].type != NO_ITEM)
                             canSelect = 1;
@@ -1174,9 +1183,6 @@ void displayHUD(Player player) {
     MLV_actualise_window();
 }
 
-void exitGame() {
-    MLV_free_window();
-}
 
 void displayStat(Point aStart, int itemBoxSize, char *statName, int statNumber){
     MLV_draw_filled_rectangle(aStart.x, aStart.y, itemBoxSize, itemBoxSize, ITEM_BOX_COLOR);
@@ -1184,8 +1190,8 @@ void displayStat(Point aStart, int itemBoxSize, char *statName, int statNumber){
     MLV_draw_text( aStart.x, aStart.y + (itemBoxSize/2) , "%d", MLV_COLOR_WHITE, statNumber);
 }
 
+
 int selectStat(Point aStart, int x, int y, int itemBoxSize,char *statName, int statNumber){
-    
     int i;
 
     if(x > aStart.x && x < aStart.x + itemBoxSize &&
@@ -1249,4 +1255,139 @@ void applyStatPoint(Player *player){
         }
         MLV_actualise_window();
     }
+}
+
+void displayGameOverScreen(Player player, StageList dungeon) {
+    unsigned int windowWidth, windowHeight;
+    MLV_get_window_size(&windowWidth, &windowHeight);
+
+    MLV_Keyboard_button sym   = MLV_KEYBOARD_NONE;
+    MLV_Keyboard_modifier mod = MLV_KEYBOARD_KMOD_NONE;
+    MLV_Input_box *input_box  = NULL;
+    char* texte               = NULL;
+    MLV_Button_state state;
+
+    int nbLevelsExplored = 0;
+    int actualLevel = dungeon->stage.level;
+
+    int waitTime = 1200;
+    Point buttonStart;
+    buttonStart.x = windowWidth/3;
+    buttonStart.y = windowHeight - windowHeight/3;
+    int buttonWidth = windowWidth - 2*buttonStart.x;
+    int buttonHeight = 50;
+    int buttonSize = 0;
+    int x, y; /* for mouse */
+    int mouseOnButton = 0;
+
+    while(dungeon->nextLevel != NULL)
+        dungeon = dungeon->nextLevel;
+
+    nbLevelsExplored = dungeon->stage.level;
+
+    MLV_clear_window(OUT_OF_MAP_COLOR_BAS);
+
+
+    /* text */
+    MLV_change_default_font("src/files/Mouser D.otf", 60);
+    MLV_draw_text(windowWidth/4, windowHeight/5 - 15, "DEATH", PLAYER_COLOR_BAS);
+    MLV_wait_milliseconds( waitTime );
+    MLV_actualise_window();
+    MLV_change_default_font("src/files/Mouser D.otf", 30);
+    MLV_draw_text(windowWidth/2.2 - 20, windowHeight/5 + 20, "is nothing at all.", MLV_COLOR_GHOSTWHITE);
+    MLV_wait_milliseconds( waitTime );
+    MLV_actualise_window();
+    MLV_draw_text(windowWidth/4, windowHeight/5 + 70, "It does not count.", MLV_COLOR_GHOSTWHITE);
+    MLV_wait_milliseconds( waitTime );
+    MLV_actualise_window();
+    MLV_draw_text(windowWidth/4, windowHeight/5 + 120, "I have only slipped away into the next room.", MLV_COLOR_GHOSTWHITE);
+    MLV_wait_milliseconds( waitTime );
+    MLV_actualise_window();
+    MLV_draw_text(windowWidth/4, windowHeight/5 + 170, "Nothing has happened.", MLV_COLOR_GHOSTWHITE);
+    MLV_wait_milliseconds( waitTime + (float)waitTime/3);
+    MLV_actualise_window();
+
+    /* score button display */
+    MLV_wait_milliseconds( 2*waitTime );
+
+    /* loops until the user clicks on the button */
+    while(1) {
+        MLV_get_mouse_position(&x, &y);
+
+        if(x > buttonStart.x && x < buttonStart.x + buttonWidth &&
+            y > buttonStart.y - buttonHeight/2 && y < buttonStart.y + buttonHeight/2) {
+            mouseOnButton = 1;
+            if(buttonSize < MAX_BUTTON_SIZE) {
+                MLV_wait_milliseconds( 50 );
+                buttonSize++;
+            }
+        }
+        else {
+            mouseOnButton = 0;
+            if(buttonSize > 0) {
+                MLV_wait_milliseconds( 50 );
+                MLV_draw_filled_rectangle(
+                    buttonStart.x - 70,
+                    buttonStart.y - 50,
+                    buttonWidth + 100,
+                    buttonHeight + 50,
+                    OUT_OF_MAP_COLOR_BAS
+                    );
+                buttonSize--;
+            }
+        }
+
+        displayButton(buttonStart.x, buttonStart.y, buttonWidth, buttonHeight, buttonSize, MLV_COLOR_GHOSTWHITE, "VIEW SCORE");
+        MLV_actualise_window();
+
+        if(MLV_get_mouse_button_state(MLV_BUTTON_LEFT) == MLV_PRESSED) {
+            if(mouseOnButton)
+                break;
+        }
+    }
+
+    MLV_clear_window(OUT_OF_MAP_COLOR_BAS);
+
+    MLV_change_default_font("src/files/Mouser D.otf", 30);
+    MLV_draw_text(windowWidth/4, windowHeight/5 + 20, "Level : %d", MLV_COLOR_GHOSTWHITE, player.stat.current.lvl);
+    MLV_wait_milliseconds( waitTime );
+    MLV_actualise_window();
+    MLV_draw_text(windowWidth/4, windowHeight/5 + 70, "Attack : %d", MLV_COLOR_GHOSTWHITE, player.stat.base.ATTACK);
+    MLV_wait_milliseconds( waitTime );
+    MLV_actualise_window();
+    MLV_draw_text(windowWidth/4, windowHeight/5 + 120, "Defense : %d", MLV_COLOR_GHOSTWHITE, player.stat.base.DEFENSE);
+    MLV_wait_milliseconds( waitTime );
+    MLV_actualise_window();
+    MLV_draw_text(windowWidth/4, windowHeight/5 + 170, "Intelligence : %d", MLV_COLOR_GHOSTWHITE, player.stat.base.INTELLIGENCE);
+    MLV_wait_milliseconds( waitTime );
+    MLV_actualise_window();
+    MLV_draw_text(windowWidth/4, windowHeight/5 + 220, "Number of levels explored : %d", MLV_COLOR_GHOSTWHITE, nbLevelsExplored);
+    MLV_wait_milliseconds( waitTime );
+    MLV_actualise_window();
+    MLV_draw_text(windowWidth/4, windowHeight/5 + 270, "Died on level : %d", MLV_COLOR_GHOSTWHITE, actualLevel);
+    MLV_wait_milliseconds( waitTime );
+    MLV_actualise_window();
+
+    MLV_wait_milliseconds( waitTime );
+
+    while(1) {
+        /* getting the event */
+        MLV_Event ev = MLV_get_event( 
+            &sym, &mod, NULL,
+            &texte, &input_box,
+            &x, &y, NULL,
+            &state
+            );
+
+        /* break if key event */
+        if(ev == MLV_KEY && state == MLV_PRESSED) {
+            break;
+        }
+    }
+
+
+}
+
+void exitGame() {
+    MLV_free_window();
 }

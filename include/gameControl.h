@@ -6,7 +6,7 @@
 
 #ifndef __GAME_CONTROL__
 #define __GAME_CONTROL__
-    enum PLAYER_ACTION { NO_ACTION, UP, LEFT, DOWN, RIGHT, PHYSICAL, MAGICAL, INVENTORY, QUIT, OPTN, TEST };
+    enum PLAYER_ACTION { NO_ACTION, UP, LEFT, DOWN, RIGHT, PHYSICAL, MAGICAL, INVENTORY, QUIT, OPTN };
 
     /* Returns a player action by checking the events. */
     enum PLAYER_ACTION getPlayerAction();

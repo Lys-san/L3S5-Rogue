@@ -104,6 +104,7 @@ int playerTurn(Player *player, StageList *dungeon, int *play, int *quit){
 
     if(actionDone && actionDone != -1){
         if(turnEnemyOnScreen(&((*dungeon)->stage), player)){
+            displayGameOverScreen(*player, *dungeon);
             printf("Game Over \n");
             *play = 0;
             *quit = 1;

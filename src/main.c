@@ -42,6 +42,7 @@ int main(int argc, char * argv[]) {
                     playerTurn(&player, &dungeon, &play, &quit);
                 }
                 break;
+
             case PROFILE : 
                 playButtonSound_2();
                 fadein = 0;

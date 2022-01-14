@@ -57,8 +57,9 @@ enum PLAYER_ACTION getPlayerAction() {
     				case MLV_KEYBOARD_o :
     					return OPTN;
                     case MLV_KEYBOARD_t : /* for testing, remove after */
-                        chooseBetweenTwo(generateLoot(1, 1, EQUIPMENT), generateLoot(1, 1, EQUIPMENT));
-                        break;
+                        return TEST;
+                    case MLV_KEYBOARD_m :
+                        return MAGICAL;
     				default :
     					break;
     			}
@@ -87,7 +88,6 @@ enum PLAYER_ACTION getPlayerAction() {
 }
 
 int doAction(enum PLAYER_ACTION act, Player *player, StageList *dungeon) {
-
     int itemIndex;
     int discard;
 
@@ -129,6 +129,9 @@ int doAction(enum PLAYER_ACTION act, Player *player, StageList *dungeon) {
             return 0;
         case QUIT :
             return -1;
+        case TEST :
+            displayGameOverScreen(*player, *dungeon);
+            return 0;
         default :
             return 0;
     }
