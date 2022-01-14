@@ -81,13 +81,7 @@ int loadGame(Player *player, StageList* dungeon){
 
 int newGame(Player *player, StageList* dungeon){
     
-    FILE *file;
     Stage stage;
-
-    file=fopen(MEMORY_FILE_NAME,"wb");
-    if(file == NULL){
-        return 0;
-    }
     
     /*Create a game from Level 1*/
     initializeStandard(player);
@@ -95,6 +89,5 @@ int newGame(Player *player, StageList* dungeon){
     (*dungeon) = allocStage(stage);
 
     /* Save the dungeon in a new saveFile*/
-    saveGame(player,dungeon);
-    return 1;
+    return saveGame(player,dungeon);
 }

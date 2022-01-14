@@ -36,7 +36,6 @@ int main(int argc, char * argv[]) {
                     fprintf(stderr, "the saveFile wasn't created \n");
                     return 1;
                 }
-                quickPrintStage(dungeon->stage);
                 while(play) {
                     playerTurn(&player, &dungeon, &play, &quit);
                 }
@@ -73,6 +72,7 @@ int main(int argc, char * argv[]) {
 
     }
     exitGame();
+    freeStageList(dungeon);
     printf("Program ends.\n");
     return 0;
 }

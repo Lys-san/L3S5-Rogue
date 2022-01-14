@@ -162,4 +162,6 @@ Loot chooseBetweenTwo(Loot item_a, Loot item_b);
 /* Frees what need to be freed and closes the window. */
 void exitGame();
 
+/* Displays a menu where the user can choose between his stats to augment them. 
+ * Loops until the user makes a choice. */
 void applyStatPoint(Player *player);

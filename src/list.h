@@ -40,6 +40,8 @@
     /* Count the number of stages in the dungeon */
     int countNumberLevels(StageList dungeon);
 
+    void freeStageList(StageList dungeon);
+
     /* Add a point to the list */
     ListCoord* addCoord(ListCoord *listCoords, int x, int y);
 

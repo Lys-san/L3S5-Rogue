@@ -96,6 +96,24 @@ int countNumberLevels(StageList dungeon){
     return numberLevels;
 }
 
+void freeStageList(StageList dungeon){
+    StageList tmp;
+    StageList delete;
+
+    tmp = dungeon;
+    /* Go to the head of the structure */
+    while(tmp->previousLevel != NULL){
+        tmp = tmp->previousLevel;
+    }
+
+    while(NULL != tmp){
+        delete = tmp;
+        tmp = tmp->nextLevel;
+        /*free(&(delete->stage));*/
+        free(delete);
+    }
+    dungeon = NULL;
+}
 
 ListCoord* addCoord(ListCoord* listCoords, int x, int y){
     
