@@ -89,6 +89,7 @@ enum PLAYER_ACTION getPlayerAction() {
 int doAction(enum PLAYER_ACTION act, Player *player, StageList *dungeon) {
 
     int itemIndex;
+    int discard;
 
     switch( act ) {
         case UP :
@@ -112,9 +113,15 @@ int doAction(enum PLAYER_ACTION act, Player *player, StageList *dungeon) {
             printf("MAGICAL ATTACK BUTTON CLICKED\n");
             return 0;
         case INVENTORY :
-            itemIndex = inventory(player->inventory, BASIC);
+            itemIndex = inventory(player->inventory, BASIC, &discard);
             if(itemIndex != -1){
-                consumeItem(player, itemIndex);
+                if(discard){
+                    player->inventory[itemIndex] = generateLoot(0,0,NO_ITEM);
+                    player->nbrItemHeld -= 1;
+                }
+                else{
+                    consumeItem(player, itemIndex);
+                }
             }
             return 0;
         case OPTN :

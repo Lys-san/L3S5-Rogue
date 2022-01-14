@@ -34,7 +34,6 @@ int saveGame(Player *player, StageList* dungeon){
         fwrite(&(tmpDungeon->stage),sizeof(Stage),1,file);
         tmpDungeon = tmpDungeon->previousLevel;
     }
-
     fclose(file);
     return 1;
 }

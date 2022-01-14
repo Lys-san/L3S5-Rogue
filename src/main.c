@@ -36,6 +36,8 @@ int main(int argc, char * argv[]) {
                     fprintf(stderr, "the saveFile wasn't created \n");
                     return 1;
                 }
+                addToInventory(&player, generateLoot(0,0,CONSUMMABLE));
+
                 while(play) {
                     playerTurn(&player, &dungeon, &play, &quit);
                 }

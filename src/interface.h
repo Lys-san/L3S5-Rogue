@@ -150,7 +150,7 @@ void displayItemInfo(Loot item, Point start, int boxWidth, int boxHeight);
 /* Display of the given inventory until the user does an action (closing the menu or
  * choosing to consume or getting rid of an objet).
  * Returns the index of the chosen item . */
-int inventory(Loot inventory[], enum mode mode);
+int inventory(Loot inventory[], enum mode mode, int* discard);
 
 /* Display of the Head Up Display on the left top of the screen */
 void displayHUD(Player player);

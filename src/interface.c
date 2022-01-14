@@ -857,7 +857,7 @@ void displayItemInfo(Loot item, Point start, int boxWidth, int boxHeight) {
     MLV_change_default_font("src/files/Mouser D.otf", 30);
 }
 
-int inventory(Loot inventory[], enum mode mode) {
+int inventory(Loot inventory[], enum mode mode, int* discard) {
     unsigned int windowWidth, windowHeight;
     MLV_get_window_size(&windowWidth, &windowHeight);
 
@@ -883,9 +883,12 @@ int inventory(Loot inventory[], enum mode mode) {
     int xButton       = menuWidth/5;
     int yButton       = windowHeight - windowHeight/8;
     int buttonHeight  = 50;
-    int buttonWidth   = menuWidth - 2*xButton;
+    int buttonWidth   = menuWidth - 4*xButton;
     int buttonSize    = 0;
     int mouseOnButton = 0;
+    int xButton2      = xButton + 2*buttonWidth;
+    int buttonSize2   = 0;
+    int mouseOnButton2 = 0;
     char *buttonText;
 
     Point infoBox;
@@ -946,6 +949,31 @@ int inventory(Loot inventory[], enum mode mode) {
                     );
             }
         }
+        /* Second button */
+        if(xMouse > xButton2 && xMouse < xButton2 + buttonWidth &&
+            yMouse > yButton - buttonHeight/2 && yMouse < yButton + buttonHeight/2) {
+
+            mouseOnButton2 = 1;
+            if(buttonSize2 < MAX_BUTTON_SIZE) {
+                MLV_wait_milliseconds( 50 );
+                buttonSize2++;
+            }
+        }
+        else {
+            mouseOnButton2 = 0;
+            if(buttonSize2 > 0) {
+                MLV_wait_milliseconds( 50 );
+                buttonSize2--;
+                MLV_draw_filled_rectangle(
+                    0,
+                    yButton - 100,
+                    menuWidth,
+                    windowHeight - yButton + 100,
+                    INVENTORY_MENU_COLOR
+                    );
+            }
+        }
+
 
         if(canSelect) {
             if(inventory[itemIndex].type == EQUIPMENT)
@@ -965,6 +993,14 @@ int inventory(Loot inventory[], enum mode mode) {
                 buttonSize,
                 MLV_COLOR_GHOSTWHITE,
                 buttonText);
+            displayButton(
+                xButton2,
+                yButton,
+                buttonWidth,
+                buttonHeight,
+                buttonSize2,
+                MLV_COLOR_GHOSTWHITE,
+                "DISC");
         }
 
         switch(ev) {
@@ -998,8 +1034,15 @@ int inventory(Loot inventory[], enum mode mode) {
                     }
 
                     /* click on button to use item */
-                    if(mouseOnButton)
+                    if(mouseOnButton){
+                        *discard = 0;
                         return itemIndex; /* end of function */
+                    }
+                    /* click on 2nd button to discard item */
+                    if(mouseOnButton2){
+                        *discard = 1;
+                        return itemIndex; /* end of function */
+                    }
                 }
 
 
