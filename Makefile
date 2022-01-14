@@ -1,44 +1,37 @@
+# Folders 
+SRC = src
+HEADER = include
+BIN = bin
+
+# Compilation flags
 CC = gcc
-CFLAGS = -ansi -Wall -lMLV 
-LDLIBS = -lMLV -lm -lSDL -lSDL_mixer -lSDL_image -lSDL_ttf -lSDL_gfx -lxml2 -lglib-2.0 -D SDL_MAIN_HANDLED
+CFLAGS = -I$(HEADER) -Wall -ansi -lMLV -lm
 
-EXEC = test
-OBJECTS = \
-	src/main.o \
-	src/interface.o \
-	src/sound.o \
-	src/colors.o \
-	src/level.o \
-	src/enemy.o \
-	src/treasure.o \
-	src/player.o \
-	src/gameControl.o \
-	src/action.o \
-	src/turn.o \
-	src/loot.o \
-	src/list.o \
-	src/potions.o \
-	src/save.o\
-	src/test.o\
-	src/draw.o\
+# Compilation objects
+CFILE = $(wildcard $(SRC)/*.c)
+OBJ = $(CFILE:$(SRC)/%.c=$(BIN)/%.o)
 
+# Executable file
+EXEC = rogue
 
-FILES =                  \
-	redistributables/data  \
-	redistributables/*.dll
+# Execution of everything
+all:$(EXEC)
 
-all: $(EXEC)
+# Compilation of the executable file
+$(EXEC): $(OBJ)
+	$(CC) -o $@ $^ $(CFLAGS)
 
-$(EXEC): $(OBJECTS)
-	$(CC) $(CFLAGS) -o $(EXEC) $(OBJECTS) $(LDLIBS)
-
-%.o: %.c
-	$(CC) $(CFLAGS) -o $@ -c $< $(LDLIBS)
+# Compilation of all intermediary files
+$(BIN)/%.o:$(SRC)/%.c $(HEADER)/%.h
+	$(CC) -o $@ -c $< $(CFLAGS)
 
 .PHONY: clean mrproper
 
+# Remove all intermediary files
 clean:
-	rm -rf $(OBJECTS)
+	rm -f $(BIN)/*.o;
 
-mrproper: clean
+# Remove all files created by the Makefile
+mr	proper: clean
+	rm -f $(EXEC)
 	rm -rf $(EXEC) *.dll data/
