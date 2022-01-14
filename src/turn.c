@@ -70,3 +70,45 @@ int turnEnemyOnScreen(Stage *stage, Player* player){
 
     return playerDeath;
 }
+
+int playerTurn(Player *player, StageList *dungeon, int *play, int *quit){
+    
+    enum PLAYER_ACTION action = NO_ACTION;
+    int actionDone = 0;
+
+    /* display */
+    MLV_clear_window(MLV_COLOR_WHITE); /*pour les tests*/
+    displayStage((*dungeon)->stage, *player, BASIC);
+    displayHUD(*player);
+    displayAtkButtons();
+
+    /* events */
+    action = getPlayerAction();
+    while(action == NO_ACTION) {
+        action = getPlayerAction();
+    }
+    actionDone = doAction(action, player, dungeon);
+    /* exit game */
+    if(actionDone == -1) {
+        if(yesNoPopup("Exit game ?")) {
+            *play = 0;
+            *quit = 1;
+            if(!saveGame(player, dungeon)){
+                fprintf(stderr, "the saveFile wasn't created");
+                return 0;
+            }
+            return 1;
+        }
+    }
+
+    if(actionDone && actionDone != -1){
+        if(turnEnemyOnScreen(&((*dungeon)->stage), player)){
+            printf("Game Over \n");
+            *play = 0;
+            *quit = 1;
+            return 1;
+        }
+        gainAllEffect(player);
+    }
+    return 1;
+}

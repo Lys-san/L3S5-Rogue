@@ -149,8 +149,8 @@ void displayItemInfo(Loot item, Point start, int boxWidth, int boxHeight);
 
 /* Display of the given inventory until the user does an action (closing the menu or
  * choosing to consume or getting rid of an objet).
- * Returns the chosen objet. */
-Loot inventory(Loot inventory[], enum mode mode);
+ * Returns the index of the chosen item . */
+int inventory(Loot inventory[], enum mode mode);
 
 /* Display of the Head Up Display on the left top of the screen */
 void displayHUD(Player player);
@@ -161,3 +161,5 @@ Loot chooseBetweenTwo(Loot item_a, Loot item_b);
 
 /* Frees what need to be freed and closes the window. */
 void exitGame();
+
+void applyStatPoint(Player *player);

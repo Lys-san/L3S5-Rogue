@@ -3,7 +3,6 @@
  * Last modified : 14/12/2021*/
 
 #include "action.h"
-#include "interface.h"
 
 #ifndef __GAME_CONTROL__
 #define __GAME_CONTROL__

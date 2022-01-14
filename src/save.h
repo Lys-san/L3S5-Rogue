@@ -24,7 +24,7 @@
     int newGame(Player *player, StageList* dungeon);
 
     /*loads the game according the data found in the given memory file.*/
-    StageList loadGame(Player *player);
+    int loadGame(Player *player, StageList* dungeon);
 
     /*saves the current progression in the given memory file.*/
     int saveGame(Player *player, StageList* dungeon);

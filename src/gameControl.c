@@ -85,39 +85,44 @@ enum PLAYER_ACTION getPlayerAction() {
     }
     return NO_ACTION;
 }
+
 int doAction(enum PLAYER_ACTION act, Player *player, StageList *dungeon) {
 
-    Loot loot;
+    int itemIndex;
 
-	switch( act ) {
-		case UP :
-			playerMove(player, N, dungeon);
-			return 1;
-		case DOWN :
-			return playerMove(player, S, dungeon);
-		case LEFT :
-			playerMove(player, W, dungeon);
-			return 1;
-		case RIGHT :
-			playerMove(player, E, dungeon);
-			return 1;
-		case PHYSICAL :
+    switch( act ) {
+        case UP :
+            playerMove(player, N, dungeon);
+            return 1;
+        case DOWN :
+            playerMove(player, S, dungeon);
+            return 1;
+        case LEFT :
+            playerMove(player, W, dungeon);
+            return 1;
+        case RIGHT :
+            playerMove(player, E, dungeon);
+            return 1;
+        case PHYSICAL :
             player->status = PHYSICAL_ATTCK;
-			return 1;
-		case MAGICAL :
+            printf("PHYSICAL ATTACK BUTTON CLICKED\n");
+            return 0;
+        case MAGICAL :
             player->status = MAGICAL_ATTCK;
-			return 1;
-		case INVENTORY :
-            loot = inventory(player->inventory, BASIC);
-            quickPrint(loot);
-			consumeItem(player, loot.consummable);
-			return 1;
-		case OPTN :
-			/* function for the options */
-			return 1;
-		case QUIT :
-			return -1;
-		default :
-			return 0;
-	}
+            printf("MAGICAL ATTACK BUTTON CLICKED\n");
+            return 0;
+        case INVENTORY :
+            itemIndex = inventory(player->inventory, BASIC);
+            if(itemIndex != -1){
+                consumeItem(player, itemIndex);
+            }
+            return 0;
+        case OPTN :
+            /* function for the options */
+            return 0;
+        case QUIT :
+            return -1;
+        default :
+            return 0;
+    }
 }

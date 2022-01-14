@@ -136,7 +136,7 @@ void openTreasure(Player* player, Stage* stage, int x, int y){
     Loot loot;
 
     if(stage->cells[y][x].treasure.closed){
-        loot = stage->cells[y][x].treasure.loot[0];/*choose a treasure*/
+        loot = chooseBetweenTwo(stage->cells[y][x].treasure.loot[0], stage->cells[y][x].treasure.loot[1]);/*choose a treasure*/
         switch(loot.type){
             case EQUIPMENT:
                 newEquipment(player, loot.equipment);
@@ -150,8 +150,15 @@ void openTreasure(Player* player, Stage* stage, int x, int y){
     }
 }
 
-int consumeItem(Player* player, Consummables potion){
-    switch(potion){
+int consumeItem(Player* player, int itemIndex){
+    Loot loot;
+
+    loot = player->inventory[itemIndex];
+
+    player->inventory[itemIndex] = generateLoot(1, 1, NO_ITEM);
+    player->nbrItemHeld -= 1;
+
+    switch(loot.consummable){
         case HEAL:
             useHealingPotion(player);
             return 1;
@@ -189,6 +196,8 @@ int playerMove(Player* player, Direction dir, StageList *dungeon){
     CellType type;
     Stage *stage;
     Stage newStage;
+    int numberLevel;
+    int i;
 
     /* Calculate the new coord */
     newCoord = Move(player->coords,dir);
@@ -212,7 +221,14 @@ int playerMove(Player* player, Direction dir, StageList *dungeon){
             }
 
             if(stage->cells[newCoord.y][newCoord.x].enemy.hp <= 0){
-                gainExp(player, stage->cells[newCoord.y][newCoord.x].enemy.exp);
+                numberLevel = gainExp(player, stage->cells[newCoord.y][newCoord.x].enemy.exp);
+                printPlayer(*player);
+                for( i = 0; i < 3*numberLevel; i++){
+                    applyStatPoint(player);
+                    /* Reset the now changed stat */
+                    player->stat.current.hp = standardMaxHP(*player);
+                    player->stat.current.mp = standardMaxMP(*player);
+                }
                 stage->cells[newCoord.y][newCoord.x] = initCell(1, newCoord, ROOM, CONTAINS_NOTHING, 0);
             }
             return 0;/* The player will perform a physical attack */
@@ -224,6 +240,8 @@ int playerMove(Player* player, Direction dir, StageList *dungeon){
         break;
 
         case STAIR_DOWN:/* The player will descend to the next level */
+            player->coords.x = newCoord.x;
+            player->coords.y = newCoord.y;
             if((*dungeon)->nextLevel == NULL){
                 initStage(&newStage, player, stage->level+1);
                 addStageTail(dungeon, newStage);
@@ -232,15 +250,17 @@ int playerMove(Player* player, Direction dir, StageList *dungeon){
                 (*dungeon) =(*dungeon)->nextLevel ;
                 player->coords = getStageCenter();
             }
-            return 0;
+            return 1;
         break;
 
         case STAIR_UP:/* The player will ascend to the previous level */
+            player->coords.x = newCoord.x;
+            player->coords.y = newCoord.y;
             if((*dungeon)->previousLevel != NULL){
                 (*dungeon) =(*dungeon)->previousLevel ;
                 player->coords = (*dungeon)->stage.stairDown;
             }
-            return 0;
+            return 1;
         break;
 
         default:/*Doesn't do anything, no special action*/;

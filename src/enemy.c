@@ -3,15 +3,17 @@
 Enemy generateEnemy(unsigned int level, unsigned int distance) {
 
     Enemy monster;
-    unsigned int stat;
+    unsigned int maxStat;
+    int baseExp;
     
     /* Not random as to assure that the monster are progressively harder */
-    stat = 10*level + distance;      /*Calculate the base stat based on the level and the distance to the center*/
+    maxStat = distance*level;      /*Calculate the max stat based on the level and the distance to the center*/
     
-    monster.attack = stat;
-    monster.hp = stat;
+    monster.attack = (rand() % (maxStat-level)) + level; /* Calculate the max stat and the currentlevel */
+    monster.hp = (rand() % (maxStat-level)) + level; /* Calculate the max stat and the currentlevel */
 
-    monster.exp = stat/2;            /* The number of exp given after death*/
+    baseExp = (8+((level-1)*2)); /* Minimum exp of a monster base, max exp of the last level plus MINIMUM_EXP */
+    monster.exp = (rand() % (level*2)) + baseExp;/* In order to gain at least two levels per stage level if you have beaten every enemy*/
 
     monster.crit.modificater = 3 ;   /* 300% */
     monster.crit.rate = 5;           /* 5% */

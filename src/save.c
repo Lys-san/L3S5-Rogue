@@ -40,19 +40,18 @@ int saveGame(Player *player, StageList* dungeon){
 }
 
 
-StageList loadGame(Player *player){
+int loadGame(Player *player, StageList* dungeon){
 
     FILE *file;
     int numberLevels;
     int currentLevel;
     int i;
-    StageList dungeon;
     Stage tmpStage;
 
     file=fopen(MEMORY_FILE_NAME,"rb");
     
     if(file == NULL){
-        return NULL;
+        return 0;
     }
 
     /* Recuperating player information */
@@ -65,29 +64,36 @@ StageList loadGame(Player *player){
     for(i=0;i < numberLevels;i++){
         fread(&tmpStage,sizeof(Stage),1,file);
         if(i==0){
-            dungeon = allocStage(tmpStage);
+            (*dungeon) = allocStage(tmpStage);
         }
         else{
-            addStageHead(&dungeon, tmpStage);
+            addStageHead(dungeon, tmpStage);
         }
     }
 
     /* Move the dungeon to the current level */
-    searchStage(&dungeon, currentLevel);
+    searchStage(dungeon, currentLevel);
 
     fclose(file);
-    return dungeon;
+    return 1;
 }
 
 
 int newGame(Player *player, StageList* dungeon){
     
     FILE *file;
+    Stage stage;
 
     file=fopen(MEMORY_FILE_NAME,"wb");
     if(file == NULL){
         return 0;
     }
+    
+    /*Create a game from Level 1*/
+    initializeStandard(player);
+    initStage(&stage, player, 1);
+    (*dungeon) = allocStage(stage);
+
     saveGame(player,dungeon);
     return 1;
 }

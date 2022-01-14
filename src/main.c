@@ -1,37 +1,18 @@
-#include "gameControl.h"
 #include "turn.h"
 
 #undef main /*( 'o_o)*/
 
 int main(int argc, char * argv[]) {
     printf(">>>Program starts.\n");
+    
     /* random seed */
     srand(time(NULL));
 
-    Stage stage;
     Player player;
     StageList dungeon;
-    Loot loot;
-    initializeStandard(&player);
 
-    printf("Player stats initialized.\n");
-    /*player.coords = (Point){2, 2};*/
-    quickPrintPlayer(player);
-    loot = generateLoot(0, 0, HEAL);
-    pickUp(&player, loot);
-
-    printf(">>>Initializing stage.\n");
-    initStage(&stage, &player, 1);
-    printf("Stage initialized.\n");
-    /*stage = generateStageTest();*/
-    quickPrintStage(stage);
-
-
-    /* initializing dungeon */
-    dungeon = allocStage(stage);
     createGameWindow();
-    loot = generateLoot(1,1,CONSUMMABLE);
-    addToInventory(&player, loot);
+
     int quit = 0;
     int play = 1;
     int fadein = 1;
@@ -50,44 +31,31 @@ int main(int argc, char * argv[]) {
                 playButtonSound_2();
                 fadein = 0; 
 
-                enum PLAYER_ACTION action = NO_ACTION;
-                int actionDone = 0;
                 play = 1;
+                if(!newGame(&player, &dungeon)){
+                    fprintf(stderr, "the saveFile wasn't created \n");
+                    return 1;
+                }
+                quickPrintStage(dungeon->stage);
                 while(play) {
-                    /* game */
-
-                    /* display */
-                    MLV_clear_window(MLV_COLOR_WHITE); /*pour les tests*/
-                    displayStage(dungeon->stage, player, BASIC);
-                    displayHUD(player);
-                    displayAtkButtons();
-
-                    /* events */
-                    action = getPlayerAction();
-                    while(action == NO_ACTION) {
-                        action = getPlayerAction();
-                    }
-                    actionDone = doAction(action, &player, &dungeon);
-
-                    /* exit game */
-                    if(actionDone == -1) {
-                        if(yesNoPopup("Exit game ?")) {
-                            play = 0;
-                            quit = 1;
-                            break;
-                        }
-                    }
-                    if(turnEnemyOnScreen(&(dungeon->stage), &player)){
-                        printf("Game Over \n");
-                        play = 0;
-                        quit = 1;
-                        break;
-                    }
+                    playerTurn(&player, &dungeon, &play, &quit);
                 }
                 break;
             case PROFILE : 
-                fadein = 0;
                 playButtonSound_2();
+                fadein = 0;
+                play = 1;
+                
+                if(!loadGame(&player, &dungeon)){
+                    if(!newGame(&player, &dungeon)){
+                        fprintf(stderr, "the saveFile wasn't created \n");
+                        return 1;
+                    }
+                }
+
+                while(play) {
+                    playerTurn(&player, &dungeon, &play, &quit);
+                }
                 break;
             case SETTINGS :
                 fadein = 0;

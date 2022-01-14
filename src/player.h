@@ -104,8 +104,9 @@
     /* Gain a lvl if the current exp is higher than the exp needed to pass the next lvl */
     int gainLvl(Player *player);
 
-    /* Gain exp to the player and level up the player has many times as necessary given the amount of exp */
-    void gainExp(Player *player, unsigned int exp);
+    /* Gain exp to the player and level up the player has many times as necessary given the amount of exp 
+    * and return the number of level gained*/
+    int gainExp(Player *player, unsigned int exp);
 
     /* Equip a weaponType weapon to the player and adjust his stat accordingly  */
     void equipWeapon(Player *player, Equipment weapon);

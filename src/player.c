@@ -118,22 +118,25 @@ int gainLvl(Player *player){
 
     player->stat.current.lvl += 1;/* gains a level */
     player->stat.current.exp -= nextLvlExp;/* remove the exp needed to pass the level */
-
-    /* Reset the now changed stat */
-    player->stat.current.hp = standardMaxHP(*player);
-    player->stat.current.mp = standardMaxMP(*player);
     return 1;
 }
 
-void gainExp(Player *player, unsigned int exp){
+int gainExp(Player *player, unsigned int exp){
     
     assert(NULL != player);
 
+    int numberLevel;
+
+    numberLevel = 0;
+
     if(player->underLearningPotion){
-        player->stat.current.exp += (int)(exp*(30/100));/*if the learning potion is active gain 30% more exp */
+        player->stat.current.exp += (exp*30)/100;/*if the learning potion is active gain 30% more exp */
     }
     player->stat.current.exp += exp;/* add the exp */
-    while(gainLvl(player));/* while the exp is more than what is needed for one level */
+    while(gainLvl(player)){/* while the exp is more than what is needed for one level */
+        numberLevel += 1;
+    }
+    return numberLevel;
 }
 
 

@@ -7,6 +7,7 @@
 
 /*Bibliothèque interne*/
 #include "list.h"
+#include "interface.h"
 
 #ifndef __ACTION__
 #define __ACTION__
@@ -41,7 +42,7 @@
     /* Open a treasure chest */
     void openTreasure(Player* player, Stage *stage, int x, int y);
 
-    /* Apply the effect of a potion to a player */
-    int consumeItem(Player* player, Consummables potion);
+    /* Apply the effect of a potion from the inventory to a player */
+    int consumeItem(Player* player, int itemIndex);
 
 #endif

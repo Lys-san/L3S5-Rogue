@@ -5,7 +5,8 @@
 /*Bibliothèque générale*/
 
 /*Bibliothèque interne*/
-#include "action.h"
+#include "gameControl.h"
+#include "save.h"
 
 #ifndef __TURN__
 #define __TURN__
@@ -28,4 +29,6 @@
 
     /* Perform the turn of all the monsters present on screen */
     int turnEnemyOnScreen(Stage *stage, Player* player);
+
+    int playerTurn(Player *player, StageList *dungeon, int *play, int *quit);
 #endif

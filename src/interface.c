@@ -857,8 +857,7 @@ void displayItemInfo(Loot item, Point start, int boxWidth, int boxHeight) {
     MLV_change_default_font("src/files/Mouser D.otf", 30);
 }
 
-
-Loot inventory(Loot inventory[], enum mode mode) {
+int inventory(Loot inventory[], enum mode mode) {
     unsigned int windowWidth, windowHeight;
     MLV_get_window_size(&windowWidth, &windowHeight);
 
@@ -869,7 +868,6 @@ Loot inventory(Loot inventory[], enum mode mode) {
     MLV_Button_state state;
     int xMouse, yMouse;
 
-    Loot chosenItem;
     int yIndex;
     int xIndex;
     int itemIndex = 0;
@@ -894,17 +892,9 @@ Loot inventory(Loot inventory[], enum mode mode) {
     infoBox.x = 0;
     infoBox.y = windowHeight - infoBoxHeight;
 
-    int i;
-    int frames = 5;
+    /* TODO open animation ?*/
 
     blurBackground(MLV_COLOR_GRAY1);
-
-    for(i = 0; i < frames; i++) {
-        MLV_draw_filled_rectangle(0, 0, ((float)i/(float)frames)*menuWidth, windowHeight, INVENTORY_MENU_COLOR);
-        MLV_wait_milliseconds( 10 );
-        MLV_actualise_window();
-    }
-
     MLV_draw_filled_rectangle(0, 0, menuWidth, windowHeight, INVENTORY_MENU_COLOR);
 
     /* display and choose */
@@ -982,8 +972,7 @@ Loot inventory(Loot inventory[], enum mode mode) {
                 switch( sym) {
                     case MLV_KEYBOARD_ESCAPE :
                         printf("ESC keyboard\n");
-                        chosenItem.type = NO_ITEM;
-                        return chosenItem;
+                        return -1;
                     default :
                         break;
                 }
@@ -1001,7 +990,6 @@ Loot inventory(Loot inventory[], enum mode mode) {
                         xIndex = (xMouse - ((xMouse % itemPerRow)*margin)) / itemBoxSize;
                         itemIndex = yIndex*itemPerRow + xIndex;
                         selection = itemIndex;
-                        MLV_draw_filled_rectangle(infoBox.x, infoBox.y, infoBoxWidth, infoBoxHeight, INVENTORY_MENU_COLOR);
                         displayItemInfo(inventory[itemIndex], infoBox, infoBoxWidth, infoBoxHeight);
                         if(inventory[itemIndex].type != NO_ITEM)
                             canSelect = 1;
@@ -1011,7 +999,7 @@ Loot inventory(Loot inventory[], enum mode mode) {
 
                     /* click on button to use item */
                     if(mouseOnButton)
-                        return inventory[itemIndex]; /* end of function */
+                        return itemIndex; /* end of function */
                 }
 
 
@@ -1022,9 +1010,8 @@ Loot inventory(Loot inventory[], enum mode mode) {
                 break;
         }
     }
-    return chosenItem;
+    return -1;
 }
-
 
 Loot chooseBetweenTwo(Loot item_a, Loot item_b) {
     unsigned int windowWidth, windowHeight;
@@ -1146,4 +1133,77 @@ void displayHUD(Player player) {
 
 void exitGame() {
     MLV_free_window();
+}
+
+void displayStat(Point aStart, int itemBoxSize, char *statName, int statNumber){
+    MLV_draw_filled_rectangle(aStart.x, aStart.y, itemBoxSize, itemBoxSize, ITEM_BOX_COLOR);
+    MLV_draw_text( aStart.x, aStart.y, statName, MLV_COLOR_WHITE);
+    MLV_draw_text( aStart.x, aStart.y + (itemBoxSize/2) , "%d", MLV_COLOR_WHITE, statNumber);
+}
+
+int selectStat(Point aStart, int x, int y, int itemBoxSize,char *statName, int statNumber){
+    
+    int i;
+
+    if(x > aStart.x && x < aStart.x + itemBoxSize &&
+        y > aStart.y && y < aStart.y + itemBoxSize ) {
+        for(i = 0; i < 5; i++) {
+            displayStat(aStart, itemBoxSize, statName, statNumber);
+            MLV_draw_rectangle(
+                aStart.x + i,
+                aStart.y + i,
+                itemBoxSize - 2*i,
+                itemBoxSize - 2*i,
+                MLV_COLOR_WHITE
+                );
+        }
+        if(MLV_get_mouse_button_state(MLV_BUTTON_LEFT) == MLV_PRESSED) {
+            return 0;
+        }
+    }
+    displayStat(aStart, itemBoxSize, statName, statNumber);
+    return 1;
+}
+
+void applyStatPoint(Player *player){
+    unsigned int windowWidth, windowHeight;
+    MLV_get_window_size(&windowWidth, &windowHeight);
+
+    int itemBoxSize = windowWidth/6;
+
+    Point aStart, bStart, cStart;
+
+    int x, y;
+
+    aStart.x        = windowWidth/1.5;
+    aStart.y        = windowHeight/3;
+    bStart.x        = windowWidth - itemBoxSize - aStart.x;
+    bStart.y        = aStart.y;
+    cStart.x        = windowWidth - itemBoxSize - aStart.x + 300;
+    cStart.y        = aStart.y;
+
+    blurBackground(OUT_OF_MAP_COLOR_BAS);
+
+    MLV_draw_text(windowWidth/2.35, windowHeight/8, "Choose stats to up", MLV_COLOR_WHITE);
+    while(1) {
+        MLV_get_mouse_position(&x, &y);
+        MLV_wait_milliseconds( 100 );
+        /* ATK */
+        if(!selectStat(aStart, x, y, itemBoxSize, "ATK", player->stat.base.ATTACK)){
+            player->stat.base.ATTACK += 1 ;
+            return;
+        }
+        /* DEF */
+        if(!selectStat(bStart, x, y, itemBoxSize, "DEF", player->stat.base.DEFENSE)){
+            player->stat.base.DEFENSE += 1 ;
+            return;
+        }
+
+        /* INT */
+        if(!selectStat(cStart, x, y, itemBoxSize, "INT", player->stat.base.INTELLIGENCE)){
+            player->stat.base.INTELLIGENCE += 1 ;
+            return;
+        }
+        MLV_actualise_window();
+    }
 }
