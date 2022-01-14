@@ -5,6 +5,10 @@
 #include "sound.h"
 #include "level.h"
 #include "player.h"
+<<<<<<< HEAD
+=======
+#include "list.h"
+>>>>>>> f98ac1be3bdd5b5cae85233096f7c40d0317a51c
 
 #define WINDOW_WIDTH    (CELL_SIZE * SCREEN_WIDTH)
 #define WINDOW_HEIGHT   (CELL_SIZE * SCREEN_HEIGHT)
@@ -150,7 +154,11 @@ void displayItemInfo(Loot item, Point start, int boxWidth, int boxHeight);
 /* Display of the given inventory until the user does an action (closing the menu or
  * choosing to consume or getting rid of an objet).
  * Returns the index of the chosen item . */
+<<<<<<< HEAD
 int inventory(Loot inventory[], enum mode mode);
+=======
+int inventory(Loot inventory[], enum mode mode, int* discard);
+>>>>>>> f98ac1be3bdd5b5cae85233096f7c40d0317a51c
 
 /* Display of the Head Up Display on the left top of the screen */
 void displayHUD(Player player);
@@ -159,9 +167,21 @@ void displayHUD(Player player);
  * Loops until the user makes a choice. */
 Loot chooseBetweenTwo(Loot item_a, Loot item_b);
 
+<<<<<<< HEAD
 /* Frees what need to be freed and closes the window. */
 void exitGame();
 
 /* Displays a menu where the user can choose between his stats to augment them. 
  * Loops until the user makes a choice. */
 void applyStatPoint(Player *player);
+=======
+/* Displays a menu where the user can choose between his stats to augment them. 
+ * Loops until the user makes a choice. */
+void applyStatPoint(Player *player);
+
+/* Displays the game over screen, where the player can see */
+void displayGameOverScreen(Player player, StageList dungeon);
+
+/* Frees what need to be freed and closes the window. */
+void exitGame();
+>>>>>>> f98ac1be3bdd5b5cae85233096f7c40d0317a51c
