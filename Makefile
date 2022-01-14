@@ -21,6 +21,10 @@ all:$(EXEC)
 $(EXEC): $(OBJ)
 	$(CC) -o $@ $^ $(CFLAGS)
 
+# Compilation of the main file since he has no .h on his own
+$(BIN)/main.o: $(SRC)/main.c $(HEADER)/*.h
+	$(CC) -o $@ -c $< $(CFLAGS)
+
 # Compilation of all intermediary files
 $(BIN)/%.o:$(SRC)/%.c $(HEADER)/%.h
 	$(CC) -o $@ -c $< $(CFLAGS)
@@ -32,6 +36,6 @@ clean:
 	rm -f $(BIN)/*.o;
 
 # Remove all files created by the Makefile
-mr	proper: clean
+mrproper: clean
 	rm -f $(EXEC)
 	rm -rf $(EXEC) *.dll data/

@@ -41,6 +41,7 @@ int main(int argc, char * argv[]) {
                 while(play) {
                     playerTurn(&player, &dungeon, &play, &quit);
                 }
+                freeStageList(dungeon);
                 break;
             case PROFILE : 
                 playButtonSound_2();
@@ -57,6 +58,7 @@ int main(int argc, char * argv[]) {
                 while(play) {
                     playerTurn(&player, &dungeon, &play, &quit);
                 }
+                freeStageList(dungeon);
                 break;
             case SETTINGS :
                 fadein = 0;
@@ -74,7 +76,6 @@ int main(int argc, char * argv[]) {
 
     }
     exitGame();
-    freeStageList(dungeon);
     printf("Program ends.\n");
     return 0;
 }
